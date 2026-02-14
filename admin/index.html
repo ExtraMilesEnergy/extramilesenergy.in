@@ -3,18 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Extra Miles Energy – Admin Panel PRO</title>
+  <title>Extra Miles Energy – Admin PRO</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 min-h-screen">
 
 <div class="max-w-6xl mx-auto p-4">
-  <h1 class="text-3xl font-bold mb-2">⚙️ Extra Miles Energy Admin (PRO)</h1>
-  <p class="text-gray-600 mb-6">Multi‑image products + auto product page</p>
+  <h1 class="text-3xl font-bold mb-2">⚙️ Extra Miles Energy Admin PRO</h1>
+  <p class="text-gray-600 mb-6">Multi‑image • Auto product page • GitHub‑ready</p>
 
-  <!-- FORM -->
+  <!-- ===== CONFIG ===== -->
+  <div class="bg-yellow-50 border border-yellow-300 rounded-2xl p-4 mb-6">
+    <h3 class="font-bold mb-2">🔑 One‑time GitHub Setup</h3>
+    <input id="token" type="password" placeholder="Paste GitHub Token (repo access)" class="border p-2 rounded-xl w-full mb-2" />
+    <input id="repo" type="text" placeholder="Repo (username/repo) e.g. ExtraMilesEnergy/extramilesenergy.in" class="border p-2 rounded-xl w-full" />
+    <p class="text-xs text-gray-600 mt-2">Token sirf aapke browser me rahega.</p>
+  </div>
+
+  <!-- ===== PRODUCT FORM ===== -->
   <div class="bg-white rounded-2xl shadow p-6 mb-6">
-    <h2 class="text-xl font-semibold mb-4">➕ Add New Product</h2>
+    <h2 class="text-xl font-semibold mb-4">➕ Add Product</h2>
 
     <div class="grid md:grid-cols-2 gap-4">
       <input id="name" type="text" placeholder="Product Name" class="border p-3 rounded-xl w-full" />
@@ -30,163 +38,146 @@
 
       <input id="price" type="number" placeholder="Price (₹)" class="border p-3 rounded-xl w-full" />
 
-      <input id="images" type="text" placeholder="Image URLs (comma separated)" class="border p-3 rounded-xl w-full" />
+      <input id="images" type="file" multiple accept="image/*" class="border p-3 rounded-xl w-full" />
     </div>
 
-    <textarea id="desc" placeholder="Detailed Product Description" class="border p-3 rounded-xl w-full mt-4 h-32"></textarea>
+    <textarea id="desc" placeholder="Detailed Description" class="border p-3 rounded-xl w-full mt-4 h-32"></textarea>
 
     <button onclick="addProduct()" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold">
-      ✅ Add Product
+      🚀 Save Product (Auto Page)
     </button>
   </div>
 
-  <!-- FILTER -->
-  <div class="bg-white rounded-2xl shadow p-4 mb-4 flex flex-wrap gap-3 items-center">
-    <h3 class="font-semibold">🔍 Filter:</h3>
-    <select id="filterCategory" onchange="renderProducts()" class="border p-2 rounded-xl">
-      <option value="all">All</option>
-      <option>EV Battery</option>
-      <option>Solar ESS Battery</option>
-      <option>Solar Inverter</option>
-      <option>EV Charger</option>
-      <option>Accessories</option>
-    </select>
-
-    <button onclick="exportData()" class="ml-auto bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl">
-      ⬇️ Backup JSON
-    </button>
-  </div>
-
-  <!-- PRODUCTS LIST -->
+  <!-- ===== PRODUCTS ===== -->
   <div id="productList" class="grid md:grid-cols-3 gap-4"></div>
 </div>
 
 <script>
-let products = JSON.parse(localStorage.getItem("eme_products") || "[]");
-
-function saveProducts() {
-  localStorage.setItem("eme_products", JSON.stringify(products));
-}
-
+// ================= HELPERS =================
 function slugify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-function generateProductPage(product) {
-  const imagesHtml = product.images.map(img =>
-    `<img src="${img}" class="w-full rounded-xl mb-4"/>`
-  ).join('');
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-  const html = `<!DOCTYPE html>
+async function githubUpload(path, content) {
+  const token = document.getElementById('token').value.trim();
+  const repo = document.getElementById('repo').value.trim();
+  if (!token || !repo) {
+    alert('⚠️ Token & repo required');
+    throw new Error('Missing config');
+  }
+
+  const url = `https://api.github.com/repos/${repo}/contents/${path}`;
+
+  await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: `upload ${path}`,
+      content: content
+    })
+  });
+}
+
+function generateProductHTML(p) {
+  const gallery = p.images.map(i => `<img src="${i}" class="w-full rounded-xl mb-4"/>`).join('');
+
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${product.name}</title>
+<title>${p.name}</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
 <div class="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-2xl shadow">
-<h1 class="text-3xl font-bold mb-2">${product.name}</h1>
-<p class="text-gray-500 mb-4">${product.category}</p>
-<p class="text-2xl font-semibold text-blue-600 mb-6">₹${product.price}</p>
-${imagesHtml}
-<div class="mt-4 text-gray-700 whitespace-pre-line">${product.desc}</div>
+<h1 class="text-3xl font-bold mb-2">${p.name}</h1>
+<p class="text-gray-500 mb-4">${p.category}</p>
+<p class="text-2xl font-semibold text-blue-600 mb-6">₹${p.price}</p>
+${gallery}
+<div class="mt-4 text-gray-700 whitespace-pre-line">${p.desc}</div>
 </div>
 </body>
 </html>`;
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  return url;
 }
 
-function addProduct() {
-  const name = document.getElementById("name").value.trim();
-  const category = document.getElementById("category").value;
-  const price = document.getElementById("price").value;
-  const imagesRaw = document.getElementById("images").value.trim();
-  const desc = document.getElementById("desc").value.trim();
+// ================= MAIN =================
+let products = JSON.parse(localStorage.getItem('eme_products') || '[]');
 
-  if (!name || !category || !price) {
-    alert("⚠️ Please fill required fields");
+async function addProduct() {
+  const name = document.getElementById('name').value.trim();
+  const category = document.getElementById('category').value;
+  const price = document.getElementById('price').value;
+  const desc = document.getElementById('desc').value.trim();
+  const files = document.getElementById('images').files;
+
+  if (!name || !category || !price || files.length === 0) {
+    alert('⚠️ Fill all required fields');
     return;
   }
 
-  const images = imagesRaw
-    ? imagesRaw.split(',').map(i => i.trim()).filter(Boolean)
-    : ["https://via.placeholder.com/400"];
+  const slug = slugify(name);
+  const repo = document.getElementById('repo').value.trim();
+  const username = repo.split('/')[0];
 
+  // ===== upload images =====
+  const imageUrls = [];
+  for (let i = 0; i < files.length; i++) {
+    const base64 = await fileToBase64(files[i]);
+    const path = `uploads/products/${slug}-${i + 1}.jpg`;
+    await githubUpload(path, base64);
+    imageUrls.push(`https://${username}.github.io/${repo.split('/')[1]}/${path}`);
+  }
+
+  // ===== create product =====
   const product = {
     id: Date.now(),
     name,
     category,
     price,
-    images,
-    desc
+    desc,
+    images: imageUrls,
+    slug
   };
 
-  product.pageUrl = generateProductPage(product);
+  // ===== upload product page =====
+  const html = generateProductHTML(product);
+  const htmlBase64 = btoa(unescape(encodeURIComponent(html)));
+  await githubUpload(`products/${slug}.html`, htmlBase64);
 
   products.unshift(product);
-  saveProducts();
-  clearForm();
+  localStorage.setItem('eme_products', JSON.stringify(products));
   renderProducts();
-}
 
-function deleteProduct(id) {
-  if (!confirm("Delete this product?")) return;
-  products = products.filter(p => p.id !== id);
-  saveProducts();
-  renderProducts();
-}
-
-function clearForm() {
-  document.getElementById("name").value = "";
-  document.getElementById("category").value = "";
-  document.getElementById("price").value = "";
-  document.getElementById("images").value = "";
-  document.getElementById("desc").value = "";
+  alert('✅ Product live ho gaya!');
 }
 
 function renderProducts() {
-  const list = document.getElementById("productList");
-  const filter = document.getElementById("filterCategory").value;
+  const list = document.getElementById('productList');
+  list.innerHTML = '';
 
-  let filtered = products;
-  if (filter !== "all") {
-    filtered = products.filter(p => p.category === filter);
-  }
-
-  list.innerHTML = "";
-
-  if (filtered.length === 0) {
-    list.innerHTML = '<p class="text-gray-500">No products found</p>';
-    return;
-  }
-
-  filtered.forEach(p => {
+  products.forEach(p => {
     list.innerHTML += `
       <div class="bg-white rounded-2xl shadow p-4">
         <img src="${p.images[0]}" class="rounded-xl h-40 w-full object-cover mb-3" />
         <h3 class="font-bold text-lg">${p.name}</h3>
         <p class="text-sm text-gray-500">${p.category}</p>
         <p class="font-semibold text-blue-600">₹${p.price}</p>
-        <div class="flex gap-2 mt-3">
-          <a href="${p.pageUrl}" target="_blank" class="bg-blue-600 text-white px-3 py-1 rounded-xl">View Page</a>
-          <button onclick="deleteProduct(${p.id})" class="bg-red-600 text-white px-3 py-1 rounded-xl">Delete</button>
-        </div>
-      </div>
-    `;
+        <a target="_blank" href="/products/${p.slug}.html" class="mt-3 inline-block bg-blue-600 text-white px-3 py-1 rounded-xl">View</a>
+      </div>`;
   });
-}
-
-function exportData() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
-  const dl = document.createElement("a");
-  dl.setAttribute("href", dataStr);
-  dl.setAttribute("download", "eme-products-backup.json");
-  dl.click();
 }
 
 renderProducts();

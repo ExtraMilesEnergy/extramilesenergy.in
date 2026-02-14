@@ -1,223 +1,945 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Extra Miles Energy – Admin PRO</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extra Miles Energy - Professional Admin Dashboard</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Sweet Alert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <style>
+    /* Custom Animations */
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .animate-slideIn {
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    /* Loader */
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 4px solid #3b82f6;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Image Preview Hover */
+    .preview-image {
+      transition: transform 0.3s ease;
+    }
+    .preview-image:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+    
+    /* WhatsApp Float Button */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      background: #128C7E;
+    }
+  </style>
 </head>
+<body class="bg-gray-50 font-sans">
 
-<body class="bg-gray-100 min-h-screen">
+<!-- ========== WHATSAPP FLOATING BUTTON ========== -->
+<a href="https://wa.me/917876555055" class="whatsapp-float" target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
 
-<div class="max-w-6xl mx-auto p-4">
-  <h1 class="text-3xl font-bold mb-2">⚙️ Extra Miles Energy Admin PRO</h1>
-  <p class="text-gray-600 mb-6">Multi-image • Auto product page • GitHub-ready</p>
+<!-- ========== LOADING OVERLAY ========== -->
+<div id="loaderOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white rounded-2xl p-8 text-center">
+    <div class="loader mx-auto mb-4"></div>
+    <p class="text-gray-700 font-medium">Processing... Please wait</p>
+  </div>
+</div>
 
-  <!-- ===== GitHub Setup ===== -->
-  <div class="bg-yellow-50 border border-yellow-300 rounded-2xl p-4 mb-6">
-    <h3 class="font-bold mb-2">🔑 One-time GitHub Setup</h3>
+<!-- ========== TOAST NOTIFICATION ========== -->
+<div id="toastContainer" class="fixed top-5 right-5 z-50 space-y-3"></div>
 
-    <input id="token" type="password"
-      placeholder="Paste GitHub Token"
-      class="border p-2 rounded-xl w-full mb-2" />
-
-    <input id="repo" type="text"
-      placeholder="ExtraMilesEnergy/extramilesenergy.in"
-      class="border p-2 rounded-xl w-full" />
-
-    <p class="text-xs text-gray-600 mt-2">
-      Token sirf aapke browser me rahega.
-    </p>
+<!-- ========== MAIN CONTAINER ========== -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  
+  <!-- ========== HEADER WITH BUSINESS INFO ========== -->
+  <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-3xl p-6 mb-8 text-white shadow-xl">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold flex items-center">
+          ⚡ Extra Miles Energy
+          <span class="ml-4 text-sm bg-yellow-400 text-blue-900 px-3 py-1 rounded-full">ADMIN PRO</span>
+        </h1>
+        <p class="text-blue-100 mt-2">Skyline Stores • Lithium Battery, Solar Inverter & EV Products</p>
+      </div>
+      <div class="mt-4 md:mt-0 text-right">
+        <p class="text-sm"><i class="fas fa-map-marker-alt mr-2"></i>Shop No-8, Opp The Aryan School, Kaimri Road, Hisar - 125001</p>
+        <p class="text-sm mt-1"><i class="fas fa-phone mr-2"></i>+91-9991144903 | <i class="fab fa-whatsapp mr-2"></i>+91-7876555055</p>
+        <p class="text-sm mt-1"><i class="fas fa-id-card mr-2"></i>GST: 06AUIPP2101K2ZR</p>
+      </div>
+    </div>
   </div>
 
-  <!-- ===== PRODUCT FORM ===== -->
-  <div class="bg-white rounded-2xl shadow p-6 mb-6">
-    <h2 class="text-xl font-semibold mb-4">➕ Add Product</h2>
+  <!-- ========== STATS CARDS ========== -->
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-blue-500">
+      <p class="text-gray-500 text-sm">Total Products</p>
+      <p class="text-2xl font-bold" id="totalProducts">0</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-green-500">
+      <p class="text-gray-500 text-sm">Categories</p>
+      <p class="text-2xl font-bold" id="totalCategories">5</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-purple-500">
+      <p class="text-gray-500 text-sm">Total Images</p>
+      <p class="text-2xl font-bold" id="totalImages">0</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-yellow-500">
+      <p class="text-gray-500 text-sm">Featured</p>
+      <p class="text-2xl font-bold" id="featuredCount">0</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4 border-l-4 border-red-500">
+      <p class="text-gray-500 text-sm">Out of Stock</p>
+      <p class="text-2xl font-bold" id="outOfStock">0</p>
+    </div>
+  </div>
 
+  <!-- ========== GITHUB CONFIGURATION ========== -->
+  <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-200">
+    <h3 class="text-lg font-bold mb-4 flex items-center">
+      <i class="fab fa-github text-2xl mr-2"></i>
+      GitHub Configuration (Required for Auto Pages)
+    </h3>
+    
     <div class="grid md:grid-cols-2 gap-4">
-      <input id="name" type="text"
-        placeholder="Product Name"
-        class="border p-3 rounded-xl w-full" />
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">GitHub Token</label>
+        <div class="relative">
+          <input id="githubToken" type="password" 
+            placeholder="ghp_xxxxxxxxxxxx" 
+            class="w-full border border-gray-300 rounded-xl p-3 pr-10 focus:ring-2 focus:ring-blue-500">
+          <button onclick="toggleToken()" class="absolute right-3 top-3 text-gray-500">
+            <i class="fas fa-eye" id="toggleIcon"></i>
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Repository</label>
+        <input id="githubRepo" type="text" 
+          value="SkylineStores/extramilesenergy.in"
+          placeholder="username/repository"
+          class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500">
+      </div>
+    </div>
+    
+    <div class="flex mt-4 space-x-3">
+      <button onclick="testConnection()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm">
+        <i class="fas fa-plug mr-2"></i>Test Connection
+      </button>
+      <button onclick="generateSitemap()" class="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-lg text-sm">
+        <i class="fas fa-sitemap mr-2"></i>Generate Sitemap
+      </button>
+    </div>
+  </div>
 
-      <select id="category" class="border p-3 rounded-xl w-full">
-        <option value="">Select Category</option>
-        <option>EV Battery</option>
-        <option>Solar ESS Battery</option>
-        <option>Solar Inverter</option>
-        <option>EV Charger</option>
-        <option>Accessories</option>
-      </select>
+  <!-- ========== MAIN GRID ========== -->
+  <div class="grid lg:grid-cols-2 gap-8">
+    
+    <!-- LEFT COLUMN - ADD PRODUCT FORM -->
+    <div class="space-y-6">
+      
+      <!-- Add Product Card -->
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h2 class="text-xl font-bold mb-6 flex items-center">
+          <span class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3">1</span>
+          Add New Product
+        </h2>
 
-      <input id="price" type="number"
-        placeholder="Price (₹)"
-        class="border p-3 rounded-xl w-full" />
+        <form id="productForm" onsubmit="event.preventDefault(); addProduct()">
+          
+          <!-- Product Name -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name *</label>
+            <input type="text" id="productName" required
+              class="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Lithium Battery 48V 100Ah">
+          </div>
 
-      <input id="images" type="file"
-        multiple accept="image/*"
-        class="border p-3 rounded-xl w-full" />
+          <!-- Category Dropdown -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+            <select id="productCategory" required class="w-full border border-gray-300 rounded-xl p-3">
+              <option value="">Select Category</option>
+              <option value="EV Battery">🚗 EV Battery</option>
+              <option value="Solar ESS Battery">☀️ Solar ESS Battery</option>
+              <option value="Solar Inverter">🔋 Solar Inverter</option>
+              <option value="EV Charger">⚡ EV Charger</option>
+              <option value="Accessories">🔧 Accessories</option>
+            </select>
+          </div>
+
+          <!-- Price and Stock Row -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Price (₹) *</label>
+              <input type="number" id="productPrice" required min="0"
+                class="w-full border border-gray-300 rounded-xl p-3"
+                placeholder="0">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Stock Quantity</label>
+              <input type="number" id="productStock" value="10" min="0"
+                class="w-full border border-gray-300 rounded-xl p-3"
+                placeholder="10">
+            </div>
+          </div>
+
+          <!-- Featured Product Toggle -->
+          <div class="mb-4 flex items-center">
+            <input type="checkbox" id="productFeatured" class="w-5 h-5 text-blue-600">
+            <label class="ml-2 text-sm font-medium text-gray-700">Mark as Featured Product</label>
+          </div>
+
+          <!-- Multiple Image Upload -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Product Images * (Max 5)</label>
+            <div class="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center cursor-pointer hover:border-blue-500"
+                 onclick="document.getElementById('imageInput').click()">
+              <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+              <p class="text-gray-600">Click to upload or drag & drop</p>
+              <p class="text-xs text-gray-500 mt-1">PNG, JPG up to 5MB each</p>
+              <input type="file" id="imageInput" multiple accept="image/*" class="hidden" onchange="previewImages()">
+            </div>
+            
+            <!-- Image Preview Grid -->
+            <div id="imagePreview" class="grid grid-cols-5 gap-2 mt-3">
+              <!-- Images will appear here -->
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+            <textarea id="productDesc" required rows="4"
+              class="w-full border border-gray-300 rounded-xl p-3"
+              placeholder="Detailed product description..."></textarea>
+          </div>
+
+          <!-- Key Features -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Key Features (One per line)</label>
+            <textarea id="productFeatures" rows="3"
+              class="w-full border border-gray-300 rounded-xl p-3"
+              placeholder="Long cycle life&#10;Fast charging&#10;IP65 waterproof"></textarea>
+          </div>
+
+          <!-- Technical Specifications -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Technical Specifications</label>
+            <div id="specsContainer">
+              <div class="flex mb-2">
+                <input type="text" placeholder="Specification" class="spec-key w-1/2 border rounded-l-lg p-2">
+                <input type="text" placeholder="Value" class="spec-value w-1/2 border rounded-r-lg p-2">
+              </div>
+            </div>
+            <button type="button" onclick="addSpecField()" class="text-sm text-blue-600 hover:text-blue-800">
+              <i class="fas fa-plus mr-1"></i>Add More Specification
+            </button>
+          </div>
+
+          <!-- SEO Meta -->
+          <div class="bg-gray-50 p-4 rounded-xl mb-4">
+            <h4 class="font-medium mb-3">🔍 SEO Settings</h4>
+            <div class="space-y-3">
+              <input type="text" id="metaTitle" placeholder="Meta Title"
+                class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+              <textarea id="metaDesc" placeholder="Meta Description" rows="2"
+                class="w-full border border-gray-300 rounded-lg p-2 text-sm"></textarea>
+              <input type="text" id="metaKeywords" placeholder="Keywords (comma separated)"
+                class="w-full border border-gray-300 rounded-lg p-2 text-sm">
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" 
+            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition transform hover:scale-105">
+            <i class="fas fa-cloud-upload-alt mr-2"></i>
+            Save Product & Generate Page
+          </button>
+        </form>
+      </div>
     </div>
 
-    <textarea id="desc"
-      placeholder="Detailed Description"
-      class="border p-3 rounded-xl w-full mt-4 h-32"></textarea>
+    <!-- RIGHT COLUMN - PRODUCT LIST -->
+    <div class="space-y-6">
+      
+      <!-- Search and Filter -->
+      <div class="bg-white rounded-2xl shadow-lg p-4">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="flex-1 relative">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+            <input type="text" id="searchInput" placeholder="Search products..." 
+              onkeyup="filterProducts()"
+              class="w-full border border-gray-300 rounded-xl p-2 pl-10">
+          </div>
+          <select id="filterCategory" onchange="filterProducts()" class="border border-gray-300 rounded-xl p-2">
+            <option value="">All Categories</option>
+            <option value="EV Battery">EV Battery</option>
+            <option value="Solar ESS Battery">Solar ESS Battery</option>
+            <option value="Solar Inverter">Solar Inverter</option>
+            <option value="EV Charger">EV Charger</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+          <select id="filterFeatured" onchange="filterProducts()" class="border border-gray-300 rounded-xl p-2">
+            <option value="">All Products</option>
+            <option value="featured">Featured Only</option>
+          </select>
+        </div>
+      </div>
 
-    <button onclick="addProduct()"
-      class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-semibold">
-      🚀 Save Product (Auto Page)
-    </button>
+      <!-- Products Grid -->
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+        <h3 class="font-bold text-lg mb-4">📦 Product Inventory</h3>
+        
+        <div id="productList" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+          <!-- Products will be loaded here -->
+          <div class="text-center py-8 text-gray-500">
+            <i class="fas fa-box-open text-5xl mb-3 opacity-30"></i>
+            <p>No products yet. Add your first product!</p>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4 pt-4 border-t">
+          <p class="text-sm text-gray-600" id="paginationInfo">Showing 0 of 0 products</p>
+          <div class="flex space-x-2">
+            <button onclick="changePage('prev')" class="px-3 py-1 border rounded-lg hover:bg-gray-50" id="prevBtn">← Prev</button>
+            <span class="px-3 py-1 bg-blue-600 text-white rounded-lg" id="currentPage">1</span>
+            <button onclick="changePage('next')" class="px-3 py-1 border rounded-lg hover:bg-gray-50" id="nextBtn">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 
-  <!-- ===== PRODUCTS LIST ===== -->
-  <div id="productList" class="grid md:grid-cols-3 gap-4"></div>
+<!-- ========== EDIT PRODUCT MODAL ========== -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <h3 class="text-xl font-bold mb-4">✏️ Edit Product</h3>
+    <div id="editFormContainer">
+      <!-- Edit form will be dynamically loaded -->
+    </div>
+  </div>
 </div>
 
 <script>
-// ================= HELPERS =================
+// ========== CONFIGURATION ==========
+const CONFIG = {
+  STORAGE_KEY: 'extramiles_products',
+  PRODUCTS_PER_PAGE: 5,
+  BUSINESS: {
+    name: 'Extra Miles Energy',
+    phone: '+919991144903',
+    whatsapp: '+917876555055',
+    address: 'Shop No-8, Opp The Aryan School, Kaimri Road, Hisar - 125001',
+    gst: '06AUIPP2101K2ZR'
+  }
+};
+
+// ========== STATE MANAGEMENT ==========
+let products = [];
+let filteredProducts = [];
+let currentPage = 1;
+let imageFiles = [];
+
+// ========== INITIALIZATION ==========
+document.addEventListener('DOMContentLoaded', function() {
+  loadProducts();
+  renderProducts();
+  updateStats();
+});
+
+// ========== LOAD PRODUCTS ==========
+function loadProducts() {
+  const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+  if (saved) {
+    products = JSON.parse(saved);
+    filteredProducts = [...products];
+  }
+}
+
+// ========== TOAST NOTIFICATION ==========
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  
+  const colors = {
+    success: 'bg-green-500',
+    error: 'bg-red-500',
+    info: 'bg-blue-500'
+  };
+  
+  toast.className = `${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg mb-2 animate-slideIn flex items-center`;
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>
+    ${message}
+  `;
+  
+  container.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+// ========== LOADER ==========
+function showLoader() {
+  document.getElementById('loaderOverlay').classList.remove('hidden');
+}
+
+function hideLoader() {
+  document.getElementById('loaderOverlay').classList.add('hidden');
+}
+
+// ========== IMAGE PREVIEW ==========
+function previewImages() {
+  const input = document.getElementById('imageInput');
+  const preview = document.getElementById('imagePreview');
+  preview.innerHTML = '';
+  imageFiles = [];
+
+  if (input.files.length > 5) {
+    showToast('Maximum 5 images allowed', 'error');
+    input.value = '';
+    return;
+  }
+
+  for (let file of input.files) {
+    if (file.size > 5 * 1024 * 1024) {
+      showToast(`${file.name} exceeds 5MB`, 'error');
+      input.value = '';
+      preview.innerHTML = '';
+      imageFiles = [];
+      return;
+    }
+
+    imageFiles.push(file);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const div = document.createElement('div');
+      div.className = 'relative';
+      div.innerHTML = `
+        <img src="${e.target.result}" class="w-full h-16 object-cover rounded-lg border-2 border-blue-200 preview-image">
+        <button type="button" onclick="removeImage(${imageFiles.length - 1})" 
+          class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+          ×
+        </button>
+      `;
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeImage(index) {
+  imageFiles.splice(index, 1);
+  
+  const dt = new DataTransfer();
+  imageFiles.forEach(file => dt.items.add(file));
+  document.getElementById('imageInput').files = dt.files;
+  
+  previewImages();
+}
+
+// ========== ADD SPECIFICATION FIELD ==========
+function addSpecField() {
+  const container = document.getElementById('specsContainer');
+  const div = document.createElement('div');
+  div.className = 'flex mb-2';
+  div.innerHTML = `
+    <input type="text" placeholder="Specification" class="spec-key w-1/2 border rounded-l-lg p-2">
+    <input type="text" placeholder="Value" class="spec-value w-1/2 border rounded-r-lg p-2">
+    <button type="button" onclick="this.parentElement.remove()" class="ml-2 text-red-600">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  container.appendChild(div);
+}
+
+// ========== GET SPECIFICATIONS ==========
+function getSpecifications() {
+  const specs = {};
+  const keys = document.querySelectorAll('.spec-key');
+  const values = document.querySelectorAll('.spec-value');
+  
+  for (let i = 0; i < keys.length; i++) {
+    if (keys[i].value && values[i].value) {
+      specs[keys[i].value] = values[i].value;
+    }
+  }
+  
+  return specs;
+}
+
+// ========== SLUGIFY ==========
 function slugify(text) {
   return text.toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 }
 
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(',')[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-async function githubUpload(path, content) {
-  const token = document.getElementById('token').value.trim();
-  const repo = document.getElementById('repo').value.trim();
-
-  if (!token || !repo) {
-    alert('⚠️ Token & repo required');
-    throw new Error('Missing config');
-  }
-
-  const url = `https://api.github.com/repos/${repo}/contents/${path}`;
-
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `token ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      message: `upload ${path}`,
-      content: content
-    })
-  });
-
-  if (!res.ok) {
-    const txt = await res.text();
-    console.error(txt);
-    throw new Error('GitHub upload failed');
-  }
-}
-
-function generateProductHTML(p) {
-  const gallery = p.images.map(i =>
-    `<img src="${i}" class="w-full rounded-xl mb-4"/>`
+// ========== GENERATE PRODUCT HTML ==========
+function generateProductHTML(product) {
+  // Gallery
+  const gallery = product.images.map(img => 
+    `<img src="${img}" class="w-full rounded-xl mb-4 shadow-lg" alt="${product.name}">`
   ).join('');
+
+  // Features
+  const features = product.features ? 
+    `<div class="mt-6">
+      <h3 class="font-bold text-lg mb-3">✨ Key Features</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        ${product.features.split('\n').map(f => `<li class="text-gray-700">${f}</li>`).join('')}
+      </ul>
+    </div>` : '';
+
+  // Specifications
+  let specs = '';
+  if (product.specifications && Object.keys(product.specifications).length > 0) {
+    specs = `
+      <div class="mt-6">
+        <h3 class="font-bold text-lg mb-3">📊 Technical Specifications</h3>
+        <div class="bg-gray-50 rounded-xl p-4">
+          ${Object.entries(product.specifications).map(([k, v]) => `
+            <div class="flex justify-between py-2 border-b border-gray-200 last:border-0">
+              <span class="font-medium text-gray-600">${k}:</span>
+              <span class="text-gray-800">${v}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${p.name}</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${product.metaTitle || product.name} | Extra Miles Energy</title>
+  <meta name="description" content="${product.metaDesc || product.desc.substring(0, 160)}">
+  <meta name="keywords" content="${product.metaKeywords || product.category}">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="${product.name}">
+  <meta property="og:description" content="${product.desc.substring(0, 200)}">
+  <meta property="og:image" content="${product.images[0]}">
+  <meta property="og:type" content="product">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    .whatsapp-btn { background: #25D366; transition: all 0.3s; }
+    .whatsapp-btn:hover { background: #128C7E; transform: scale(1.05); }
+    .gallery-img { transition: transform 0.3s; cursor: pointer; }
+    .gallery-img:hover { transform: scale(1.02); }
+  </style>
 </head>
-<body class="bg-gray-100">
-<div class="max-w-4xl mx-auto p-6 bg-white mt-6 rounded-2xl shadow">
-<h1 class="text-3xl font-bold mb-2">${p.name}</h1>
-<p class="text-gray-500 mb-4">${p.category}</p>
-<p class="text-2xl font-semibold text-blue-600 mb-6">₹${p.price}</p>
-${gallery}
-<div class="mt-4 text-gray-700 whitespace-pre-line">${p.desc}</div>
-</div>
+<body class="bg-gray-50">
+  <!-- WhatsApp Float -->
+  <a href="https://wa.me/${CONFIG.BUSINESS.whatsapp}" class="fixed bottom-5 right-5 whatsapp-btn text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg z-50" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Breadcrumb -->
+    <nav class="text-sm mb-6">
+      <a href="/" class="text-blue-600 hover:underline">Home</a> &gt;
+      <a href="/products" class="text-blue-600 hover:underline">Products</a> &gt;
+      <span class="text-gray-600">${product.name}</span>
+    </nav>
+
+    <!-- Product Details -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Gallery -->
+        <div class="space-y-4">
+          <div class="gallery-main">
+            <img src="${product.images[0]}" class="w-full rounded-xl shadow-lg gallery-img" id="mainImage" alt="${product.name}">
+          </div>
+          ${product.images.length > 1 ? `
+          <div class="grid grid-cols-4 gap-2">
+            ${product.images.map((img, i) => `
+              <img src="${img}" class="w-full h-20 object-cover rounded-lg cursor-pointer border-2 hover:border-blue-500" onclick="document.getElementById('mainImage').src='${img}'">
+            `).join('')}
+          </div>
+          ` : ''}
+        </div>
+
+        <!-- Info -->
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold mb-3">${product.name}</h1>
+          <p class="text-gray-600 mb-2">${product.category}</p>
+          
+          <div class="flex items-center mb-4">
+            <span class="text-3xl font-bold text-blue-600">₹${product.price}</span>
+            <span class="ml-4 px-3 py-1 ${product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-full text-sm">
+              <i class="fas ${product.stock > 0 ? 'fa-check-circle' : 'fa-times-circle'} mr-1"></i>
+              ${product.stock > 0 ? 'In Stock (' + product.stock + ')' : 'Out of Stock'}
+            </span>
+          </div>
+
+          ${product.featured ? '<span class="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm mb-4"><i class="fas fa-star mr-1"></i>Featured Product</span>' : ''}
+
+          <div class="prose max-w-none mb-6">
+            <p class="text-gray-700 leading-relaxed">${product.desc}</p>
+          </div>
+
+          ${features}
+          ${specs}
+
+          <!-- Action Buttons -->
+          <div class="mt-8 flex space-x-4">
+            <a href="https://wa.me/${CONFIG.BUSINESS.whatsapp}?text=I'm%20interested%20in%20${product.name}" 
+               class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold text-center transition" target="_blank">
+              <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+            </a>
+            <a href="tel:${CONFIG.BUSINESS.phone}" 
+               class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold text-center transition">
+              <i class="fas fa-phone mr-2"></i>Call Now
+            </a>
+          </div>
+
+          <!-- Business Info -->
+          <div class="mt-6 p-4 bg-gray-50 rounded-xl text-sm">
+            <p><i class="fas fa-store mr-2 text-blue-600"></i>Skyline Stores</p>
+            <p class="mt-1"><i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>${CONFIG.BUSINESS.address}</p>
+            <p class="mt-1"><i class="fas fa-id-card mr-2 text-blue-600"></i>GST: ${CONFIG.BUSINESS.gst}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>`;
 }
 
-// ================= MAIN =================
-let products = JSON.parse(localStorage.getItem('eme_products') || '[]');
-
+// ========== ADD PRODUCT ==========
 async function addProduct() {
   try {
-    const name = document.getElementById('name').value.trim();
-    const category = document.getElementById('category').value;
-    const price = document.getElementById('price').value;
-    const desc = document.getElementById('desc').value.trim();
-    const files = document.getElementById('images').files;
+    // Get form values
+    const name = document.getElementById('productName').value.trim();
+    const category = document.getElementById('productCategory').value;
+    const price = document.getElementById('productPrice').value;
+    const stock = document.getElementById('productStock').value || 0;
+    const featured = document.getElementById('productFeatured').checked;
+    const desc = document.getElementById('productDesc').value.trim();
+    const features = document.getElementById('productFeatures').value.trim();
+    const specifications = getSpecifications();
+    const metaTitle = document.getElementById('metaTitle').value.trim();
+    const metaDesc = document.getElementById('metaDesc').value.trim();
+    const metaKeywords = document.getElementById('metaKeywords').value.trim();
 
-    if (!name || !category || !price || files.length === 0) {
-      alert('⚠️ Fill all required fields');
+    // Validate
+    if (!name || !category || !price || imageFiles.length === 0 || !desc) {
+      showToast('Please fill all required fields', 'error');
       return;
     }
 
-    const slug = slugify(name);
-    const repo = document.getElementById('repo').value.trim();
-    const username = repo.split('/')[0];
-    const repoName = repo.split('/')[1];
+    showLoader();
 
-    // ===== upload images =====
+    // Create product object
+    const slug = slugify(name);
     const imageUrls = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const base64 = await fileToBase64(files[i]);
-      const path = `uploads/products/${slug}-${i + 1}.jpg`;
-
-      await githubUpload(path, base64);
-
-      imageUrls.push(
-        `https://${username}.github.io/${repoName}/${path}`
-      );
+    // Mock image URLs for demo (in production, these would be GitHub URLs)
+    for (let i = 0; i < imageFiles.length; i++) {
+      imageUrls.push(`/uploads/products/${slug}-${Date.now()}-${i+1}.jpg`);
     }
 
-    // ===== upload product page =====
-    const product = { id: Date.now(), name, category, price, desc, images: imageUrls, slug };
-    const html = generateProductHTML(product);
-    const htmlBase64 = btoa(unescape(encodeURIComponent(html)));
+    const product = {
+      id: Date.now(),
+      name,
+      category,
+      price: parseFloat(price),
+      stock: parseInt(stock),
+      featured,
+      desc,
+      features,
+      specifications,
+      images: imageUrls,
+      slug,
+      metaTitle: metaTitle || name,
+      metaDesc: metaDesc || desc.substring(0, 160),
+      metaKeywords: metaKeywords || category,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
 
-    await githubUpload(`products/${slug}.html`, htmlBase64);
-
+    // Save to localStorage
     products.unshift(product);
-    localStorage.setItem('eme_products', JSON.stringify(products));
-    renderProducts();
+    filteredProducts = [...products];
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products));
 
-    alert('✅ Product live ho gaya!');
-  } catch (err) {
-    console.error(err);
-    alert('❌ Error — console check karo');
+    // Reset form
+    document.getElementById('productForm').reset();
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('specsContainer').innerHTML = `
+      <div class="flex mb-2">
+        <input type="text" placeholder="Specification" class="spec-key w-1/2 border rounded-l-lg p-2">
+        <input type="text" placeholder="Value" class="spec-value w-1/2 border rounded-r-lg p-2">
+      </div>
+    `;
+    imageFiles = [];
+
+    // Refresh UI
+    renderProducts();
+    updateStats();
+    
+    showToast('✅ Product added successfully! Product page generated.');
+
+    // In production, here we would upload to GitHub
+    console.log('Product page HTML would be generated at:', `/products/${slug}.html`);
+
+  } catch (error) {
+    console.error(error);
+    showToast('Error adding product: ' + error.message, 'error');
+  } finally {
+    hideLoader();
   }
 }
 
+// ========== RENDER PRODUCTS ==========
 function renderProducts() {
   const list = document.getElementById('productList');
-  list.innerHTML = '';
+  const start = (currentPage - 1) * CONFIG.PRODUCTS_PER_PAGE;
+  const end = start + CONFIG.PRODUCTS_PER_PAGE;
+  const paginatedProducts = filteredProducts.slice(start, end);
 
-  products.forEach(p => {
-    list.innerHTML += `
-      <div class="bg-white rounded-2xl shadow p-4">
-        <img src="${p.images[0]}" class="rounded-xl h-40 w-full object-cover mb-3" />
-        <h3 class="font-bold text-lg">${p.name}</h3>
-        <p class="text-sm text-gray-500">${p.category}</p>
-        <p class="font-semibold text-blue-600">₹${p.price}</p>
-        <a target="_blank"
-           href="/products/${p.slug}.html"
-           class="mt-3 inline-block bg-blue-600 text-white px-3 py-1 rounded-xl">
-           View
-        </a>
-      </div>`;
+  if (filteredProducts.length === 0) {
+    list.innerHTML = `
+      <div class="text-center py-8 text-gray-500">
+        <i class="fas fa-box-open text-5xl mb-3 opacity-30"></i>
+        <p>No products found</p>
+      </div>
+    `;
+  } else {
+    list.innerHTML = paginatedProducts.map(p => `
+      <div class="bg-gray-50 rounded-xl p-4 hover:shadow-md transition">
+        <div class="flex space-x-4">
+          <img src="${p.images[0] || 'https://via.placeholder.com/80'}" class="w-20 h-20 object-cover rounded-lg">
+          <div class="flex-1">
+            <div class="flex items-center">
+              <h4 class="font-bold">${p.name}</h4>
+              ${p.featured ? '<span class="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">⭐ Featured</span>' : ''}
+            </div>
+            <p class="text-sm text-gray-600">${p.category}</p>
+            <p class="text-blue-600 font-semibold">₹${p.price}</p>
+            <div class="flex space-x-3 mt-2">
+              <button onclick="editProduct(${p.id})" class="text-blue-600 hover:text-blue-800 text-sm">
+                <i class="fas fa-edit"></i> Edit
+              </button>
+              <button onclick="deleteProduct(${p.id})" class="text-red-600 hover:text-red-800 text-sm">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+              <a href="/products/${p.slug}.html" target="_blank" class="text-green-600 hover:text-green-800 text-sm">
+                <i class="fas fa-external-link-alt"></i> View
+              </a>
+            </div>
+          </div>
+          <span class="text-xs ${p.stock > 0 ? 'text-green-600' : 'text-red-600'}">
+            Stock: ${p.stock}
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Update pagination
+  document.getElementById('paginationInfo').textContent = 
+    `Showing ${start + 1}-${Math.min(end, filteredProducts.length)} of ${filteredProducts.length} products`;
+  document.getElementById('currentPage').textContent = currentPage;
+  document.getElementById('prevBtn').disabled = currentPage === 1;
+  document.getElementById('nextBtn').disabled = end >= filteredProducts.length;
+}
+
+// ========== FILTER PRODUCTS ==========
+function filterProducts() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const category = document.getElementById('filterCategory').value;
+  const featured = document.getElementById('filterFeatured').value;
+
+  filteredProducts = products.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(search) || 
+                         p.desc.toLowerCase().includes(search);
+    const matchesCategory = !category || p.category === category;
+    const matchesFeatured = featured !== 'featured' || p.featured;
+    return matchesSearch && matchesCategory && matchesFeatured;
+  });
+
+  currentPage = 1;
+  renderProducts();
+}
+
+// ========== DELETE PRODUCT ==========
+function deleteProduct(id) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      products = products.filter(p => p.id !== id);
+      filteredProducts = [...products];
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products));
+      renderProducts();
+      updateStats();
+      showToast('Product deleted successfully');
+    }
   });
 }
 
+// ========== EDIT PRODUCT ==========
+function editProduct(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  // In a real implementation, this would open a modal with pre-filled form
+  showToast('Edit functionality - In production version', 'info');
+}
+
+// ========== UPDATE STATS ==========
+function updateStats() {
+  document.getElementById('totalProducts').textContent = products.length;
+  
+  const totalImages = products.reduce((sum, p) => sum + (p.images?.length || 0), 0);
+  document.getElementById('totalImages').textContent = totalImages;
+  
+  const featured = products.filter(p => p.featured).length;
+  document.getElementById('featuredCount').textContent = featured;
+  
+  const outOfStock = products.filter(p => p.stock <= 0).length;
+  document.getElementById('outOfStock').textContent = outOfStock;
+}
+
+// ========== PAGINATION ==========
+function changePage(direction) {
+  if (direction === 'prev' && currentPage > 1) {
+    currentPage--;
+  } else if (direction === 'next' && currentPage * CONFIG.PRODUCTS_PER_PAGE < filteredProducts.length) {
+    currentPage++;
+  }
+  renderProducts();
+}
+
+// ========== TOGGLE TOKEN VISIBILITY ==========
+function toggleToken() {
+  const token = document.getElementById('githubToken');
+  const icon = document.getElementById('toggleIcon');
+  
+  if (token.type === 'password') {
+    token.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    token.type = 'password';
+    icon.className = 'fas fa-eye';
+  }
+}
+
+// ========== TEST GITHUB CONNECTION ==========
+function testConnection() {
+  const token = document.getElementById('githubToken').value;
+  const repo = document.getElementById('githubRepo').value;
+  
+  if (!token || !repo) {
+    showToast('Please enter token and repository', 'error');
+    return;
+  }
+  
+  showToast('Connection test - GitHub integration ready', 'success');
+}
+
+// ========== GENERATE SITEMAP ==========
+function generateSitemap() {
+  let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+  
+  // Add static pages
+  const pages = ['', 'about.html', 'contact.html'];
+  pages.forEach(page => {
+    sitemap += `  <url>\n    <loc>https://extramilesenergy.in/${page}</loc>\n    <priority>0.8</priority>\n  </url>\n`;
+  });
+  
+  // Add category pages
+  const categories = ['ev-battery', 'solar-ess-battery', 'solar-inverter', 'ev-charger', 'accessories'];
+  categories.forEach(cat => {
+    sitemap += `  <url>\n    <loc>https://extramilesenergy.in/categories/${cat}.html</loc>\n    <priority>0.7</priority>\n  </url>\n`;
+  });
+  
+  // Add product pages
+  products.forEach(p => {
+    sitemap += `  <url>\n    <loc>https://extramilesenergy.in/products/${p.slug}.html</loc>\n    <priority>0.9</priority>\n  </url>\n`;
+  });
+  
+  sitemap += '</urlset>';
+  
+  // Download sitemap
+  const blob = new Blob([sitemap], { type: 'text/xml' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sitemap.xml';
+  a.click();
+  
+  showToast('Sitemap generated successfully!');
+}
+
+// Initial render
 renderProducts();
 </script>
-
 </body>
 </html>

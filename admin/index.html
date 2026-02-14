@@ -38,16 +38,23 @@
       animation: spin 1s linear infinite;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
+    /* Image Preview */
+    .preview-image { transition: all 0.3s ease; }
+    .preview-image:hover { transform: scale(1.1); z-index: 10; }
   </style>
 </head>
 <body class="bg-gray-50">
 
 <!-- Loader -->
 <div id="loader" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-2xl text-center">
+  <div class="bg-white p-6 rounded-2xl text-center max-w-md">
     <div class="loader mx-auto mb-4"></div>
-    <p id="loaderText">Processing...</p>
-    <p id="loaderSubtext" class="text-sm text-gray-500 mt-2"></p>
+    <p id="loaderText" class="text-lg font-bold">Processing...</p>
+    <p id="loaderSubtext" class="text-sm text-gray-500 mt-2">Please wait</p>
+    <div id="progressBar" class="mt-4 w-full bg-gray-200 rounded-full h-2 hidden">
+      <div id="progressFill" class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+    </div>
   </div>
 </div>
 
@@ -174,7 +181,7 @@
       <div>
         <div class="mb-4">
           <label class="block font-medium mb-1">Images * (Max 5)</label>
-          <input type="file" id="productImages" multiple accept="image/*" class="w-full border p-2 rounded-xl">
+          <input type="file" id="productImages" multiple accept="image/*" class="w-full border p-2 rounded-xl" onchange="previewImages()">
           <div id="imagePreview" class="grid grid-cols-5 gap-2 mt-3"></div>
         </div>
 
@@ -186,6 +193,17 @@
         <div class="mb-4">
           <label class="block font-medium mb-1">Key Features</label>
           <textarea id="productFeatures" rows="3" class="w-full border p-3 rounded-xl" placeholder="Long cycle life&#10;Fast charging&#10;IP65 waterproof"></textarea>
+        </div>
+        
+        <div class="mb-4">
+          <label class="block font-medium mb-1">Technical Specifications</label>
+          <div id="specsContainer">
+            <div class="flex gap-2 mb-2">
+              <input type="text" class="spec-key flex-1 border p-2 rounded-lg" placeholder="Specification">
+              <input type="text" class="spec-value flex-1 border p-2 rounded-lg" placeholder="Value">
+            </div>
+          </div>
+          <button type="button" onclick="addSpec()" class="text-blue-600 text-sm"><i class="fas fa-plus mr-1"></i>Add More</button>
         </div>
       </div>
     </div>
@@ -212,7 +230,7 @@
       </div>
     </div>
     
-    <div id="productList" class="space-y-3">
+    <div id="productList" class="space-y-3 max-h-96 overflow-y-auto">
       <!-- Products will appear here -->
     </div>
 
@@ -276,6 +294,10 @@ function showLoader(text, subtext) {
 function hideLoader() {
   document.getElementById('loader').classList.add('hidden');
   document.getElementById('loader').classList.remove('flex');
+}
+
+function updateProgress(percent) {
+  document.getElementById('progressFill').style.width = percent + '%';
 }
 
 // ==================== TOAST ====================
@@ -440,7 +462,7 @@ function generateSitemap() {
   sitemap += '</urlset>';
   
   const blob = new Blob([sitemap], { type: 'text/xml' });
-  const url = URL.createObjectURL(blob);
+  const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = 'sitemap.xml';
@@ -468,11 +490,95 @@ function slugify(text) {
     .replace(/^-+|-+$/g, '');
 }
 
+// Add Specification Field
+function addSpec() {
+  const container = document.getElementById('specsContainer');
+  const div = document.createElement('div');
+  div.className = 'flex gap-2 mb-2';
+  div.innerHTML = `
+    <input type="text" class="spec-key flex-1 border p-2 rounded-lg" placeholder="Specification">
+    <input type="text" class="spec-value flex-1 border p-2 rounded-lg" placeholder="Value">
+    <button type="button" onclick="this.parentElement.remove()" class="text-red-600">×</button>
+  `;
+  container.appendChild(div);
+}
+
+// Get Specifications
+function getSpecs() {
+  const specs = {};
+  const keys = document.querySelectorAll('.spec-key');
+  const values = document.querySelectorAll('.spec-value');
+  
+  for (let i = 0; i < keys.length; i++) {
+    if (keys[i].value && values[i].value) {
+      specs[keys[i].value] = values[i].value;
+    }
+  }
+  return specs;
+}
+
+// Preview Images
+function previewImages() {
+  const preview = document.getElementById('imagePreview');
+  const files = document.getElementById('productImages').files;
+  preview.innerHTML = '';
+  imageFiles = [];
+
+  if (files.length > 5) {
+    showToast('Maximum 5 images allowed', 'error');
+    return;
+  }
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (file.size > 5 * 1024 * 1024) {
+      showToast(file.name + ' exceeds 5MB', 'error');
+      continue;
+    }
+
+    imageFiles.push(file);
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const div = document.createElement('div');
+      div.className = 'relative';
+      div.innerHTML = `
+        <img src="${e.target.result}" class="w-full h-16 object-cover rounded-lg border preview-image">
+        <button type="button" onclick="removeImage(${i})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs">×</button>
+      `;
+      preview.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+function removeImage(index) {
+  imageFiles.splice(index, 1);
+  const dt = new DataTransfer();
+  imageFiles.forEach(file => dt.items.add(file));
+  document.getElementById('productImages').files = dt.files;
+  previewImages();
+}
+
 // Generate Product HTML
 function generateProductHTML(product) {
   const images = product.images.map(img => 
     `<img src="${img}" class="w-full rounded-xl mb-4 shadow-lg">`
   ).join('');
+
+  let featuresHtml = '';
+  if (product.features) {
+    featuresHtml = '<div class="mt-4"><h3 class="font-bold">Features:</h3><ul class="list-disc pl-5">' + 
+      product.features.split('\n').map(f => `<li>${f}</li>`).join('') + '</ul></div>';
+  }
+
+  let specsHtml = '';
+  if (product.specifications && Object.keys(product.specifications).length > 0) {
+    specsHtml = '<div class="mt-4"><h3 class="font-bold">Specifications:</h3><table class="w-full">' + 
+      Object.entries(product.specifications).map(([k, v]) => 
+        `<tr><td class="border p-2">${k}</td><td class="border p-2">${v}</td></tr>`
+      ).join('') + '</table></div>';
+  }
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -482,28 +588,55 @@ function generateProductHTML(product) {
   <title>${product.name} | Extra Miles Energy</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta name="description" content="${product.desc.substring(0, 160)}">
 </head>
 <body class="bg-gray-50">
+  <!-- WhatsApp Float -->
+  <a href="https://wa.me/${CONFIG.BUSINESS.whatsapp.replace('+', '')}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
+     class="fixed bottom-5 right-5 bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center text-3xl shadow-lg z-50 hover:bg-green-700">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
   <div class="max-w-6xl mx-auto p-6">
+    <!-- Breadcrumb -->
     <nav class="text-sm mb-6">
-      <a href="/" class="text-blue-600">Home</a> > 
-      <a href="/products" class="text-blue-600">Products</a> > 
-      <span>${product.name}</span>
+      <a href="/" class="text-blue-600 hover:underline">Home</a> &gt;
+      <a href="/products" class="text-blue-600 hover:underline">Products</a> &gt;
+      <span class="text-gray-600">${product.name}</span>
     </nav>
-    
+
+    <!-- Product Details -->
     <div class="bg-white rounded-2xl shadow-xl p-8">
       <div class="grid md:grid-cols-2 gap-8">
-        <div>${images}</div>
+        <div class="space-y-4">
+          ${images}
+        </div>
         <div>
           <h1 class="text-3xl font-bold mb-3">${product.name}</h1>
           <p class="text-gray-600 mb-4">${product.category}</p>
           <p class="text-3xl font-bold text-blue-600 mb-4">₹${product.price}</p>
-          <p class="text-gray-700">${product.desc}</p>
+          ${product.featured ? '<span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Featured</span>' : ''}
+          <p class="text-gray-700 mt-4">${product.desc}</p>
+          ${featuresHtml}
+          ${specsHtml}
+          
+          <!-- Actions -->
           <div class="mt-8 flex gap-4">
-            <a href="https://wa.me/${CONFIG.BUSINESS.whatsapp}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
-               class="bg-green-600 text-white px-6 py-3 rounded-xl flex-1 text-center">WhatsApp</a>
+            <a href="https://wa.me/${CONFIG.BUSINESS.whatsapp.replace('+', '')}?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" 
+               class="flex-1 bg-green-600 text-white py-3 rounded-xl text-center hover:bg-green-700">
+              <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+            </a>
             <a href="tel:${CONFIG.BUSINESS.phone}" 
-               class="bg-blue-600 text-white px-6 py-3 rounded-xl flex-1 text-center">Call Now</a>
+               class="flex-1 bg-blue-600 text-white py-3 rounded-xl text-center hover:bg-blue-700">
+              <i class="fas fa-phone mr-2"></i>Call Now
+            </a>
+          </div>
+          
+          <!-- Business Info -->
+          <div class="mt-6 p-4 bg-gray-50 rounded-xl text-sm">
+            <p><i class="fas fa-store mr-2"></i>Skyline Stores</p>
+            <p class="mt-1"><i class="fas fa-map-marker-alt mr-2"></i>${CONFIG.BUSINESS.address}</p>
+            <p class="mt-1"><i class="fas fa-id-card mr-2"></i>GST: ${CONFIG.BUSINESS.gst}</p>
           </div>
         </div>
       </div>
@@ -522,10 +655,11 @@ async function addProduct() {
   const featured = document.getElementById('productFeatured').checked;
   const desc = document.getElementById('productDesc').value.trim();
   const features = document.getElementById('productFeatures').value.trim();
+  const specifications = getSpecs();
   const imageInput = document.getElementById('productImages');
   const token = document.getElementById('githubToken').value.trim();
   
-  if (!name || !category || !price || imageInput.files.length === 0 || !desc) {
+  if (!name || !category || !price || imageFiles.length === 0 || !desc) {
     showToast('Please fill all required fields', 'error');
     return;
   }
@@ -536,6 +670,7 @@ async function addProduct() {
   }
   
   showLoader('Uploading to GitHub...', 'This may take a few seconds');
+  updateProgress(10);
   
   try {
     const slug = slugify(name);
@@ -545,8 +680,8 @@ async function addProduct() {
     const imageUrls = [];
     
     // Upload images to GitHub
-    for (let i = 0; i < imageInput.files.length; i++) {
-      const file = imageInput.files[i];
+    for (let i = 0; i < imageFiles.length; i++) {
+      const file = imageFiles[i];
       const base64 = await fileToBase64(file);
       const ext = file.name.split('.').pop() || 'jpg';
       const imagePath = `products/images/${slug}-${i+1}.${ext}`;
@@ -555,6 +690,7 @@ async function addProduct() {
       
       const imageUrl = `https://raw.githubusercontent.com/${repo}/main/${imagePath}`;
       imageUrls.push(imageUrl);
+      updateProgress(30 + (i / imageFiles.length) * 30);
     }
     
     // Create product
@@ -567,6 +703,7 @@ async function addProduct() {
       featured,
       desc,
       features,
+      specifications,
       images: imageUrls,
       slug,
       onGitHub: true,
@@ -578,11 +715,14 @@ async function addProduct() {
     const htmlBase64 = btoa(unescape(encodeURIComponent(html)));
     await githubUpload(`products/${slug}.html`, htmlBase64, `Add product: ${name}`);
     
+    updateProgress(90);
+    
     // Save to localStorage
     products.unshift(product);
     filteredProducts = [...products];
     localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products));
     
+    updateProgress(100);
     hideLoader();
     resetForm();
     renderProducts();
@@ -595,8 +735,8 @@ async function addProduct() {
       html: `
         <p>✅ Product saved to repository</p>
         <p class="mt-2"><strong>Live URL:</strong><br>
-        <a href="https://${username}.github.io/${repoName}/products/${slug}.html" target="_blank" class="text-blue-600">
-          View Product Page
+        <a href="https://${username}.github.io/${repoName}/products/${slug}.html" target="_blank" class="text-blue-600 underline">
+          https://${username}.github.io/${repoName}/products/${slug}.html
         </a></p>
       `
     });
@@ -619,6 +759,13 @@ function resetForm() {
   document.getElementById('productFeatures').value = '';
   document.getElementById('productImages').value = '';
   document.getElementById('imagePreview').innerHTML = '';
+  document.getElementById('specsContainer').innerHTML = `
+    <div class="flex gap-2 mb-2">
+      <input type="text" class="spec-key flex-1 border p-2 rounded-lg" placeholder="Specification">
+      <input type="text" class="spec-value flex-1 border p-2 rounded-lg" placeholder="Value">
+    </div>
+  `;
+  imageFiles = [];
 }
 
 // Render Products
@@ -632,7 +779,7 @@ function renderProducts() {
     list.innerHTML = '<div class="text-center py-8 text-gray-500">No products yet</div>';
   } else {
     list.innerHTML = paginatedProducts.map(p => `
-      <div class="border rounded-xl p-4 bg-gray-50">
+      <div class="border rounded-xl p-4 bg-gray-50 hover:shadow transition">
         <div class="flex justify-between items-start">
           <div>
             <h3 class="font-bold">${p.name} ${p.featured ? '<span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Featured</span>' : ''}</h3>
@@ -646,20 +793,32 @@ function renderProducts() {
     `).join('');
   }
   
+  const totalPages = Math.ceil(filteredProducts.length / CONFIG.PRODUCTS_PER_PAGE);
   document.getElementById('paginationInfo').textContent = `Showing ${start + 1}-${Math.min(end, filteredProducts.length)} of ${filteredProducts.length}`;
   document.getElementById('currentPage').textContent = currentPage;
+  document.getElementById('prevBtn').disabled = currentPage === 1;
+  document.getElementById('nextBtn').disabled = currentPage >= totalPages;
 }
 
 // Delete Product
 function deleteProduct(id) {
-  if (confirm('Delete this product?')) {
-    products = products.filter(p => p.id !== id);
-    filteredProducts = [...products];
-    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products));
-    renderProducts();
-    updateStats();
-    showToast('Product deleted', 'success');
-  }
+  Swal.fire({
+    title: 'Delete product?',
+    text: "This action cannot be undone",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    confirmButtonText: 'Delete'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      products = products.filter(p => p.id !== id);
+      filteredProducts = [...products];
+      localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products));
+      renderProducts();
+      updateStats();
+      showToast('Product deleted', 'success');
+    }
+  });
 }
 
 // Filter Products
@@ -697,27 +856,11 @@ function nextPage() {
   }
 }
 
-// Image Preview
-document.getElementById('productImages').addEventListener('change', function(e) {
-  const preview = document.getElementById('imagePreview');
-  preview.innerHTML = '';
-  
-  for (let file of e.target.files) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const div = document.createElement('div');
-      div.innerHTML = `<img src="${e.target.result}" class="w-full h-16 object-cover rounded-lg border">`;
-      preview.appendChild(div);
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
 // Update Stats
 function updateStats() {
   document.getElementById('totalProducts').textContent = products.length;
   document.getElementById('githubCount').textContent = products.filter(p => p.onGitHub).length;
-  document.getElementById('totalImages').textContent = products.length * 3;
+  document.getElementById('totalImages').textContent = products.reduce((sum, p) => sum + (p.images?.length || 0), 0);
 }
 
 // Initial render

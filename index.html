@@ -1,1 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extra Miles Energy - Lithium Battery & Solar Products</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #25D366;
+      color: white;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
+      z-index: 100;
+      transition: all 0.3s;
+    }
+    
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+      background: #128C7E;
+    }
+    
+    .product-card {
+      transition: all 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .category-badge {
+      transition: all 0.3s;
+    }
+    
+    .category-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
 
+<!-- WhatsApp Float Button -->
+<a href="https://wa.me/917876555055" class="whatsapp-float" target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- Navbar -->
+<nav class="bg-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between items-center h-20">
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold text-blue-900">⚡ Extra Miles Energy</h1>
+      </div>
+      
+      <div class="hidden md:flex space-x-8">
+        <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+        <a href="/products.html" class="text-gray-700 hover:text-blue-600 font-medium">Products</a>
+        <a href="/categories.html" class="text-gray-700 hover:text-blue-600 font-medium">Categories</a>
+        <a href="/about.html" class="text-gray-700 hover:text-blue-600 font-medium">About</a>
+        <a href="/contact.html" class="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <a href="tel:+919991144903" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+          <i class="fas fa-phone mr-2"></i>Call Now
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div data-aos="fade-right">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+          Powering Your Future with Clean Energy
+        </h1>
+        <p class="text-xl text-blue-100 mb-8">
+          Premium Lithium Batteries, Solar Inverters & EV Chargers for Home and Business
+        </p>
+        <div class="flex space-x-4">
+          <a href="/products.html" class="bg-yellow-400 text-blue-900 px-8 py-3 rounded-lg font-bold hover:bg-yellow-300">
+            Explore Products
+          </a>
+          <a href="/contact.html" class="border-2 border-white text-white px-8 py-3 rounded-lg font-bold hover:bg-white hover:text-blue-900">
+            Contact Us
+          </a>
+        </div>
+      </div>
+      <div class="relative" data-aos="fade-left">
+        <img src="https://images.unsplash.com/photo-1624397640224-6c9b3c1d4b4c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Solar Panels" class="rounded-2xl shadow-2xl float-animation">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Business Info Bar -->
+<div class="bg-white shadow-md py-4">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fas fa-map-marker-alt text-blue-600 text-xl"></i>
+        <span class="text-gray-600">Shop No-8, Opp The Aryan School, Kaimri Road, Hisar - 125001</span>
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fas fa-phone text-blue-600 text-xl"></i>
+        <span class="text-gray-600">+91-9991144903 | +91-7876555055</span>
+      </div>
+      <div class="flex items-center justify-center space-x-2">
+        <i class="fas fa-id-card text-blue-600 text-xl"></i>
+        <span class="text-gray-600">GST: 06AUIPP2101K2ZR</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Categories Section -->
+<div class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Shop by Category</h2>
+    
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+      <a href="/categories/ev-battery.html" class="category-badge bg-blue-50 p-6 rounded-2xl text-center hover:bg-blue-100" data-aos="fade-up" data-aos-delay="100">
+        <i class="fas fa-car battery text-4xl text-blue-600 mb-3"></i>
+        <h3 class="font-bold">EV Battery</h3>
+      </a>
+      
+      <a href="/categories/solar-ess-battery.html" class="category-badge bg-green-50 p-6 rounded-2xl text-center hover:bg-green-100" data-aos="fade-up" data-aos-delay="200">
+        <i class="fas fa-solar-panel text-4xl text-green-600 mb-3"></i>
+        <h3 class="font-bold">Solar ESS</h3>
+      </a>
+      
+      <a href="/categories/solar-inverter.html" class="category-badge bg-yellow-50 p-6 rounded-2xl text-center hover:bg-yellow-100" data-aos="fade-up" data-aos-delay="300">
+        <i class="fas fa-bolt text-4xl text-yellow-600 mb-3"></i>
+        <h3 class="font-bold">Solar Inverter</h3>
+      </a>
+      
+      <a href="/categories/ev-charger.html" class="category-badge bg-purple-50 p-6 rounded-2xl text-center hover:bg-purple-100" data-aos="fade-up" data-aos-delay="400">
+        <i class="fas fa-charging-station text-4xl text-purple-600 mb-3"></i>
+        <h3 class="font-bold">EV Charger</h3>
+      </a>
+      
+      <a href="/categories/accessories.html" class="category-badge bg-gray-50 p-6 rounded-2xl text-center hover:bg-gray-100" data-aos="fade-up" data-aos-delay="500">
+        <i class="fas fa-tools text-4xl text-gray-600 mb-3"></i>
+        <h3 class="font-bold">Accessories</h3>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Featured Products -->
+<div class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-4" data-aos="fade-up">Featured Products</h2>
+    <p class="text-center text-gray-600 mb-12" data-aos="fade-up">Our most popular products</p>
+    
+    <div id="featuredProducts" class="grid md:grid-cols-3 gap-8">
+      <!-- Products will load here from GitHub -->
+    </div>
+    
+    <div class="text-center mt-12" data-aos="fade-up">
+      <a href="/products.html" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 inline-block">
+        View All Products <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Why Choose Us -->
+<div class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12" data-aos="fade-up">Why Choose Extra Miles Energy?</h2>
+    
+    <div class="grid md:grid-cols-4 gap-8">
+      <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+        <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-medal text-3xl text-blue-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">5+ Years Experience</h3>
+        <p class="text-gray-600">Trusted by hundreds of customers</p>
+      </div>
+      
+      <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+        <div class="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-truck text-3xl text-green-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">Free Delivery</h3>
+        <p class="text-gray-600">Pan India delivery available</p>
+      </div>
+      
+      <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+        <div class="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-shield-alt text-3xl text-yellow-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">1 Year Warranty</h3>
+        <p class="text-gray-600">On all products</p>
+      </div>
+      
+      <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+        <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-headset text-3xl text-purple-600"></i>
+        </div>
+        <h3 class="font-bold text-lg mb-2">24/7 Support</h3>
+        <p class="text-gray-600">We're here to help</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA Section -->
+<div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <h2 class="text-3xl font-bold mb-4" data-aos="fade-up">Ready to Power Your Future?</h2>
+    <p class="text-xl mb-8" data-aos="fade-up">Contact us today for the best deals on energy products</p>
+    <div class="flex justify-center space-x-4" data-aos="fade-up">
+      <a href="https://wa.me/917876555055" class="bg-green-500 text-white px-8 py-3 rounded-lg font-bold hover:bg-green-600">
+        <i class="fab fa-whatsapp mr-2"></i>WhatsApp Us
+      </a>
+      <a href="tel:+919991144903" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100">
+        <i class="fas fa-phone mr-2"></i>Call Now
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-12">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid md:grid-cols-4 gap-8">
+      <div>
+        <h3 class="text-xl font-bold mb-4">Extra Miles Energy</h3>
+        <p class="text-gray-400">Your trusted partner for lithium batteries, solar inverters and EV products.</p>
+      </div>
+      
+      <div>
+        <h4 class="font-bold mb-4">Quick Links</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="/" class="hover:text-white">Home</a></li>
+          <li><a href="/products.html" class="hover:text-white">Products</a></li>
+          <li><a href="/about.html" class="hover:text-white">About Us</a></li>
+          <li><a href="/contact.html" class="hover:text-white">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="font-bold mb-4">Categories</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><a href="/categories/ev-battery.html" class="hover:text-white">EV Battery</a></li>
+          <li><a href="/categories/solar-ess-battery.html" class="hover:text-white">Solar ESS</a></li>
+          <li><a href="/categories/solar-inverter.html" class="hover:text-white">Solar Inverter</a></li>
+          <li><a href="/categories/ev-charger.html" class="hover:text-white">EV Charger</a></li>
+        </ul>
+      </div>
+      
+      <div>
+        <h4 class="font-bold mb-4">Contact Info</h4>
+        <ul class="space-y-2 text-gray-400">
+          <li><i class="fas fa-map-marker-alt mr-2"></i>Hisar, Haryana</li>
+          <li><i class="fas fa-phone mr-2"></i>+91-9991144903</li>
+          <li><i class="fab fa-whatsapp mr-2"></i>+91-7876555055</li>
+          <li><i class="fas fa-envelope mr-2"></i>info@extramilesenergy.in</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+      <p>&copy; 2024 Extra Miles Energy. All rights reserved. GST: 06AUIPP2101K2ZR</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000,
+    once: true
+  });
+  
+  // Load featured products from localStorage (synced with admin panel)
+  function loadFeaturedProducts() {
+    const products = JSON.parse(localStorage.getItem('extramiles_products_v3') || '[]');
+    const featured = products.filter(p => p.featured).slice(0, 3);
+    
+    const container = document.getElementById('featuredProducts');
+    
+    if (featured.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-3 text-center py-12 text-gray-500">
+          <i class="fas fa-box-open text-5xl mb-4 opacity-30"></i>
+          <p>No featured products yet</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = featured.map(p => `
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden product-card" data-aos="fade-up">
+        <img src="${p.images[0] || 'https://via.placeholder.com/400x300'}" class="w-full h-48 object-cover">
+        <div class="p-6">
+          <h3 class="font-bold text-xl mb-2">${p.name}</h3>
+          <p class="text-gray-600 mb-4">${p.category}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-2xl font-bold text-blue-600">₹${p.price}</span>
+            <a href="/products/${p.slug}.html" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+              View Details
+            </a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // Load products on page load
+  loadFeaturedProducts();
+  
+  // Listen for storage changes (when admin adds new product)
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'extramiles_products_v3') {
+      loadFeaturedProducts();
+    }
+  });
+</script>
+</body>
+</html>

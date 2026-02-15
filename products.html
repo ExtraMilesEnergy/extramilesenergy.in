@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products - Extra Miles Energy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0b1220;
+            --secondary: #142044;
+            --gold: #FFD700;
+            --gold-light: #FFF9C4;
+            --text: #ffffff;
+            --text-muted: #a0b3d9;
+            --card-bg: rgba(20, 32, 68, 0.95);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--gold);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--gold), #FFE55C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-menu a {
+            color: var(--gold-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--gold);
+        }
+        
+        /* Products Page */
+        .page-title {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .page-title h2 {
+            font-size: 2.5rem;
+            color: var(--gold);
+        }
+        
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 25px;
+            background: transparent;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            color: var(--text-muted);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: var(--primary);
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .product-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        
+        .product-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            color: var(--gold-light);
+            margin: 10px 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            grid-column: 1 / -1;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(255, 215, 0, 0.1);
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Extra Miles Energy</h1>
+                </div>
+                <nav class="nav-menu">
+                    <a href="index.html">Home</a>
+                    <a href="products.html" class="active">Products</a>
+                    <a href="contact.html">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h2>Our Products</h2>
+            <p style="color: var(--text-muted);">Browse our premium energy solutions</p>
+        </div>
+
+        <div class="category-filter" id="categoryFilter">
+            <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Loading products...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GITHUB_CONFIG = {
+            username: 'ExtraMilesEnergy',
+            repo: 'extramilesenergy.in',
+            branch: 'main',
+            productsPath: 'content/products/all-products.json'
+        };
+
+        let allProducts = [];
+        let currentFilter = 'all';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+
+        async function loadProducts() {
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${GITHUB_CONFIG.productsPath}`);
+                
+                if (response.ok) {
+                    allProducts = await response.json();
+                    setupCategories();
+                    displayProducts();
+                }
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productsGrid').innerHTML = '<div class="loading">Failed to load products</div>';
+            }
+        }
+
+        function setupCategories() {
+            const categories = [...new Set(allProducts.map(p => p.category))];
+            const filterContainer = document.getElementById('categoryFilter');
+            
+            let html = '<button class="filter-btn active" onclick="filterProducts(\'all\')">All Products</button>';
+            categories.forEach(category => {
+                html += `<button class="filter-btn" onclick="filterProducts('${category}')">${category}</button>`;
+            });
+            
+            filterContainer.innerHTML = html;
+        }
+
+        function filterProducts(category) {
+            currentFilter = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (category === 'all' && btn.textContent === 'All Products') {
+                    btn.classList.add('active');
+                } else if (btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            displayProducts();
+        }
+
+        function displayProducts() {
+            let filtered = allProducts.filter(p => p.status === 'active');
+            
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                document.getElementById('productsGrid').innerHTML = '<div class="loading">No products found</div>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(product => {
+                const image = product.images?.[0] || 'https://via.placeholder.com/300x200/142044/FFD700?text=' + product.name;
+                const productUrl = `products/${product.slug || product.id}.html`;
+                
+                html += `
+                    <a href="${productUrl}" class="product-card">
+                        <img src="${image}" alt="${product.name}" class="product-image">
+                        <span class="product-category">${product.category}</span>
+                        <h3 class="product-name">${product.name}</h3>
+                        ${product.voltage ? `<p style="color: var(--gold);">${product.voltage}</p>` : ''}
+                        ${product.price ? `<p style="color: var(--gold); font-weight: 600;">${product.price}</p>` : ''}
+                    </a>
+                `;
+            });
+            
+            document.getElementById('productsGrid').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

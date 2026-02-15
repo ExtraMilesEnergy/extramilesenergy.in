@@ -45,160 +45,7 @@
             padding: 20px;
         }
         
-        /* Login */
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .login-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(53, 208, 255, 0.08) 0%, transparent 50%);
-        }
-        
-        .login-box {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: var(--radius);
-            border: 2px solid var(--gold);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-        }
-        
-        .login-title {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--gold), #FFE55C);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gold-light);
-            font-weight: 500;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: var(--radius-sm);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.15);
-        }
-        
-        .btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, var(--gold), #FFC107);
-            color: var(--primary);
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-            background: linear-gradient(135deg, #FFE55C, var(--gold));
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #ff2b5e);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #2bc47d);
-        }
-        
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #ff9a2b);
-        }
-        
-        .btn-info {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-        }
-        
-        .btn-purple {
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        }
-        
-        .btn-block {
-            width: 100%;
-            justify-content: center;
-        }
-        
-        /* Message */
-        .message {
-            padding: 15px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 20px;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-        
-        .message.error {
-            background: rgba(255, 53, 112, 0.1);
-            border: 1px solid rgba(255, 53, 112, 0.3);
-            color: var(--danger);
-        }
-        
-        .message.success {
-            background: rgba(69, 255, 144, 0.1);
-            border: 1px solid rgba(69, 255, 144, 0.3);
-            color: var(--success);
-        }
-        
-        .message.warning {
-            background: rgba(255, 177, 69, 0.1);
-            border: 1px solid rgba(255, 177, 69, 0.3);
-            color: var(--warning);
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateY(-10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        /* Admin Dashboard */
+        /* Admin Dashboard - Direct Open */
         .admin-header {
             background: var(--card-bg);
             border-bottom: 2px solid var(--gold);
@@ -630,7 +477,7 @@
             flex-wrap: wrap;
         }
         
-        /* New Sync Panel Styles */
+        /* Sync Panel Styles */
         .sync-panel {
             background: linear-gradient(135deg, rgba(53, 208, 255, 0.1), rgba(124, 92, 255, 0.1));
             border: 2px solid var(--accent);
@@ -723,11 +570,6 @@
                 padding: 15px;
             }
             
-            .login-box {
-                padding: 30px 20px;
-                margin: 15px;
-            }
-            
             .form-container {
                 padding: 20px;
             }
@@ -776,38 +618,8 @@
     </style>
 </head>
 <body>
-    <!-- Login Page - Without Password -->
-    <div id="loginPage" class="login-container">
-        <div class="login-box">
-            <h1 class="login-title">Extra Miles Energy</h1>
-            <p style="color: var(--gold-light); margin-bottom: 10px; font-weight: 500;">Admin Panel</p>
-            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 0.9rem;">Product Management System</p>
-            
-            <div id="loginMessage" class="message"></div>
-            
-            <div class="form-group">
-                <label class="form-label">Admin Access</label>
-                <p style="color: var(--gold-light); text-align: center; margin-bottom: 20px;">
-                    <i class="fas fa-check-circle" style="color: var(--success);"></i> 
-                    Password protection is currently disabled
-                </p>
-            </div>
-            
-            <button class="btn btn-block" onclick="directLogin()">
-                <i class="fas fa-sign-in-alt"></i> Enter Dashboard
-            </button>
-            
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 215, 0, 0.2);">
-                <p style="color: var(--gold-light); font-size: 0.9rem;">
-                    <i class="fas fa-info-circle" style="color: var(--gold);"></i> 
-                    Click the button above to access admin panel
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Admin Dashboard -->
-    <div id="adminDashboard" style="display: none;">
+    <!-- Admin Dashboard - Direct Open (No Login Page) -->
+    <div id="adminDashboard">
         <div class="admin-header">
             <div class="container">
                 <div class="header-content">
@@ -818,9 +630,6 @@
                         <div style="color: var(--gold-light); font-size: 0.9rem;">LiFePO₄ Battery & Solar Inverter Solutions</div>
                         <div class="company-badge">Admin Panel</div>
                     </div>
-                    <button class="btn btn-danger" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
                 </div>
             </div>
         </div>
@@ -1468,9 +1277,6 @@
                             <button class="btn btn-success" onclick="testGitHubConnection()">
                                 <i class="fas fa-plug"></i> Test Connection
                             </button>
-                            <button class="btn btn-warning" onclick="syncWithGitHub()">
-                                <i class="fas fa-sync-alt"></i> Full Sync (Legacy)
-                            </button>
                         </div>
                     </div>
                     
@@ -1622,29 +1428,16 @@
             websiteUrl: 'https://extramilesenergy.in'
         };
         
-        // Auto login on page load
+        // Direct Load - No login required
         document.addEventListener('DOMContentLoaded', function() {
-            directLogin();
+            loadProducts();
             loadSettings();
             loadCompanyDetails();
             updateGitHubStatus();
-        });
-        
-        // Direct login function - no password required
-        function directLogin() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            loadProducts();
             updateSystemInfo();
             loadRecentActivity();
-            addActivity('Admin logged in');
-        }
-        
-        function logout() {
-            addActivity('Admin logged out');
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('adminDashboard').style.display = 'none';
-        }
+            addActivity('Admin panel opened');
+        });
         
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -1840,6 +1633,7 @@
             document.getElementById('activeProducts').textContent = products.filter(p => p.status === 'active').length;
             document.getElementById('draftProducts').textContent = products.filter(p => p.status === 'draft').length;
             document.getElementById('productsCount').textContent = products.length;
+            document.getElementById('pagesGenerated').textContent = products.filter(p => localStorage.getItem(`product_page_${p.id}`)).length;
             
             // Update last sync time
             const lastSync = localStorage.getItem('last_sync_time');
@@ -2758,74 +2552,6 @@
             }
         }
         
-        async function syncWithGitHub() {
-            if (!githubConfig.token) {
-                alert('Please configure GitHub token in Settings first');
-                showTab('settings');
-                return;
-            }
-            
-            try {
-                alert('Starting full sync with GitHub...');
-                
-                // Test connection
-                const testResponse = await fetch('https://api.github.com/user', {
-                    headers: {
-                        'Authorization': `token ${githubConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (!testResponse.ok) {
-                    throw new Error('Invalid token or no permissions');
-                }
-                
-                const user = await testResponse.json();
-                
-                // Check repository
-                const repoCheck = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}`, {
-                    headers: {
-                        'Authorization': `token ${githubConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (!repoCheck.ok) {
-                    throw new Error(`Repository ${githubConfig.username}/${githubConfig.repo} not found`);
-                }
-                
-                alert(`✅ Connected to ${user.login}\nRepository found! Syncing all products...`);
-                
-                // Sync all products
-                let successCount = 0;
-                for (const product of products) {
-                    try {
-                        // Prepare product for GitHub (remove base64 images if any)
-                        const cleanProduct = { ...product };
-                        if (cleanProduct.images) {
-                            cleanProduct.images = cleanProduct.images.filter(img => !img.startsWith('data:'));
-                        }
-                        
-                        await syncProductToGitHub(cleanProduct);
-                        successCount++;
-                    } catch (error) {
-                        console.error(`Failed to sync ${product.name}:`, error);
-                    }
-                }
-                
-                localStorage.setItem('last_sync_time', new Date().toISOString());
-                updateDashboardStats();
-                
-                alert(`✅ Sync completed!\n${successCount} of ${products.length} products synced to GitHub.`);
-                addActivity(`Synced ${successCount} products to GitHub`);
-                
-            } catch (error) {
-                console.error('Sync error:', error);
-                alert('❌ Sync failed: ' + error.message);
-                addActivity(`Sync failed: ${error.message}`);
-            }
-        }
-        
         function exportProducts() {
             const dataStr = JSON.stringify(products, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
@@ -2917,7 +2643,7 @@
             reader.readAsText(file);
         }
         
-        // ============ PRODUCT PAGES MANAGEMENT WITH MULTIPLE IMAGES ============
+        // ============ PRODUCT PAGES MANAGEMENT ============
         
         function loadPagesList() {
             const container = document.getElementById('pagesList');
@@ -2992,30 +2718,35 @@
             }
         }
         
-        // UPDATED: Generate product page with multiple images gallery
+        // Generate product page with multiple images gallery
         function generateProductPageEnhanced(product) {
-            // Get all images
+            // Get all images - SIRF IS PRODUCT KI IMAGES
             const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name)];
             
             // Create gallery HTML for multiple images
             let galleryHtml = '';
-            let thumbnailsHtml = '';
             
             if (images.length > 1) {
-                // Create main image container with navigation
+                // Multiple images - create gallery with thumbnails
+                let thumbnailsHtml = '';
+                images.forEach((img, index) => {
+                    thumbnailsHtml += `
+                        <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="setMainImage('${img}', ${index})">
+                            <img src="${img}" alt="Thumbnail ${index + 1}" onerror="this.src='https://via.placeholder.com/100x100/142044/FFD700?text=${index+1}'">
+                        </div>
+                    `;
+                });
+                
                 galleryHtml = `
                     <div class="gallery-container">
                         <div class="main-image">
                             <img src="${images[0]}" alt="${product.name}" id="mainProductImage" class="main-product-image" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
                             <button class="gallery-nav prev" onclick="changeImage(-1)"><i class="fas fa-chevron-left"></i></button>
                             <button class="gallery-nav next" onclick="changeImage(1)"><i class="fas fa-chevron-right"></i></button>
+                            <div class="image-counter">1/${images.length}</div>
                         </div>
                         <div class="thumbnail-grid">
-                            ${images.map((img, index) => `
-                                <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="setMainImage('${img}', ${index})">
-                                    <img src="${img}" alt="Thumbnail ${index + 1}" onerror="this.src='https://via.placeholder.com/100x100/142044/FFD700?text=${index+1}'">
-                                </div>
-                            `).join('')}
+                            ${thumbnailsHtml}
                         </div>
                     </div>
                 `;
@@ -3250,6 +2981,18 @@
             object-fit: contain;
         }
         
+        .image-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--gold);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--gold);
+        }
+        
         .product-info h1 {
             color: var(--gold);
             font-size: 2.5rem;
@@ -3378,18 +3121,6 @@
             gap: 8px;
         }
         
-        .image-counter {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: var(--gold);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            border: 1px solid var(--gold);
-        }
-        
         @media (max-width: 768px) {
             .product-grid {
                 grid-template-columns: 1fr;
@@ -3488,7 +3219,7 @@
     </footer>
     
     <script>
-        // Image gallery functionality
+        // Image gallery functionality - SIRF IS PAGE KI IMAGES
         const images = ${JSON.stringify(images)};
         let currentImageIndex = 0;
         
@@ -3504,6 +3235,12 @@
                     thumb.classList.remove('active');
                 }
             });
+            
+            // Update counter
+            const counter = document.querySelector('.image-counter');
+            if (counter) {
+                counter.textContent = (index + 1) + '/' + images.length;
+            }
         }
         
         function changeImage(direction) {

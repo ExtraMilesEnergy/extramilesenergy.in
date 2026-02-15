@@ -1,0 +1,31 @@
+{
+  "id": "product-1771154173306",
+  "name": "TEST 13",
+  "slug": "test-13",
+  "voltage": "TEST 13",
+  "category": "Battery Charger",
+  "price": "TEST 13",
+  "model": "TEST 13",
+  "configuration": "TEST 13",
+  "chemistry": "LiFePO₄",
+  "warranty": "3 Year Warranty",
+  "features": [
+    "TEST 13"
+  ],
+  "description": "TEST 13",
+  "specs": "TEST 13",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154173308-32140.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154174806-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154176394-cell.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154177586-download.jpeg"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T11:16:13.306Z",
+  "updatedAt": "2026-02-15T11:16:13.306Z",
+  "chargerCurrent": "TEST 13",
+  "chargerCompatibility": "TEST 13",
+  "chargerStages": "TEST 13",
+  "chargerProtection": "TEST 13"
+}

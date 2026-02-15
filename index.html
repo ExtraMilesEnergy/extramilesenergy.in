@@ -1124,10 +1124,10 @@
                 </div>
                 <nav class="nav-menu" id="navMenu">
                     <a href="#home" class="active">Home</a>
-                    <a href="#products">Products</a>
+                    <a href="products.html">Products</a>
                     <a href="#categories">Categories</a>
                     <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
+                    <a href="contact.html">Contact</a>
                 </nav>
             </div>
         </div>
@@ -1161,7 +1161,7 @@
                     </div>
                     
                     <div class="hero-buttons">
-                        <a href="#products" class="btn btn-primary">
+                        <a href="products.html" class="btn btn-primary">
                             <i class="fas fa-box"></i> View Products
                         </a>
                         <a href="https://wa.me/917876555055" class="btn btn-whatsapp" target="_blank" id="whatsappBtn">
@@ -1360,21 +1360,21 @@
                     <h3>Quick Links</h3>
                     <ul>
                         <li><a href="#home"><i class="fas fa-chevron-right"></i> Home</a></li>
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> Products</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> Products</a></li>
                         <li><a href="#categories"><i class="fas fa-chevron-right"></i> Categories</a></li>
                         <li><a href="#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                        <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
                     <h3>Products</h3>
                     <ul id="footerCategories">
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> EV Batteries</a></li>
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> Solar Batteries</a></li>
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> Solar Inverters</a></li>
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> Battery Chargers</a></li>
-                        <li><a href="#products"><i class="fas fa-chevron-right"></i> E-Rickshaw Batteries</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> EV Batteries</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> Solar Batteries</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> Solar Inverters</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> Battery Chargers</a></li>
+                        <li><a href="products.html"><i class="fas fa-chevron-right"></i> E-Rickshaw Batteries</a></li>
                     </ul>
                 </div>
                 
@@ -1549,7 +1549,7 @@
                 const count = allProducts.filter(p => p.category === category && p.status === 'active').length;
                 
                 categoriesHtml += `
-                    <a href="#products" class="category-card" onclick="filterByCategory('${category}')">
+                    <a href="products.html?category=${category}" class="category-card">
                         <i class="fas ${icon}"></i>
                         <h3>${category}</h3>
                         <p>${count} Products</p>
@@ -1570,19 +1570,8 @@
             // Update footer categories
             const footerCategories = document.getElementById('footerCategories');
             footerCategories.innerHTML = categories.map(cat => 
-                `<li><a href="#products" onclick="filterByCategory('${cat}')"><i class="fas fa-chevron-right"></i> ${cat}</a></li>`
+                `<li><a href="products.html"><i class="fas fa-chevron-right"></i> ${cat}</a></li>`
             ).join('');
-        }
-
-        function filterByCategory(category) {
-            filterProducts(category);
-            // Update active filter button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent === category) {
-                    btn.classList.add('active');
-                }
-            });
         }
 
         // ==================== PRODUCTS DISPLAY ====================
@@ -1723,7 +1712,7 @@
         });
 
         // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));

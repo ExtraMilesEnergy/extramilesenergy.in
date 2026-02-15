@@ -1297,7 +1297,7 @@
                 </div>
             </div>
             
-            <!-- GitHub Sync Tab (New) -->
+            <!-- GitHub Sync Tab -->
             <div id="githubSync" class="tab-content">
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px; color: var(--gold);">GitHub Sync Center</h3>
@@ -2120,7 +2120,7 @@
             });
         }
         
-        // NEW FUNCTION: Sync all products to GitHub
+        // Sync all products to GitHub
         async function syncProductsToGitHub() {
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
@@ -2227,7 +2227,7 @@
             updateDashboardStats();
         }
         
-        // NEW FUNCTION: Fetch products from GitHub
+        // Fetch products from GitHub
         async function fetchProductsFromGitHub() {
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
@@ -2298,7 +2298,7 @@
             }
         }
         
-        // NEW FUNCTION: Sync company details to GitHub
+        // Sync company details to GitHub
         async function syncCompanyToGitHub() {
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
@@ -2384,7 +2384,7 @@
             }, 1000);
         }
         
-        // NEW FUNCTION: Fetch company details from GitHub
+        // Fetch company details from GitHub
         async function fetchCompanyFromGitHub() {
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
@@ -2446,7 +2446,7 @@
             }, 1000);
         }
         
-        // NEW FUNCTION: Sync full backup to GitHub
+        // Sync full backup to GitHub
         async function syncFullBackupToGitHub() {
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
@@ -2588,44 +2588,6 @@
                 console.error('Error updating master list:', error);
                 throw error;
             }
-        }
-        
-        function generateProductPage(product) {
-            const pageHtml = `<!DOCTYPE html>
-<html>
-<head>
-    <title>${product.name} | Extra Miles Energy</title>
-    <meta name="description" content="${product.description?.substring(0, 160) || product.name}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #0b1220; color: white; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        img { max-width: 100%; border-radius: 8px; }
-        .btn { display: inline-block; padding: 12px 24px; background: #FFD700; color: black; text-decoration: none; border-radius: 5px; margin: 10px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 style="color: #FFD700;">${product.name}</h1>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-            <div>
-                <img src="${product.images?.[0] || 'https://via.placeholder.com/500x400'}" alt="${product.name}">
-            </div>
-            <div>
-                <p><strong>Category:</strong> ${product.category}</p>
-                <p><strong>Price:</strong> ${product.price || 'Contact for price'}</p>
-                <p><strong>Features:</strong></p>
-                <ul>${product.features?.map(f => `<li>${f}</li>`).join('')}</ul>
-                <p>${product.description || ''}</p>
-                <a href="https://wa.me/917876555055?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" class="btn">Enquire on WhatsApp</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
-            
-            localStorage.setItem(`product_page_${product.id}`, pageHtml);
-            return pageHtml;
         }
         
         function clearForm() {
@@ -2955,7 +2917,7 @@
             reader.readAsText(file);
         }
         
-        // ============ PRODUCT PAGES MANAGEMENT ============
+        // ============ PRODUCT PAGES MANAGEMENT WITH MULTIPLE IMAGES ============
         
         function loadPagesList() {
             const container = document.getElementById('pagesList');
@@ -2979,6 +2941,7 @@
                             <div style="color: var(--gold-light); font-weight: 600;">${product.name}</div>
                             <div style="color: var(--text-muted); font-size: 0.85rem;">
                                 <i class="fas fa-link"></i> ${slug}.html 
+                                ${product.images ? `<span style="color: var(--accent); margin-left: 10px;"><i class="fas fa-images"></i> ${product.images.length} images</span>` : ''}
                                 ${pageExists ? '<span style="color: var(--success); margin-left: 10px;"><i class="fas fa-check-circle"></i> Generated</span>' : '<span style="color: var(--warning); margin-left: 10px;"><i class="fas fa-exclamation-triangle"></i> Not generated</span>'}
                             </div>
                         </div>
@@ -3029,11 +2992,41 @@
             }
         }
         
+        // UPDATED: Generate product page with multiple images gallery
         function generateProductPageEnhanced(product) {
-            // Get primary image
-            const primaryImage = product.images && product.images.length > 0 
-                ? product.images[0] 
-                : 'https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name);
+            // Get all images
+            const images = product.images && product.images.length > 0 ? product.images : ['https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name)];
+            
+            // Create gallery HTML for multiple images
+            let galleryHtml = '';
+            let thumbnailsHtml = '';
+            
+            if (images.length > 1) {
+                // Create main image container with navigation
+                galleryHtml = `
+                    <div class="gallery-container">
+                        <div class="main-image">
+                            <img src="${images[0]}" alt="${product.name}" id="mainProductImage" class="main-product-image" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                            <button class="gallery-nav prev" onclick="changeImage(-1)"><i class="fas fa-chevron-left"></i></button>
+                            <button class="gallery-nav next" onclick="changeImage(1)"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <div class="thumbnail-grid">
+                            ${images.map((img, index) => `
+                                <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="setMainImage('${img}', ${index})">
+                                    <img src="${img}" alt="Thumbnail ${index + 1}" onerror="this.src='https://via.placeholder.com/100x100/142044/FFD700?text=${index+1}'">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Single image - simple display
+                galleryHtml = `
+                    <div class="single-image">
+                        <img src="${images[0]}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                    </div>
+                `;
+            }
             
             // Format features as list items
             const featuresList = product.features && product.features.length > 0
@@ -3152,16 +3145,107 @@
             margin-bottom: 40px;
         }
         
-        .product-image {
+        /* Gallery Styles */
+        .gallery-container {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.3);
             border-radius: 12px;
             padding: 20px;
         }
         
-        .product-image img {
+        .main-image {
+            position: relative;
+            margin-bottom: 20px;
             width: 100%;
-            height: auto;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .main-product-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .gallery-nav:hover {
+            background: var(--gold);
+            color: var(--primary);
+        }
+        
+        .gallery-nav.prev {
+            left: 10px;
+        }
+        
+        .gallery-nav.next {
+            right: 10px;
+        }
+        
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .thumbnail {
+            border: 2px solid transparent;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            aspect-ratio: 1/1;
+            transition: all 0.3s ease;
+        }
+        
+        .thumbnail:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+        
+        .thumbnail.active {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .single-image {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .single-image img {
+            max-width: 100%;
             max-height: 400px;
             object-fit: contain;
         }
@@ -3294,6 +3378,18 @@
             gap: 8px;
         }
         
+        .image-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--gold);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--gold);
+        }
+        
         @media (max-width: 768px) {
             .product-grid {
                 grid-template-columns: 1fr;
@@ -3305,6 +3401,10 @@
             
             .action-buttons {
                 flex-direction: column;
+            }
+            
+            .thumbnail-grid {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
             }
         }
     </style>
@@ -3328,8 +3428,8 @@
     <main class="product-page">
         <div class="container">
             <div class="product-grid">
-                <div class="product-image">
-                    <img src="${primaryImage}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                <div class="product-gallery">
+                    ${galleryHtml}
                 </div>
                 
                 <div class="product-info">
@@ -3386,6 +3486,34 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        // Image gallery functionality
+        const images = ${JSON.stringify(images)};
+        let currentImageIndex = 0;
+        
+        function setMainImage(src, index) {
+            document.getElementById('mainProductImage').src = src;
+            currentImageIndex = index;
+            
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                if (i === index) {
+                    thumb.classList.add('active');
+                } else {
+                    thumb.classList.remove('active');
+                }
+            });
+        }
+        
+        function changeImage(direction) {
+            let newIndex = currentImageIndex + direction;
+            if (newIndex < 0) newIndex = images.length - 1;
+            if (newIndex >= images.length) newIndex = 0;
+            
+            setMainImage(images[newIndex], newIndex);
+        }
+    </script>
 </body>
 </html>`;
             
@@ -3407,8 +3535,8 @@
                 count++;
             });
             
-            alert(`✅ ${count} product pages generated successfully!`);
-            addActivity(`Generated ${count} product pages`);
+            alert(`✅ ${count} product pages generated successfully with multiple images!`);
+            addActivity(`Generated ${count} product pages with multiple images`);
             loadPagesList(); // Refresh the list
         }
         

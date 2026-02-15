@@ -1,0 +1,26 @@
+{
+  "id": "product-1771157909552",
+  "name": "TEST 17",
+  "slug": "test-17",
+  "voltage": "TEST 17",
+  "category": "Custom Battery",
+  "price": "TEST 17",
+  "model": "TEST 17",
+  "configuration": "TEST 17",
+  "chemistry": "LiFePO₄",
+  "warranty": "3 Year Warranty",
+  "features": [
+    "TEST 17"
+  ],
+  "description": "TEST 17",
+  "specs": "",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771157909555-32140.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771157910817-cell.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771157911959-download.jpeg"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T12:18:29.552Z",
+  "updatedAt": "2026-02-15T12:18:29.552Z"
+}

@@ -23,5 +23,26 @@
     "images": [],
     "displayOrder": 0,
     "createdAt": "2026-02-15T02:40:28.896Z"
+  },
+  {
+    "id": "product-1771125670614",
+    "name": "electric scooter battery 6030",
+    "slug": "electric-scooter-battery-6030",
+    "voltage": "60 v 30 ah",
+    "category": "EV Battery",
+    "price": "23500",
+    "model": "EM-LFP6030",
+    "configuration": "19S2P",
+    "chemistry": "LiFePO₄",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "LIFEPO4 CELL"
+    ],
+    "description": "TEST DISC",
+    "specs": "A GRADE SPECIFICATION",
+    "status": "active",
+    "images": [],
+    "displayOrder": 0,
+    "createdAt": "2026-02-15T03:21:10.614Z"
   }
 ]

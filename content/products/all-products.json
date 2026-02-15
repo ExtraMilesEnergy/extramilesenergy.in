@@ -240,5 +240,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154745070-gootu-6kw-hybrid.png"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771156807998",
+    "name": "TEST 15",
+    "slug": "test-15",
+    "voltage": "TEST 15",
+    "category": "EV Battery",
+    "price": "TEST 15",
+    "model": "TEST 15",
+    "configuration": "TEST 15",
+    "chemistry": "LiFePO₄TEST 15",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "TEST 15"
+    ],
+    "description": "TEST 15",
+    "specs": "TEST 15",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771156808001-whatsapp-image-2026-01-25-at-5.55.58-pm.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771156810218-whatsapp-image-2026-01-25-at-6.49.52-pm.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771156812208-whatsapp-image-2026-01-25-at-6.57.47-pm.jpeg"
+    ],
+    "displayOrder": 0
   }
 ]

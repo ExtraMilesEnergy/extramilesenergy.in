@@ -94,5 +94,34 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142922482-whatsapp-image-2026-01-25-at-6.57.47-pm.jpeg"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771143425863",
+    "name": "TEST 2 WITH 4 IMAGES",
+    "slug": "test-2-with-4-images",
+    "voltage": "SDADFA",
+    "category": "Solar Battery",
+    "price": "ASDFA",
+    "model": "ASDFA",
+    "configuration": "ASDF",
+    "chemistry": "LiFePO₄SDFGSDFG",
+    "warranty": "3 Year WarrSDFGSDFanty",
+    "features": [
+      "ASDFA"
+    ],
+    "description": "ASDFFA",
+    "specs": "",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143425866-logo-skyline.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143427799-whatsapp-image-2025-08-05-at-8.59.53-am.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143428937-screenshot20250721-083421.doc-scanner.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143431911-whatsapp-image-2025-07-21-at-8.35.10-am.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143433057-untitled-3.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143435225-screenshot2025-05-17152850-removebg-preview.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143437161-screenshot2025-05-17093851-removebg-preview.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771143438298-untitled-2.png"
+    ],
+    "displayOrder": 0
   }
 ]

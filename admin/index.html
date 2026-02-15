@@ -702,7 +702,7 @@
                 </p>
             </div>
             
-            <button class="btn btn-block" onclick="directLogin()">
+            <button class="btn btn-block" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i> Enter Dashboard
             </button>
             
@@ -1265,7 +1265,7 @@
                 </div>
             </div>
             
-                       <!-- Product Pages Tab -->
+            <!-- Product Pages Tab -->
             <div id="pages" class="tab-content">
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px; color: var(--gold);">Product Pages Management</h3>
@@ -1294,15 +1294,17 @@
                         <div style="margin-top: 30px; padding: 15px; background: rgba(53, 208, 255, 0.1); border-radius: var(--radius); border: 1px solid var(--accent);">
                             <h4 style="color: var(--accent); margin-bottom: 10px;">How to use Product Pages</h4>
                             <div style="color: var(--text-muted); font-size: 0.9rem;">
-                                <p>1. <strong>Generate All Pages</strong> - Creates HTML pages for all active products and saves them in your browser</p>
-                                <p>2. <strong>Update Pages Index</strong> - Creates a master index of all product pages</p>
-                                <p>3. <strong>Sync Pages to GitHub</strong> - Uploads all generated pages to your GitHub repository</p>
-                                <p><i class="fas fa-info-circle"></i> After generating pages, you can view them by clicking on product names below.</p>
+                                <p>1. <strong>Generate All Pages</strong> - Creates HTML pages for all active products</p>
+                                <p>2. <strong>Update Pages Index</strong> - Creates a master index page</p>
+                                <p>3. <strong>Sync Pages to GitHub</strong> - Uploads pages to GitHub repository</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
     <!-- Camera Modal -->
     <div id="cameraModal" class="camera-modal">
         <div class="camera-container">
@@ -1325,7 +1327,7 @@
     </div>
 
     <script>
-        // Configuration
+        // ==================== CONFIGURATION ====================
         let products = [];
         let editingProductId = null;
         let cameraStream = null;
@@ -1357,21 +1359,54 @@
             websiteUrl: 'https://extramilesenergy.in'
         };
         
-        // Auto login on page load
+        // ==================== DIRECT LOGIN - NO PASSWORD ====================
         document.addEventListener('DOMContentLoaded', function() {
-            directLogin();
+            console.log('DOM loaded - Admin Panel Ready');
+            
+            // Load settings and company details
             loadSettings();
             loadCompanyDetails();
+            
+            // Add click event to login button
+            const loginBtn = document.getElementById('loginBtn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    directLogin();
+                });
+            }
+            
+            // Auto login for development (comment out if not needed)
+            // setTimeout(directLogin, 500);
         });
         
-        // Direct login function - no password required
+        // Direct login function
         function directLogin() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            loadProducts();
-            updateSystemInfo();
-            loadRecentActivity();
-            addActivity('Admin logged in');
+            console.log('Direct login called');
+            try {
+                const loginPage = document.getElementById('loginPage');
+                const dashboard = document.getElementById('adminDashboard');
+                
+                if (loginPage && dashboard) {
+                    loginPage.style.display = 'none';
+                    dashboard.style.display = 'block';
+                    
+                    // Load all data
+                    loadProducts();
+                    updateSystemInfo();
+                    loadRecentActivity();
+                    addActivity('Admin logged in');
+                    
+                    console.log('✅ Login successful');
+                    return true;
+                } else {
+                    console.error('Elements not found');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                return false;
+            }
         }
         
         function logout() {
@@ -1385,7 +1420,13 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            
+            // Find and activate the clicked button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
             
             if (tabId === 'dashboard') updateDashboardStats();
             if (tabId === 'pages') loadPagesList();
@@ -1393,6 +1434,7 @@
         
         function showMessage(elementId, text, type) {
             const element = document.getElementById(elementId);
+            if (!element) return;
             element.textContent = text;
             element.className = `message ${type}`;
             element.style.display = 'block';
@@ -1409,6 +1451,7 @@
         
         function loadRecentActivity() {
             const container = document.getElementById('recentActivity');
+            if (!container) return;
             const activities = JSON.parse(localStorage.getItem('admin_activities') || '[]');
             if (activities.length === 0) {
                 container.innerHTML = '<div style="color: var(--text-muted);">No recent activity</div>';
@@ -1513,6 +1556,7 @@
         
         function displayProducts(filteredProducts = null) {
             const container = document.getElementById('productsList');
+            if (!container) return;
             const display = filteredProducts || products;
             
             if (display.length === 0) {
@@ -1567,12 +1611,34 @@
             document.getElementById('activeProducts').textContent = products.filter(p => p.status === 'active').length;
             document.getElementById('draftProducts').textContent = products.filter(p => p.status === 'draft').length;
             document.getElementById('productsCount').textContent = products.length;
+            
+            const lastSync = localStorage.getItem('last_sync_time');
+            if (lastSync) {
+                const date = new Date(lastSync);
+                document.getElementById('lastSync').textContent = date.toLocaleString('en-IN');
+            } else {
+                document.getElementById('lastSync').textContent = 'Never';
+            }
         }
         
         function updateSystemInfo() {
             const used = JSON.stringify(localStorage).length;
             const limit = 5 * 1024 * 1024;
             document.getElementById('storageInfo').textContent = `${Math.round((used / limit) * 100)}% used`;
+            
+            const lastBackup = localStorage.getItem('last_backup_time');
+            if (lastBackup) {
+                const date = new Date(lastBackup);
+                document.getElementById('lastBackup').textContent = date.toLocaleString('en-IN');
+            }
+            
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            if (ua.includes('Chrome')) browser = 'Chrome';
+            else if (ua.includes('Firefox')) browser = 'Firefox';
+            else if (ua.includes('Safari')) browser = 'Safari';
+            else if (ua.includes('Edge')) browser = 'Edge';
+            document.getElementById('browserInfo').textContent = browser;
         }
         
         async function saveProduct() {
@@ -1588,7 +1654,6 @@
             const productId = editingProductId || `product-${Date.now()}`;
             const slug = document.getElementById('productSlug').value || generateSlug(name);
             
-            // Create product object without images first
             const product = {
                 id: productId,
                 name, slug,
@@ -1621,16 +1686,13 @@
                 })
             };
             
-            // Show saving message
             showMessage('addProductMessage', 'Saving product and uploading images...', 'success');
             
             try {
-                // Handle image uploads if GitHub token is configured
                 const imageFiles = document.getElementById('productImages').files;
                 const uploadedImageUrls = [];
                 
                 if (imageFiles.length > 0 && githubConfig.token) {
-                    // Upload each image to GitHub
                     for (let i = 0; i < imageFiles.length; i++) {
                         const file = imageFiles[i];
                         const imageUrl = await uploadImageToGitHub(file);
@@ -1639,7 +1701,6 @@
                     product.images = uploadedImageUrls;
                     addActivity(`Uploaded ${imageFiles.length} product images`);
                 } else if (imageFiles.length > 0 && !githubConfig.token) {
-                    // If no GitHub token, save images as base64 in localStorage (temporary)
                     for (let i = 0; i < imageFiles.length; i++) {
                         const file = imageFiles[i];
                         const base64 = await fileToBase64(file);
@@ -1648,14 +1709,12 @@
                     product.images = uploadedImageUrls;
                     alert('⚠️ GitHub token not configured. Images saved locally only.');
                 } else if (editingProductId) {
-                    // Keep existing images if editing and no new images
                     const existingProduct = products.find(p => p.id === productId);
                     if (existingProduct && existingProduct.images) {
                         product.images = existingProduct.images;
                     }
                 }
                 
-                // Save to local array
                 if (editingProductId) {
                     const index = products.findIndex(p => p.id === productId);
                     if (index >= 0) products[index] = product;
@@ -1663,15 +1722,12 @@
                     products.push(product);
                 }
                 
-                // Save to localStorage
                 localStorage.setItem('local_products', JSON.stringify(products));
                 
-                // Generate product page if requested
                 if (document.getElementById('generatePage').value === 'yes') {
                     generateProductPageEnhanced(product);
                 }
                 
-                // Sync with GitHub if token exists
                 if (githubConfig.token) {
                     await syncProductToGitHub(product);
                 }
@@ -1690,7 +1746,6 @@
             }
         }
         
-        // Convert file to base64
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1700,28 +1755,22 @@
             });
         }
         
-        // Upload image to GitHub
         async function uploadImageToGitHub(imageFile) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    // Convert file to base64
                     const reader = new FileReader();
                     reader.readAsDataURL(imageFile);
                     reader.onload = async function() {
-                        // Get base64 content (remove the data:image/jpeg;base64, part)
                         const base64Data = reader.result.split(',')[1];
                         
-                        // Create filename with timestamp to avoid duplicates
                         const timestamp = Date.now();
                         const originalName = imageFile.name;
-                        const extension = originalName.split('.').pop();
                         const safeName = originalName.toLowerCase()
                             .replace(/\s+/g, '-')
                             .replace(/[^a-z0-9.-]/g, '');
                         const fileName = `${timestamp}-${safeName}`;
                         const filePath = `${githubConfig.uploadsPath}/${fileName}`;
                         
-                        // Check if file already exists (to get SHA)
                         let sha = null;
                         try {
                             const checkResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
@@ -1735,11 +1784,8 @@
                                 const fileData = await checkResponse.json();
                                 sha = fileData.sha;
                             }
-                        } catch (e) {
-                            // File doesn't exist, ignore
-                        }
+                        } catch (e) {}
                         
-                        // Upload to GitHub
                         const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
                             method: 'PUT',
                             headers: {
@@ -1756,7 +1802,6 @@
                         });
                         
                         if (response.ok) {
-                            // Return the raw GitHub URL
                             const imageUrl = `https://raw.githubusercontent.com/${githubConfig.username}/${githubConfig.repo}/${githubConfig.branch}/${filePath}`;
                             console.log('Image uploaded:', imageUrl);
                             resolve(imageUrl);
@@ -1772,23 +1817,18 @@
             });
         }
         
-        // Sync single product to GitHub (with images)
         async function syncProductToGitHub(product) {
             if (!githubConfig.token) return;
             
             try {
-                // Make sure images are full URLs
                 if (product.images && product.images.length > 0) {
-                    // If any image is base64, skip (should not happen if uploaded)
                     product.images = product.images.filter(img => !img.startsWith('data:'));
                 }
                 
-                // Save product JSON to GitHub
                 const productContent = JSON.stringify(product, null, 2);
                 const productBase64 = btoa(unescape(encodeURIComponent(productContent)));
                 const productPath = `${githubConfig.productsPath}/${product.id}.json`;
                 
-                // Check if file exists
                 let productSha = null;
                 try {
                     const checkResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${productPath}`, {
@@ -1804,7 +1844,6 @@
                     }
                 } catch (e) {}
                 
-                // Upload product JSON
                 const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${productPath}`, {
                     method: 'PUT',
                     headers: {
@@ -1824,7 +1863,6 @@
                     throw new Error('Failed to upload product JSON');
                 }
                 
-                // Update master products list
                 await updateMasterProductsList();
                 
                 return true;
@@ -1834,12 +1872,10 @@
             }
         }
         
-        // Update master products list
         async function updateMasterProductsList() {
             if (!githubConfig.token) return;
             
             try {
-                // Create clean product list for website
                 const websiteProducts = products.map(p => ({
                     id: p.id,
                     name: p.name,
@@ -1863,7 +1899,6 @@
                 const base64Content = btoa(unescape(encodeURIComponent(content)));
                 const filePath = `${githubConfig.productsPath}/all-products.json`;
                 
-                // Get SHA if exists
                 let sha = null;
                 try {
                     const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
@@ -1879,7 +1914,6 @@
                     }
                 } catch (e) {}
                 
-                // Update master list
                 const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
                     method: 'PUT',
                     headers: {
@@ -1905,44 +1939,6 @@
                 console.error('Error updating master list:', error);
                 throw error;
             }
-        }
-        
-        function generateProductPage(product) {
-            const pageHtml = `<!DOCTYPE html>
-<html>
-<head>
-    <title>${product.name} | Extra Miles Energy</title>
-    <meta name="description" content="${product.description?.substring(0, 160) || product.name}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #0b1220; color: white; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        img { max-width: 100%; border-radius: 8px; }
-        .btn { display: inline-block; padding: 12px 24px; background: #FFD700; color: black; text-decoration: none; border-radius: 5px; margin: 10px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 style="color: #FFD700;">${product.name}</h1>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-            <div>
-                <img src="${product.images?.[0] || 'https://via.placeholder.com/500x400'}" alt="${product.name}">
-            </div>
-            <div>
-                <p><strong>Category:</strong> ${product.category}</p>
-                <p><strong>Price:</strong> ${product.price || 'Contact for price'}</p>
-                <p><strong>Features:</strong></p>
-                <ul>${product.features?.map(f => `<li>${f}</li>`).join('')}</ul>
-                <p>${product.description || ''}</p>
-                <a href="https://wa.me/917876555055?text=I'm%20interested%20in%20${encodeURIComponent(product.name)}" class="btn">Enquire on WhatsApp</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
-            
-            localStorage.setItem(`product_page_${product.id}`, pageHtml);
-            return pageHtml;
         }
         
         function clearForm() {
@@ -2010,7 +2006,7 @@
             document.getElementById('websiteDescription').value = companyDetails.websiteDescription;
         }
         
-        function saveCompanyDetails() {
+        async function saveCompanyDetails() {
             companyDetails = {
                 name: document.getElementById('companyName').value,
                 brand: document.getElementById('brandName').value,
@@ -2024,9 +2020,65 @@
                 websiteTitle: document.getElementById('websiteTitle').value,
                 websiteDescription: document.getElementById('websiteDescription').value
             };
+            
             localStorage.setItem('company_details', JSON.stringify(companyDetails));
-            showMessage('companyMessage', 'Company details saved!', 'success');
+            
+            if (githubConfig && githubConfig.token) {
+                try {
+                    await saveCompanyDetailsToGitHub();
+                    showMessage('companyMessage', 'Company details saved and synced to GitHub!', 'success');
+                    addActivity('Company details synced to GitHub');
+                } catch (error) {
+                    console.error('Error syncing company details:', error);
+                    showMessage('companyMessage', 'Company details saved locally but GitHub sync failed', 'warning');
+                }
+            } else {
+                showMessage('companyMessage', 'Company details saved locally!', 'success');
+            }
+            
             addActivity('Updated company details');
+        }
+        
+        async function saveCompanyDetailsToGitHub() {
+            const content = JSON.stringify(companyDetails, null, 2);
+            const base64Content = btoa(unescape(encodeURIComponent(content)));
+            const filePath = githubConfig.companyPath;
+            
+            let sha = null;
+            try {
+                const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
+                    headers: {
+                        'Authorization': `token ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                }
+            } catch (e) {}
+            
+            const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${githubConfig.token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: 'Update company details',
+                    content: base64Content,
+                    branch: githubConfig.branch,
+                    ...(sha && { sha })
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save company details to GitHub');
+            }
+            
+            return true;
         }
         
         function loadSettings() {
@@ -2100,7 +2152,6 @@
             try {
                 alert('Starting full sync with GitHub...');
                 
-                // Test connection
                 const testResponse = await fetch('https://api.github.com/user', {
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
@@ -2114,7 +2165,6 @@
                 
                 const user = await testResponse.json();
                 
-                // Check repository
                 const repoCheck = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}`, {
                     headers: {
                         'Authorization': `token ${githubConfig.token}`,
@@ -2128,7 +2178,8 @@
                 
                 alert(`✅ Connected to ${user.login}\nRepository found! Syncing all products...`);
                 
-                // Sync all products
+                await saveCompanyDetailsToGitHub();
+                
                 let successCount = 0;
                 for (const product of products) {
                     try {
@@ -2142,7 +2193,7 @@
                 localStorage.setItem('last_sync_time', new Date().toISOString());
                 updateDashboardStats();
                 
-                alert(`✅ Sync completed!\n${successCount} of ${products.length} products synced to GitHub.`);
+                alert(`✅ Sync completed!\n${successCount} of ${products.length} products synced to GitHub.\nCompany details also synced.`);
                 addActivity(`Synced ${successCount} products to GitHub`);
                 
             } catch (error) {
@@ -2177,7 +2228,8 @@
                 products,
                 companyDetails,
                 githubConfig,
-                activities: JSON.parse(localStorage.getItem('admin_activities') || '[]')
+                activities: JSON.parse(localStorage.getItem('admin_activities') || '[]'),
+                backupDate: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -2186,6 +2238,7 @@
             a.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             localStorage.setItem('last_backup_time', new Date().toISOString());
+            updateSystemInfo();
             addActivity('Created full backup');
         }
         
@@ -2243,7 +2296,7 @@
             reader.readAsText(file);
         }
         
-        // ============ PRODUCT PAGES MANAGEMENT - UPDATED VERSION ============
+        // ============ PRODUCT PAGES MANAGEMENT ============
         
         function loadPagesList() {
             const container = document.getElementById('pagesList');
@@ -2302,33 +2355,40 @@
             let pageHtml = localStorage.getItem(`product_page_${product.id}`);
             
             if (!pageHtml) {
-                // Generate if not exists
                 pageHtml = generateProductPageEnhanced(product);
             }
             
-            // Open in new tab
             const newWindow = window.open('', '_blank');
             if (newWindow) {
                 newWindow.document.write(pageHtml);
                 newWindow.document.title = product.name + ' | Extra Miles Energy';
                 newWindow.document.close();
             } else {
-                alert('Please allow popups to view the page. Or use Generate button first.');
+                alert('Please allow popups to view the page.');
             }
         }
         
         function generateProductPageEnhanced(product) {
-            // Get primary image
-            const primaryImage = product.images && product.images.length > 0 
-                ? product.images[0] 
-                : 'https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name);
+            const allImages = product.images && product.images.length > 0 ? product.images : [];
+            const primaryImage = allImages.length > 0 ? allImages[0] : 'https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name);
             
-            // Format features as list items
+            let galleryHtml = '';
+            if (allImages.length > 1) {
+                galleryHtml = `
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        ${allImages.map((img, idx) => `
+                            <div onclick="document.getElementById('mainProductImage').src='${img}'" style="width: 60px; height: 60px; border: 2px solid var(--gold); border-radius: 8px; cursor: pointer; overflow: hidden;">
+                                <img src="${img}" style="width: 100%; height: 100%; object-fit: cover;" alt="Thumbnail ${idx+1}">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
             const featuresList = product.features && product.features.length > 0
                 ? product.features.map(f => `<li>${f}</li>`).join('')
                 : '<li>No features listed</li>';
             
-            // Build specifications
             let specsHtml = '';
             if (product.specs) {
                 if (typeof product.specs === 'string') {
@@ -2342,7 +2402,6 @@
                 }
             }
             
-            // Category specific fields
             let categoryHtml = '';
             if (product.category === 'Solar Inverter') {
                 categoryHtml = `
@@ -2419,10 +2478,14 @@
             font-size: 1.5rem;
         }
         
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
         .nav-links a {
             color: var(--gold-light);
             text-decoration: none;
-            margin-left: 20px;
         }
         
         .nav-links a:hover {
@@ -2440,18 +2503,47 @@
             margin-bottom: 40px;
         }
         
-        .product-image {
+        .product-images {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.3);
             border-radius: 12px;
             padding: 20px;
         }
         
-        .product-image img {
+        .main-image {
             width: 100%;
             height: auto;
             max-height: 400px;
             object-fit: contain;
+            margin-bottom: 20px;
+        }
+        
+        .thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: var(--gold-light);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .product-info h1 {
@@ -2616,8 +2708,9 @@
     <main class="product-page">
         <div class="container">
             <div class="product-grid">
-                <div class="product-image">
-                    <img src="${primaryImage}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                <div class="product-images">
+                    <img src="${primaryImage}" alt="${product.name}" class="main-image" id="mainProductImage" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                    ${galleryHtml}
                 </div>
                 
                 <div class="product-info">
@@ -2674,6 +2767,12 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainProductImage').src = src;
+        }
+    </script>
 </body>
 </html>`;
             
@@ -2697,7 +2796,7 @@
             
             alert(`✅ ${count} product pages generated successfully!`);
             addActivity(`Generated ${count} product pages`);
-            loadPagesList(); // Refresh the list
+            loadPagesList();
         }
         
         function updatePagesIndex() {
@@ -2736,7 +2835,6 @@
             
             localStorage.setItem('products_index', indexHtml);
             
-            // Open index page
             const newWindow = window.open('', '_blank');
             if (newWindow) {
                 newWindow.document.write(indexHtml);
@@ -2749,7 +2847,6 @@
         }
         
         function syncPagesToGitHub() {
-            // Check if token exists
             if (!githubConfig || !githubConfig.token) {
                 alert('❌ GitHub token not configured!\n\nPlease go to Settings tab and configure your GitHub token first.');
                 showTab('settings');
@@ -2769,12 +2866,10 @@
                 return;
             }
             
-            // Confirm before proceeding
             if (!confirm(`This will upload ${activeProducts.length} product pages to GitHub.\n\nRepository: ${githubConfig.username}/${githubConfig.repo}\nBranch: ${githubConfig.branch}\nPath: ${githubConfig.pagesPath}/\n\nContinue?`)) {
                 return;
             }
             
-            // Show loading message
             const originalButton = event.target;
             const originalText = originalButton.innerHTML;
             originalButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
@@ -2783,25 +2878,19 @@
             let successCount = 0;
             let failCount = 0;
             
-            // Process each product
             Promise.all(activeProducts.map(async (product) => {
                 try {
-                    // Get page HTML from localStorage
                     let pageHtml = localStorage.getItem(`product_page_${product.id}`);
                     
-                    // If not found, generate it
                     if (!pageHtml) {
                         pageHtml = generateProductPageEnhanced(product);
                     }
                     
-                    // Create filename
                     const slug = product.slug || generateSlug(product.name);
                     const filePath = `${githubConfig.pagesPath}/${slug}.html`;
                     
-                    // Convert to base64
                     const base64Content = btoa(unescape(encodeURIComponent(pageHtml)));
                     
-                    // Check if file already exists to get SHA
                     let sha = null;
                     try {
                         const checkResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
@@ -2815,11 +2904,8 @@
                             const fileData = await checkResponse.json();
                             sha = fileData.sha;
                         }
-                    } catch (e) {
-                        // File doesn't exist, ignore
-                    }
+                    } catch (e) {}
                     
-                    // Upload to GitHub
                     const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
                         method: 'PUT',
                         headers: {
@@ -2848,11 +2934,9 @@
                     failCount++;
                 }
             })).then(() => {
-                // Restore button
                 originalButton.innerHTML = originalText;
                 originalButton.disabled = false;
                 
-                // Show result
                 if (failCount === 0) {
                     alert(`✅ Success! ${successCount} product pages uploaded to GitHub.\n\nCheck your repository at:\nhttps://github.com/${githubConfig.username}/${githubConfig.repo}/tree/${githubConfig.branch}/${githubConfig.pagesPath}`);
                     addActivity(`Uploaded ${successCount} product pages to GitHub`);
@@ -2861,7 +2945,6 @@
                     addActivity(`Uploaded ${successCount} pages to GitHub (${failCount} failed)`);
                 }
                 
-                // Update last sync time
                 localStorage.setItem('last_sync_time', new Date().toISOString());
                 updateDashboardStats();
             });

@@ -1,34 +1,9 @@
 [
   {
-    "id": "product-1771123228896",
-    "name": "JL;FDLKGJDSLFGSD",
-    "slug": "jlfdlkgjdslfgsd",
-    "voltage": "GDSFGSDS",
-    "category": "EV Battery",
-    "price": "D450000",
-    "model": "GFGSDF",
-    "configuration": "SDFGSDFG",
-    "chemistry": "LiFePO₄",
-    "warranty": "3 Year Warranty",
-    "features": [
-      "SDFGSDFGSD",
-      "SFG",
-      "SDFG",
-      "SDF",
-      "GSDG"
-    ],
-    "description": "DFGSDWSDGFBVCBGHSHSDFCVXDHHDDDKDKDKDKDKDKKDKDKDKDDKDKKDKDKDKKDKD",
-    "specs": "DFGDFGDSDFGSDGSDFGSDFGWERWERDFGS",
-    "status": "active",
-    "images": [],
-    "displayOrder": 0,
-    "createdAt": "2026-02-15T02:40:28.896Z"
-  },
-  {
-    "id": "product-1771125670614",
-    "name": "electric scooter battery 6030",
-    "slug": "electric-scooter-battery-6030",
-    "voltage": "60 v 30 ah",
+    "id": "product-1771127190948",
+    "name": "ELECTRIC SCOOTER LITHIUM BATTERY 60V30AH",
+    "slug": "electric-scooter-lithium-battery-60v30ah",
+    "voltage": "60V 30AH",
     "category": "EV Battery",
     "price": "23500",
     "model": "EM-LFP6030",
@@ -36,13 +11,14 @@
     "chemistry": "LiFePO₄",
     "warranty": "3 Year Warranty",
     "features": [
-      "LIFEPO4 CELL"
+      "3 YEAR WARRENTY"
     ],
-    "description": "TEST DISC",
-    "specs": "A GRADE SPECIFICATION",
+    "description": "DISCRIP",
+    "specs": "4500 LIFE CYCELE",
     "status": "active",
-    "images": [],
-    "displayOrder": 0,
-    "createdAt": "2026-02-15T03:21:10.614Z"
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127190951-cell.jpg"
+    ],
+    "displayOrder": 0
   }
 ]

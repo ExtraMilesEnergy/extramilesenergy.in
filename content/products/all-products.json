@@ -118,5 +118,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771146708060-2026-02-15-9.png"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771147560925",
+    "name": "TEST 10 PRODUCT GOOTU INVERTER",
+    "slug": "test-10-product-gootu-inverter",
+    "voltage": "TSET 10",
+    "category": "Solar Inverter",
+    "price": "45450",
+    "model": "GOOTU GT690",
+    "configuration": "TEST",
+    "chemistry": "LiFePO₄",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "TEST 10"
+    ],
+    "description": "TEST 10",
+    "specs": "TEST 10",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771147560928-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771147562678-gootu-6kw-hybrid.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771147564698-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
+    ],
+    "displayOrder": 0
   }
 ]

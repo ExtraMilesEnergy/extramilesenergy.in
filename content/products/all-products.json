@@ -70,5 +70,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771140726442-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771142917444",
+    "name": "TEST PRODUCT",
+    "slug": "test-product",
+    "voltage": "SADFASF",
+    "category": "EV Battery",
+    "price": "SDFSD",
+    "model": "GDSFGSDFG",
+    "configuration": "DSFGSDFG",
+    "chemistry": "LiFePO₄SDFGSDFG",
+    "warranty": "3 Year WarrSDFGSDFanty",
+    "features": [
+      "GSDFGSDFGDF"
+    ],
+    "description": "GSDFGSDF",
+    "specs": "GSDFGSDFG",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142917448-whatsapp-image-2026-01-25-at-5.55.58-pm.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142920581-whatsapp-image-2026-01-25-at-6.49.52-pm.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142922482-whatsapp-image-2026-01-25-at-6.57.47-pm.jpeg"
+    ],
+    "displayOrder": 0
   }
 ]

@@ -100,6 +100,7 @@
             border-radius: 30px;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 0.9rem;
         }
         
         .filter-btn:hover,
@@ -124,11 +125,13 @@
             transition: var(--transition);
             text-decoration: none;
             color: inherit;
+            display: block;
         }
         
         .product-card:hover {
             border-color: var(--gold);
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.15);
         }
         
         .product-image {
@@ -151,6 +154,56 @@
             font-size: 1.2rem;
             color: var(--gold-light);
             margin: 10px 0;
+            font-weight: 600;
+        }
+        
+        .product-voltage {
+            color: var(--gold);
+            font-size: 0.95rem;
+            margin: 5px 0;
+        }
+        
+        .product-price {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+        
+        .product-features {
+            list-style: none;
+            margin: 15px 0;
+            padding: 0;
+        }
+        
+        .product-features li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .view-details {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold);
+            font-weight: 500;
+            margin-top: 15px;
+            transition: var(--transition);
+        }
+        
+        .product-card:hover .view-details {
+            gap: 12px;
         }
         
         .loading {
@@ -173,9 +226,41 @@
             to { transform: rotate(360deg); }
         }
         
+        .no-products {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1 / -1;
+            color: var(--text-muted);
+        }
+        
+        .no-products i {
+            font-size: 3rem;
+            color: var(--gold);
+            opacity: 0.5;
+            margin-bottom: 20px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            border-top: 2px solid var(--gold);
+            padding: 30px 0;
+            margin-top: 60px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        
         @media (max-width: 768px) {
             .products-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .nav-menu {
+                gap: 15px;
+            }
+            
+            .page-title h2 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -214,6 +299,12 @@
         </div>
     </div>
 
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Extra Miles Energy. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script>
         const GITHUB_CONFIG = {
             username: 'ExtraMilesEnergy',
@@ -237,10 +328,18 @@
                     allProducts = await response.json();
                     setupCategories();
                     displayProducts();
+                } else {
+                    throw new Error('Failed to load products');
                 }
             } catch (error) {
                 console.error('Error loading products:', error);
-                document.getElementById('productsGrid').innerHTML = '<div class="loading">Failed to load products</div>';
+                document.getElementById('productsGrid').innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Failed to load products</h3>
+                        <p>Please refresh the page or try again later.</p>
+                    </div>
+                `;
             }
         }
 
@@ -279,22 +378,40 @@
             }
 
             if (filtered.length === 0) {
-                document.getElementById('productsGrid').innerHTML = '<div class="loading">No products found</div>';
+                document.getElementById('productsGrid').innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No products found</h3>
+                        <p>No products available in this category.</p>
+                    </div>
+                `;
                 return;
             }
 
             let html = '';
             filtered.forEach(product => {
-                const image = product.images?.[0] || 'https://via.placeholder.com/300x200/142044/FFD700?text=' + product.name;
-                const productUrl = `products/${product.slug || product.id}.html`;
+                const image = product.images?.[0] 
+                    ? (product.images[0].includes('http') ? product.images[0] : `https://raw.githubusercontent.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/uploads/${product.images[0]}`)
+                    : `https://via.placeholder.com/300x200/142044/FFD700?text=${encodeURIComponent(product.name)}`;
+                
+                const productUrl = product.slug 
+                    ? `products/${product.slug}.html` 
+                    : `products/${product.id}.html`;
                 
                 html += `
                     <a href="${productUrl}" class="product-card">
-                        <img src="${image}" alt="${product.name}" class="product-image">
+                        <img src="${image}" alt="${product.name}" class="product-image" 
+                             onerror="this.src='https://via.placeholder.com/300x200/142044/FFD700?text=Product'">
                         <span class="product-category">${product.category}</span>
                         <h3 class="product-name">${product.name}</h3>
-                        ${product.voltage ? `<p style="color: var(--gold);">${product.voltage}</p>` : ''}
-                        ${product.price ? `<p style="color: var(--gold); font-weight: 600;">${product.price}</p>` : ''}
+                        ${product.voltage ? `<div class="product-voltage">${product.voltage}</div>` : ''}
+                        ${product.price ? `<div class="product-price">${product.price}</div>` : ''}
+                        <ul class="product-features">
+                            ${(product.features || []).slice(0, 3).map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                        <span class="view-details">
+                            View Details <i class="fas fa-arrow-right"></i>
+                        </span>
                     </a>
                 `;
             });

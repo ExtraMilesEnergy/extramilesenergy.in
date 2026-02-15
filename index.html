@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google Analytics (optional - apna ID daalna) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YJFKQ0E3KW"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
+        gtag('config', 'G-YJFKQ0E3KW');
     </script>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>Test Website | Extra Miles Energy Demo</title>
-    <meta name="description" content="Test website for Extra Miles Energy - Premium LiFePO4 batteries for EV, Solar & Custom Applications.">
-    <meta name="keywords" content="LiFePO4 battery, lithium battery, test website, demo site">
+    <title>Extra Miles Energy | Premium LiFePO4 Batteries in Hisar, Haryana</title>
+    <meta name="description" content="Extra Miles Energy - Premium LiFePO4 batteries for EV, Solar & Custom Applications. Best price lithium batteries in Hisar Haryana.">
+    <meta name="keywords" content="LiFePO4 battery, lithium battery, EV battery, solar battery, Hisar battery shop">
     <meta name="author" content="Extra Miles Energy">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Test Website | Extra Miles Energy Demo">
-    <meta property="og:description" content="Test website for Extra Miles Energy - Premium LiFePO4 batteries">
-    <meta property="og:image" content="https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/logo.png">
-    <meta property="og:url" content="https://extramilesenergy.github.io/extramilesenergy.in/">
+    <meta property="og:title" content="Extra Miles Energy | Premium LiFePO4 Batteries">
+    <meta property="og:description" content="Manufacturer of high-quality LiFePO4 batteries for EV, Solar & Custom Applications.">
+    <meta property="og:image" content="https://raw.githubusercontent.com/parshantsaharan/extramilesenergy.in/main/logo.png">
+    <meta property="og:url" content="https://extramilesenergy.in/">
     <meta property="og:type" content="website">
     
     <!-- Schema.org Structured Data -->
@@ -33,8 +33,8 @@
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
       "name": "Extra Miles Energy",
-      "image": "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/logo.png",
-      "url": "https://extramilesenergy.github.io/extramilesenergy.in/",
+      "image": "https://raw.githubusercontent.com/parshantsaharan/extramilesenergy.in/main/logo.png",
+      "url": "https://extramilesenergy.in/",
       "telephone": "+917876555055",
       "address": {
         "@type": "PostalAddress",
@@ -49,7 +49,7 @@
     
     <!-- CDN Links -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -90,8 +90,8 @@
             padding: 0 20px;
         }
         
-        /* Header */
-        .site-header {
+        /* Compact Header */
+        .compact-header {
             background: rgba(11, 18, 32, 0.98);
             backdrop-filter: blur(20px);
             border-bottom: 2px solid var(--gold);
@@ -139,27 +139,29 @@
             font-weight: 500;
         }
         
-        .nav-menu {
+        /* Navigation */
+        .nav-compact {
             display: flex;
             align-items: center;
             gap: 25px;
         }
         
-        .nav-menu a {
+        .nav-compact a {
             color: var(--text);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
             transition: var(--transition);
+            position: relative;
             padding: 5px 0;
         }
         
-        .nav-menu a:hover,
-        .nav-menu a.active {
+        .nav-compact a:hover,
+        .nav-compact a.active {
             color: var(--gold);
         }
         
-        .nav-menu a.active::after {
+        .nav-compact a.active::after {
             content: '';
             position: absolute;
             bottom: -5px;
@@ -169,7 +171,7 @@
             background: var(--gold);
         }
         
-        .cta-button {
+        .cta-small {
             background: linear-gradient(135deg, var(--gold) 0%, #FFC107 100%);
             color: var(--primary);
             padding: 10px 20px;
@@ -183,35 +185,36 @@
             transition: var(--transition);
         }
         
-        .cta-button:hover {
+        .cta-small:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
         }
         
         /* Hero Section */
-        .hero-section {
+        .hero-compact {
             padding: 140px 0 60px;
             text-align: center;
             background: linear-gradient(135deg, rgba(11, 18, 32, 0.9), rgba(20, 32, 68, 0.9));
         }
         
-        .hero-section h1 {
+        .hero-compact h1 {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 20px;
             background: linear-gradient(135deg, var(--gold) 0%, #FFE55C 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            line-height: 1.2;
         }
         
-        .hero-section p {
+        .hero-compact p {
             font-size: 1.1rem;
             color: var(--gold-light);
             max-width: 700px;
             margin: 0 auto 30px;
         }
         
-        .stats-grid {
+        .quick-stats {
             display: flex;
             justify-content: center;
             gap: 30px;
@@ -219,27 +222,27 @@
             margin-top: 40px;
         }
         
-        .stat-item {
+        .quick-stat {
             text-align: center;
             padding: 20px;
             min-width: 150px;
         }
         
-        .stat-number {
+        .quick-stat .number {
             font-size: 2rem;
             font-weight: 800;
             color: var(--gold);
             margin-bottom: 5px;
         }
         
-        .stat-label {
+        .quick-stat .label {
             color: var(--gold-light);
             font-size: 0.9rem;
             font-weight: 600;
         }
         
-        /* Tabs */
-        .tabs-section {
+        /* Content Tabs */
+        .content-tabs {
             margin: 40px auto;
         }
         
@@ -273,12 +276,12 @@
             border-color: var(--gold);
         }
         
-        .tab-pane {
+        .tab-content {
             display: none;
             animation: fadeIn 0.3s ease;
         }
         
-        .tab-pane.active {
+        .tab-content.active {
             display: block;
         }
         
@@ -287,8 +290,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Search & Filter */
-        .search-bar {
+        /* Search Bar */
+        .search-filter-bar {
             display: flex;
             gap: 15px;
             margin-bottom: 30px;
@@ -317,14 +320,14 @@
         }
         
         /* Products Grid */
-        .products-grid {
+        .products-compact {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-bottom: 50px;
         }
         
-        .product-card {
+        .product-card-compact {
             background: var(--card-bg);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: var(--radius);
@@ -333,15 +336,17 @@
             height: 100%;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
+            position: relative;
         }
         
-        .product-card:hover {
+        .product-card-compact:hover {
             border-color: var(--gold);
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(255, 215, 0, 0.15);
         }
         
-        .product-image {
+        .product-image-compact {
             width: 100%;
             height: 180px;
             object-fit: contain;
@@ -349,9 +354,10 @@
             margin-bottom: 15px;
             background: rgba(0, 0, 0, 0.2);
             padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .product-badge {
+        .product-badge-compact {
             position: absolute;
             top: 15px;
             right: 15px;
@@ -363,27 +369,27 @@
             font-weight: 700;
         }
         
-        .product-title {
+        .product-title-compact {
             font-size: 1.1rem;
             margin-bottom: 8px;
             color: var(--text);
             font-weight: 700;
         }
         
-        .product-specs {
+        .product-specs-compact {
             color: var(--gold);
             font-size: 0.95rem;
             margin-bottom: 12px;
             font-weight: 600;
         }
         
-        .product-features {
+        .product-features-compact {
             list-style: none;
             margin-bottom: 15px;
             flex-grow: 1;
         }
         
-        .product-features li {
+        .product-features-compact li {
             padding: 5px 0;
             padding-left: 20px;
             position: relative;
@@ -391,7 +397,7 @@
             font-size: 0.85rem;
         }
         
-        .product-features li::before {
+        .product-features-compact li::before {
             content: '✓';
             position: absolute;
             left: 0;
@@ -399,13 +405,13 @@
             font-weight: bold;
         }
         
-        .product-actions {
+        .product-actions-compact {
             display: flex;
             gap: 10px;
             margin-top: auto;
         }
         
-        .btn-whatsapp {
+        .btn-whatsapp-compact {
             background: #25D366;
             color: white;
             padding: 10px;
@@ -420,14 +426,16 @@
             justify-content: center;
             gap: 5px;
             transition: var(--transition);
+            pointer-events: auto;
+            z-index: 2;
         }
         
-        .btn-whatsapp:hover {
+        .btn-whatsapp-compact:hover {
             background: #128C7E;
             transform: translateY(-2px);
         }
         
-        .btn-details {
+        .btn-details-compact {
             background: transparent;
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -438,11 +446,16 @@
             flex: 1;
             text-align: center;
             font-size: 0.85rem;
-            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
             transition: var(--transition);
+            pointer-events: auto;
+            z-index: 2;
         }
         
-        .btn-details:hover {
+        .btn-details-compact:hover {
             background: rgba(255, 215, 0, 0.1);
         }
         
@@ -503,7 +516,7 @@
         }
         
         /* Live Updates */
-        .updates-section {
+        .live-updates {
             background: rgba(255, 215, 0, 0.05);
             border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: var(--radius);
@@ -511,20 +524,20 @@
             margin: 40px 0;
         }
         
-        .updates-header {
+        .update-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
         
-        .updates-header h3 {
+        .update-header h3 {
             color: var(--gold);
             font-size: 1.2rem;
             font-weight: 700;
         }
         
-        .refresh-btn {
+        .update-refresh {
             background: rgba(255, 215, 0, 0.1);
             border: 1px solid var(--gold);
             color: var(--gold);
@@ -539,7 +552,7 @@
             transition: var(--transition);
         }
         
-        .refresh-btn:hover {
+        .update-refresh:hover {
             background: rgba(255, 215, 0, 0.2);
         }
         
@@ -562,8 +575,6 @@
         .update-icon {
             color: var(--gold);
             font-size: 1.2rem;
-            min-width: 30px;
-            text-align: center;
         }
         
         .update-content {
@@ -601,7 +612,14 @@
             margin-bottom: 20px;
         }
         
-        .mission-vision {
+        .about-hero p {
+            font-size: 1.1rem;
+            color: var(--gold-light);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .mission-vision-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
@@ -622,7 +640,7 @@
             transform: translateY(-5px);
         }
         
-        .card-icon {
+        .mission-icon, .vision-icon {
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -676,7 +694,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin: 40px 0;
+            margin-bottom: 40px;
         }
         
         .process-step {
@@ -746,7 +764,7 @@
         }
         
         /* Footer */
-        .site-footer {
+        .footer-compact {
             background: linear-gradient(180deg, rgba(11, 18, 32, 1) 0%, rgba(7, 12, 22, 1) 100%);
             border-top: 2px solid var(--gold);
             padding: 50px 0 20px;
@@ -767,16 +785,12 @@
             font-weight: 700;
         }
         
-        .footer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
         .footer-links a {
             color: var(--gold-light);
             text-decoration: none;
             font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: block;
             transition: var(--transition);
         }
         
@@ -836,54 +850,14 @@
             background: rgba(255, 215, 0, 0.1);
         }
         
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 30px;
-            max-width: 500px;
-            width: 100%;
-            border: 2px solid var(--gold);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #ff3570;
-            color: white;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
         /* Loading */
-        .loading {
+        .loading-compact {
             text-align: center;
             padding: 60px 20px;
             color: var(--gold-light);
         }
         
-        .spinner {
+        .spinner-compact {
             border: 3px solid rgba(255, 215, 0, 0.1);
             border-radius: 50%;
             border-top: 3px solid var(--gold);
@@ -954,14 +928,14 @@
             cursor: pointer;
         }
         
-        .mobile-nav {
+        .mobile-nav-links {
             display: flex;
             flex-direction: column;
             gap: 30px;
             align-items: center;
         }
         
-        .mobile-nav a {
+        .mobile-nav-links a {
             color: var(--text);
             text-decoration: none;
             font-size: 1.5rem;
@@ -969,13 +943,79 @@
             transition: var(--transition);
         }
         
-        .mobile-nav a:hover {
+        .mobile-nav-links a:hover {
             color: var(--gold);
         }
         
-        /* Responsive */
+        /* Product Modal */
+        .product-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .product-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 900px;
+            width: 90%;
+            border: 2px solid var(--gold);
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff3570;
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .modal-image {
+            width: 100%;
+            border-radius: var(--radius-sm);
+        }
+        
+        .modal-specs {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: var(--radius-sm);
+            margin: 20px 0;
+        }
+        
         @media (max-width: 768px) {
-            .nav-menu {
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-compact {
                 display: none;
             }
             
@@ -983,42 +1023,17 @@
                 display: block;
             }
             
-            .hero-section h1 {
+            .hero-compact h1 {
                 font-size: 2rem;
             }
             
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-            
-            .stats-grid {
-                gap: 15px;
-            }
-            
-            .stat-item {
-                min-width: 120px;
-                padding: 15px;
-            }
-            
-            .search-bar {
+            .search-filter-bar {
                 flex-direction: column;
-            }
-            
-            .about-hero h2 {
-                font-size: 2rem;
             }
         }
         
         @media (max-width: 480px) {
-            .hero-section {
-                padding: 120px 0 40px;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .product-actions {
+            .product-actions-compact {
                 flex-direction: column;
             }
             
@@ -1029,35 +1044,31 @@
                 text-align: center;
                 justify-content: center;
             }
-            
-            .process-steps {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="site-header">
+    <!-- Compact Header -->
+    <header class="compact-header">
         <div class="container">
             <div class="header-inner">
                 <a href="#home" class="logo">
-                    <img src="https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/logo.png" 
+                    <img src="https://raw.githubusercontent.com/parshantsaharan/extramilesenergy.in/main/logo.png" 
                          alt="Extra Miles Energy" class="logo-img"
                          onerror="this.src='https://via.placeholder.com/45x45/142044/FFD700?text=EM'">
                     <div class="logo-text">
-                        <h1 id="companyName">Extra Miles Energy</h1>
+                        <h1 id="companyBrand">Extra Miles Energy</h1>
                         <div class="tagline" id="companyTagline">Premium LiFePO₄ Solutions</div>
                     </div>
                 </a>
                 
-                <nav class="nav-menu">
-                    <a href="#home" class="nav-link active" data-tab="home">Home</a>
-                    <a href="#content" class="nav-link" data-tab="products">Products</a>
-                    <a href="#content" class="nav-link" data-tab="blogs">Blogs</a>
-                    <a href="#content" class="nav-link" data-tab="about">About</a>
-                    <a href="#content" class="nav-link" data-tab="contact">Contact</a>
-                    <a href="/admin/" class="cta-button" target="_blank">
+                <nav class="nav-compact">
+                    <a href="#home" class="nav-tab active" data-tab="home">Home</a>
+                    <a href="#content" class="nav-tab" data-tab="products">Products</a>
+                    <a href="#content" class="nav-tab" data-tab="blogs">Blogs</a>
+                    <a href="#content" class="nav-tab" data-tab="about">About</a>
+                    <a href="#content" class="nav-tab" data-tab="contact">Contact</a>
+                    <a href="/admin/" class="cta-small" target="_blank">
                         <i class="fas fa-lock"></i> Admin
                     </a>
                 </nav>
@@ -1074,68 +1085,67 @@
         <button class="mobile-menu-close" id="mobileMenuClose">
             <i class="fas fa-times"></i>
         </button>
-        <div class="mobile-nav">
+        <div class="mobile-nav-links">
             <a href="#home" onclick="switchTab('home'); closeMobileMenu()">Home</a>
             <a href="#content" onclick="switchTab('products'); closeMobileMenu()">Products</a>
             <a href="#content" onclick="switchTab('blogs'); closeMobileMenu()">Blogs</a>
             <a href="#content" onclick="switchTab('about'); closeMobileMenu()">About</a>
             <a href="#content" onclick="switchTab('contact'); closeMobileMenu()">Contact</a>
-            <a href="/admin/" class="cta-button" target="_blank">
+            <a href="/admin/" class="cta-small" target="_blank">
                 <i class="fas fa-lock"></i> Admin Panel
             </a>
         </div>
     </div>
 
     <!-- Hero Section -->
-    <section class="hero-section" id="home">
+    <section class="hero-compact" id="home">
         <div class="container">
             <h1 id="heroTitle">Premium LiFePO₄ Batteries</h1>
-            <p id="heroDesc">High-quality lithium batteries for EV, Solar & Custom Applications</p>
+            <p id="heroDescription">Manufacturer of high-quality lithium batteries for EV, Solar & Custom Applications</p>
             
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <a href="#content" class="cta-button" onclick="switchTab('products')">
+            <div style="display: flex; gap: 15px; justify-content: center; margin: 30px 0;">
+                <a href="#content" class="cta-small" onclick="switchTab('products')">
                     <i class="fas fa-bolt"></i> Browse Products
                 </a>
-                <a href="#content" class="cta-button" onclick="switchTab('contact')" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
-                    <i class="fab fa-whatsapp"></i> Get Quote
+                <a href="#content" class="cta-small" onclick="switchTab('contact')" style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);">
+                    <i class="fab fa-whatsapp"></i> Quick Inquiry
                 </a>
             </div>
             
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number" id="productCount">0</div>
-                    <div class="stat-label">Products</div>
+            <div class="quick-stats">
+                <div class="quick-stat">
+                    <div class="number" id="productCount">0</div>
+                    <div class="label">Products</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="blogCount">0</div>
-                    <div class="stat-label">Blogs</div>
+                <div class="quick-stat">
+                    <div class="number" id="blogCount">0</div>
+                    <div class="label">Blogs</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">4000+</div>
-                    <div class="stat-label">Cycles</div>
+                <div class="quick-stat">
+                    <div class="number">4000+</div>
+                    <div class="label">Charge Cycles</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">3+ Years</div>
-                    <div class="stat-label">Warranty</div>
+                <div class="quick-stat">
+                    <div class="number">3+ Years</div>
+                    <div class="label">Warranty</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Content -->
-    <section class="tabs-section" id="content">
+    <!-- Content Tabs -->
+    <section class="content-tabs" id="content">
         <div class="container">
-            <!-- Tab Buttons -->
             <div class="tab-buttons">
                 <button class="tab-btn active" data-tab="products">Products</button>
-                <button class="tab-btn" data-tab="blogs">Blogs</button>
+                <button class="tab-btn" data-tab="blogs">Latest Blogs</button>
                 <button class="tab-btn" data-tab="updates">Live Updates</button>
                 <button class="tab-btn" data-tab="about">About Us</button>
                 <button class="tab-btn" data-tab="contact">Contact</button>
             </div>
             
-            <!-- Search & Filter -->
-            <div class="search-bar">
+            <!-- Search and Filter -->
+            <div class="search-filter-bar">
                 <input type="text" class="search-input" id="searchInput" placeholder="Search products and blogs...">
                 <select class="filter-select" id="categoryFilter">
                     <option value="">All Categories</option>
@@ -1152,27 +1162,27 @@
             </div>
             
             <!-- Products Tab -->
-            <div class="tab-pane active" id="productsTab">
-                <div id="productsContainer" class="loading">
-                    <div class="spinner"></div>
+            <div class="tab-content active" id="productsTab">
+                <div id="productsContainer" class="loading-compact">
+                    <div class="spinner-compact"></div>
                     <div>Loading products...</div>
                 </div>
             </div>
             
             <!-- Blogs Tab -->
-            <div class="tab-pane" id="blogsTab">
-                <div id="blogsContainer" class="loading">
-                    <div class="spinner"></div>
-                    <div>Loading blogs...</div>
+            <div class="tab-content" id="blogsTab">
+                <div id="blogsContainer" class="loading-compact">
+                    <div class="spinner-compact"></div>
+                    <div>Discovering latest blogs...</div>
                 </div>
             </div>
             
-            <!-- Updates Tab -->
-            <div class="tab-pane" id="updatesTab">
-                <div class="updates-section">
-                    <div class="updates-header">
+            <!-- Live Updates Tab -->
+            <div class="tab-content" id="updatesTab">
+                <div class="live-updates">
+                    <div class="update-header">
                         <h3><i class="fas fa-bolt"></i> Live Updates</h3>
-                        <button class="refresh-btn" onclick="loadLiveUpdates(true)">
+                        <button class="update-refresh" onclick="loadLiveUpdates(true)">
                             <i class="fas fa-sync-alt"></i> Refresh
                         </button>
                     </div>
@@ -1189,53 +1199,53 @@
             </div>
             
             <!-- About Tab -->
-            <div class="tab-pane" id="aboutTab">
+            <div class="tab-content" id="aboutTab">
                 <div class="about-section">
                     <div class="about-hero">
                         <h2>About Extra Miles Energy</h2>
                         <p>Premium LiFePO₄ battery manufacturer based in Hisar, Haryana</p>
                     </div>
-                    
-                    <div class="mission-vision">
+
+                    <div class="mission-vision-grid">
                         <div class="mission-card">
-                            <div class="card-icon mission-icon">
-                                <i class="fas fa-bullseye"></i>
-                            </div>
+                            <div class="mission-icon"><i class="fas fa-bullseye"></i></div>
                             <h3>Our Mission</h3>
-                            <p style="color: var(--gold-light);">To deliver safe, durable, and affordable lithium battery solutions</p>
+                            <p style="color: var(--gold-light);">To deliver safe, durable, and affordable lithium battery solutions with excellent after-sales support.</p>
                         </div>
+                        
                         <div class="vision-card">
-                            <div class="card-icon vision-icon">
-                                <i class="fas fa-eye"></i>
-                            </div>
+                            <div class="vision-icon"><i class="fas fa-eye"></i></div>
                             <h3>Our Vision</h3>
-                            <p style="color: var(--gold-light);">To become North India's most trusted LiFePO₄ battery manufacturer</p>
+                            <p style="color: var(--gold-light);">To become North India's most trusted LiFePO₄ battery manufacturer.</p>
                         </div>
                     </div>
-                    
+
                     <div class="features-grid">
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-battery-full"></i></div>
-                            <h4>Grade A Cells</h4>
-                            <p style="color: var(--gold-light);">Premium quality LiFePO₄ cells</p>
+                            <h4>Grade A LiFePO₄ Cells</h4>
+                            <p style="color: var(--gold-light);">Premium quality cells for maximum safety</p>
                         </div>
+                        
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-microchip"></i></div>
-                            <h4>Smart BMS</h4>
-                            <p style="color: var(--gold-light);">Advanced protection system</p>
+                            <h4>Smart BMS Protection</h4>
+                            <p style="color: var(--gold-light);">Advanced protection against overcharge, short circuit</p>
                         </div>
+                        
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-cogs"></i></div>
                             <h4>Custom Solutions</h4>
-                            <p style="color: var(--gold-light);">Designed for your needs</p>
+                            <p style="color: var(--gold-light);">Battery packs designed as per your requirements</p>
                         </div>
+                        
                         <div class="feature-card">
                             <div class="feature-icon"><i class="fas fa-award"></i></div>
                             <h4>3+ Years Warranty</h4>
-                            <p style="color: var(--gold-light);">Comprehensive coverage</p>
+                            <p style="color: var(--gold-light);">Comprehensive warranty with reliable support</p>
                         </div>
                     </div>
-                    
+
                     <div class="process-steps">
                         <div class="process-step">
                             <div class="step-number">1</div>
@@ -1258,7 +1268,7 @@
             </div>
             
             <!-- Contact Tab -->
-            <div class="tab-pane" id="contactTab">
+            <div class="tab-content" id="contactTab">
                 <div class="contact-form">
                     <h3 style="color: var(--gold); margin-bottom: 25px; text-align: center;">
                         <i class="fas fa-paper-plane"></i> Get a Free Quote
@@ -1296,12 +1306,14 @@
     </section>
 
     <!-- Footer -->
-    <footer class="site-footer">
+    <footer class="footer-compact" id="contact">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-section">
                     <h4 id="footerBrand">Extra Miles Energy</h4>
-                    <p style="color: var(--gold-light);">Premium LiFePO₄ batteries for EV, solar, and custom applications.</p>
+                    <p style="color: var(--gold-light); font-size: 0.9rem;">
+                        Manufacturer of premium LiFePO₄ batteries for EV, solar, and custom applications in Hisar, Haryana.
+                    </p>
                 </div>
                 
                 <div class="footer-section">
@@ -1337,14 +1349,14 @@
             <div class="copyright">
                 © <span id="currentYear"></span> Extra Miles Energy. All rights reserved.
                 <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7;">
-                    Test Website • Connected to Admin Panel • Last sync: <span id="lastSyncTime">Just now</span>
+                    Connected to Admin Panel • Last sync: <span id="lastSyncTime">Just now</span>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Product Modal -->
-    <div class="modal" id="productModal">
+    <div class="product-modal" id="productModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeProductModal()">
                 <i class="fas fa-times"></i>
@@ -1363,8 +1375,8 @@
         // Configuration
         const CONFIG = {
             github: {
-                username: 'ExtraMilesEnergy',  // Apna GitHub username
-                repo: 'extramilesenergy.in',    // Apna repo name
+                username: 'ExtraMilesEnergy',
+                repo: 'extramilesenergy.in',
                 branch: 'main',
                 productsPath: 'content/products',
                 companyPath: 'content/company.json',
@@ -1405,7 +1417,7 @@
             });
 
             // Nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
+            document.querySelectorAll('.nav-tab').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const tabId = link.dataset.tab;
@@ -1434,6 +1446,11 @@
             });
             
             document.getElementById('mobileMenuClose').addEventListener('click', closeMobileMenu);
+            
+            // Close mobile menu when clicking on links
+            document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
         }
 
         // Close Mobile Menu
@@ -1461,9 +1478,9 @@
             });
             
             // Update tab content
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('active');
-                if (pane.id === `${tabId}Tab`) pane.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `${tabId}Tab`) content.classList.add('active');
             });
             
             // Update nav links
@@ -1472,6 +1489,11 @@
             // Update URL
             window.history.pushState({}, '', `#${tabId}`);
             
+            // Scroll to content if not home
+            if (tabId !== 'home') {
+                document.getElementById('content').scrollIntoView({ behavior: 'smooth' });
+            }
+            
             // Load data if needed
             if (tabId === 'blogs' && blogs.length === 0) loadBlogs();
             if (tabId === 'updates') loadLiveUpdates();
@@ -1479,7 +1501,7 @@
 
         // Update Active Nav
         function updateActiveNav(tabId) {
-            document.querySelectorAll('.nav-link').forEach(link => {
+            document.querySelectorAll('.nav-tab').forEach(link => {
                 link.classList.remove('active');
                 if (link.dataset.tab === tabId) link.classList.add('active');
             });
@@ -1508,13 +1530,13 @@
         // Update Company Fields
         function updateCompanyFields() {
             const c = companyData;
-            document.getElementById('companyName').textContent = c.brand || c.name || CONFIG.defaults.brand;
+            document.getElementById('companyBrand').textContent = c.brand || c.name || CONFIG.defaults.brand;
             document.getElementById('companyTagline').textContent = c.tagline || 'Premium LiFePO₄ Solutions';
             document.getElementById('footerBrand').textContent = c.brand || CONFIG.defaults.brand;
             document.getElementById('footerPhone').textContent = c.phone1 || CONFIG.defaults.phone;
             document.getElementById('footerEmail').textContent = c.email || CONFIG.defaults.email;
             document.getElementById('heroTitle').textContent = c.heroTitle || 'Premium LiFePO₄ Batteries';
-            document.getElementById('heroDesc').textContent = c.heroDesc || 'High-quality lithium batteries for EV, Solar & Custom Applications';
+            document.getElementById('heroDescription').textContent = c.heroDesc || 'Manufacturer of high-quality lithium batteries for EV, Solar & Custom Applications';
         }
 
         // Load Products
@@ -1523,7 +1545,8 @@
             try {
                 const url = `https://raw.githubusercontent.com/${CONFIG.github.username}/${CONFIG.github.repo}/${CONFIG.github.branch}/${CONFIG.github.productsPath}/all-products.json`;
                 const response = await fetch(url, { cache: 'no-store' });
-                if (!response.ok) throw new Error('Failed');
+                
+                if (!response.ok) throw new Error('Failed to load products');
                 
                 const allProducts = await response.json();
                 products = allProducts.filter(p => p.status === 'active')
@@ -1533,78 +1556,190 @@
                 displayProducts(products);
                 
             } catch (error) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i><h3>Error Loading Products</h3><p>Please try again</p></div>`;
+                console.error('Error loading products:', error);
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3 style="color: var(--warning);">Error Loading Products</h3>
+                        <p style="color: var(--gold-light);">Please refresh the page</p>
+                        <button class="cta-small" onclick="loadProducts()" style="margin-top: 20px;">
+                            <i class="fas fa-redo"></i> Retry
+                        </button>
+                    </div>
+                `;
             }
         }
 
         // Display Products
         function displayProducts(productsToShow) {
             const container = document.getElementById('productsContainer');
-            if (!productsToShow.length) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-box-open"></i><h3>No Products Found</h3></div>`;
+            const whatsappNumber = companyData.whatsapp || CONFIG.defaults.whatsapp;
+            
+            if (!productsToShow || productsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-box-open"></i>
+                        <h3 style="color: var(--gold);">No Products Available</h3>
+                        <p style="color: var(--gold-light);">Check back soon for new products</p>
+                    </div>
+                `;
                 return;
             }
             
-            let html = '<div class="products-grid">';
-            productsToShow.forEach(p => {
-                const imageUrl = p.images?.[0] || `https://via.placeholder.com/300x200/142044/FFD700?text=${encodeURIComponent(p.name)}`;
-                const whatsappUrl = `https://wa.me/${companyData.whatsapp || CONFIG.defaults.whatsapp}?text=${encodeURIComponent(`Hello, interested in: ${p.name}`)}`;
+            let html = '<div class="products-compact">';
+            
+            productsToShow.forEach(product => {
+                // Get image URL
+                let imageUrl = '';
+                if (product.images && product.images.length > 0) {
+                    if (product.images[0].includes('githubusercontent.com')) {
+                        imageUrl = product.images[0];
+                    } else {
+                        imageUrl = `https://raw.githubusercontent.com/${CONFIG.github.username}/${CONFIG.github.repo}/${CONFIG.github.branch}/uploads/${product.images[0]}`;
+                    }
+                } else {
+                    imageUrl = `https://via.placeholder.com/300x200/142044/FFD700?text=${encodeURIComponent(product.name.substring(0, 15))}`;
+                }
+                
+                // WhatsApp URL
+                const whatsappMessage = `Hello Extra Miles Energy, I'm interested in: ${product.name} (${product.voltage || ''}). Please send details.`;
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
                 
                 html += `
-                    <div class="product-card" data-category="${p.category || ''}">
-                        <div class="product-badge">${p.category || 'BATTERY'}</div>
-                        <img src="${imageUrl}" alt="${p.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x200/142044/FFD700?text=Product'">
-                        <h3 class="product-title">${p.name}</h3>
-                        <div class="product-specs">${p.voltage || ''}</div>
-                        ${p.price ? `<div style="color: var(--gold); font-weight: 700; margin: 10px 0;">${p.price}</div>` : ''}
-                        <ul class="product-features">
-                            ${(p.features || []).slice(0, 3).map(f => `<li>${f}</li>`).join('')}
+                    <div class="product-card-compact" onclick="openProductModal('${product.id}')" data-category="${product.category || ''}">
+                        <div class="product-badge-compact">${product.category || 'BATTERY'}</div>
+                        <img src="${imageUrl}" alt="${product.name}" class="product-image-compact"
+                             onerror="this.src='https://via.placeholder.com/300x200/142044/FFD700?text=Product'">
+                        
+                        <h3 class="product-title-compact">${product.name}</h3>
+                        <div class="product-specs-compact">${product.voltage || ''}</div>
+                        
+                        ${product.price ? `<div style="color: var(--gold); font-weight: 700; margin: 10px 0; font-size: 1.1rem;">${product.price}</div>` : ''}
+                        
+                        <ul class="product-features-compact">
+                            ${(product.features || []).slice(0, 3).map(f => `<li>${f}</li>`).join('')}
                         </ul>
-                        <div class="product-actions">
-                            <a href="${whatsappUrl}" class="btn-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Quote</a>
-                            <button class="btn-details" onclick="showProductDetails('${p.id}')"><i class="fas fa-info"></i> Details</button>
+                        
+                        <div class="product-actions-compact" onclick="event.stopPropagation()">
+                            <a href="${whatsappUrl}" class="btn-whatsapp-compact" target="_blank">
+                                <i class="fab fa-whatsapp"></i> Quote
+                            </a>
+                            <button class="btn-details-compact" onclick="openProductModal('${product.id}')">
+                                <i class="fas fa-info-circle"></i> Details
+                            </button>
                         </div>
                     </div>
                 `;
             });
+            
             html += '</div>';
             container.innerHTML = html;
         }
 
-        // Show Product Details
-        async function showProductDetails(productId) {
+        // Open Product Modal
+        async function openProductModal(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
             
             const modal = document.getElementById('productModal');
             const content = document.getElementById('productModalContent');
             
-            const imageUrl = product.images?.[0] || `https://via.placeholder.com/500x400/142044/FFD700?text=${encodeURIComponent(product.name)}`;
-            const whatsappUrl = `https://wa.me/${companyData.whatsapp || CONFIG.defaults.whatsapp}?text=${encodeURIComponent(`Hello, interested in: ${product.name}`)}`;
-            
-            content.innerHTML = `
-                <h2 style="color: var(--gold); margin-bottom: 15px;">${product.name}</h2>
-                <img src="${imageUrl}" alt="${product.name}" style="width: 100%; border-radius: var(--radius-sm); margin-bottom: 20px;">
-                <div style="color: var(--accent); font-weight: 700; margin-bottom: 10px;">${product.voltage || ''}</div>
-                ${product.price ? `<div style="color: var(--gold); font-size: 1.5rem; font-weight: 800; margin: 15px 0;">${product.price}</div>` : ''}
-                <div style="margin: 20px 0;">
-                    <h4 style="color: var(--gold-light); margin-bottom: 10px;">Features:</h4>
-                    <ul style="color: var(--text-muted); padding-left: 20px;">
-                        ${(product.features || []).map(f => `<li style="margin-bottom: 5px;">${f}</li>`).join('')}
-                    </ul>
-                </div>
-                <a href="${whatsappUrl}" target="_blank" class="btn-whatsapp" style="display: block; text-align: center; padding: 15px; text-decoration: none; margin-top: 20px;">
-                    <i class="fab fa-whatsapp"></i> WhatsApp Inquiry
-                </a>
-            `;
-            
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+            // Get full product details
+            try {
+                const url = `https://raw.githubusercontent.com/${CONFIG.github.username}/${CONFIG.github.repo}/${CONFIG.github.branch}/${CONFIG.github.productsPath}/${productId}.json`;
+                const response = await fetch(url, { cache: 'no-store' });
+                let detailedProduct = product;
+                if (response.ok) detailedProduct = await response.json();
+                
+                // Get images
+                const images = detailedProduct.images || [];
+                const primaryImage = images.length > 0 ? 
+                    (images[0].includes('githubusercontent.com') ? images[0] : 
+                    `https://raw.githubusercontent.com/${CONFIG.github.username}/${CONFIG.github.repo}/${CONFIG.github.branch}/uploads/${images[0]}`) 
+                    : `https://via.placeholder.com/500x400/142044/FFD700?text=${encodeURIComponent(product.name)}`;
+                
+                // WhatsApp URL
+                const whatsappNumber = companyData.whatsapp || CONFIG.defaults.whatsapp;
+                const whatsappMessage = `Hello Extra Miles Energy, I'm interested in:\n\nProduct: ${detailedProduct.name}\nSpecs: ${detailedProduct.voltage || ''}\nPrice: ${detailedProduct.price || 'Quote based'}\n\nPlease send detailed specifications.`;
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                
+                // Build specs HTML
+                let specsHtml = '';
+                if (detailedProduct.specs) {
+                    const specLines = detailedProduct.specs.split('\n').filter(l => l.trim());
+                    specsHtml = '<div class="modal-specs">';
+                    specLines.forEach(line => {
+                        const [key, value] = line.split(':').map(s => s.trim());
+                        if (key && value) {
+                            specsHtml += `<p><strong style="color: var(--gold);">${key}:</strong> <span style="color: var(--gold-light);">${value}</span></p>`;
+                        }
+                    });
+                    specsHtml += '</div>';
+                }
+                
+                // Build gallery HTML for multiple images
+                let galleryHtml = '';
+                if (images.length > 1) {
+                    galleryHtml = '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px;">';
+                    images.slice(1).forEach((img, index) => {
+                        const imgUrl = img.includes('githubusercontent.com') ? img : 
+                            `https://raw.githubusercontent.com/${CONFIG.github.username}/${CONFIG.github.repo}/${CONFIG.github.branch}/uploads/${img}`;
+                        galleryHtml += `
+                            <img src="${imgUrl}" alt="Product image ${index + 2}" 
+                                 style="width: 100%; height: 80px; object-fit: cover; border-radius: 5px; cursor: pointer; border: 1px solid rgba(255,215,0,0.3);"
+                                 onclick="document.getElementById('modalMainImage').src='${imgUrl}'">
+                        `;
+                    });
+                    galleryHtml += '</div>';
+                }
+                
+                // Modal HTML
+                content.innerHTML = `
+                    <div class="modal-grid">
+                        <div>
+                            <img id="modalMainImage" src="${primaryImage}" alt="${detailedProduct.name}" class="modal-image"
+                                 onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                            ${galleryHtml}
+                        </div>
+                        <div>
+                            <h2 style="color: var(--gold); margin-bottom: 15px;">${detailedProduct.name}</h2>
+                            <div style="color: var(--accent); font-weight: 700; margin-bottom: 10px;">${detailedProduct.voltage || ''}</div>
+                            
+                            ${detailedProduct.price ? `<div style="color: var(--gold); font-size: 1.8rem; font-weight: 800; margin: 20px 0;">${detailedProduct.price}</div>` : ''}
+                            
+                            <div style="margin: 20px 0;">
+                                <h4 style="color: var(--gold-light); margin-bottom: 10px;">Features:</h4>
+                                <ul style="color: var(--text-muted); padding-left: 20px;">
+                                    ${(detailedProduct.features || []).map(f => `<li style="margin-bottom: 8px;">${f}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            ${specsHtml}
+                            
+                            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                                <a href="${whatsappUrl}" target="_blank" style="background: #25D366; color: white; padding: 12px 20px; border-radius: var(--radius-sm); text-decoration: none; font-weight: 600; flex: 1; text-align: center;">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp Inquiry
+                                </a>
+                                <button onclick="closeProductModal()" style="background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 600; flex: 1; cursor: pointer;">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+            } catch (error) {
+                console.error('Error loading product details:', error);
+                alert('Unable to load product details. Please try again.');
+            }
         }
 
         // Close Product Modal
         function closeProductModal() {
-            document.getElementById('productModal').style.display = 'none';
+            document.getElementById('productModal').classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
@@ -1639,30 +1774,62 @@
                     blogs.sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified));
                     document.getElementById('blogCount').textContent = blogs.length;
                     displayBlogs(blogs.slice(0, 6));
+                } else {
+                    // Fallback blogs
+                    blogs = [
+                        {
+                            title: 'LiFePO4 Battery Guide',
+                            url: '/blogs/lifepo4-battery-guide.html',
+                            lastModified: new Date().toISOString().split('T')[0],
+                            category: 'Guide'
+                        },
+                        {
+                            title: 'EV Battery Maintenance Tips',
+                            url: '/blogs/ev-battery-maintenance.html',
+                            lastModified: new Date().toISOString().split('T')[0],
+                            category: 'Tips'
+                        }
+                    ];
+                    displayBlogs(blogs);
                 }
             } catch (error) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-newspaper"></i><h3>No Blogs Yet</h3></div>`;
+                console.error('Error loading blogs:', error);
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-newspaper"></i>
+                        <h3 style="color: var(--gold);">No Blogs Yet</h3>
+                        <p style="color: var(--gold-light);">Blogs will appear here automatically when published.</p>
+                    </div>
+                `;
             }
         }
 
         // Display Blogs
         function displayBlogs(blogsToShow) {
             const container = document.getElementById('blogsContainer');
-            if (!blogsToShow.length) {
-                container.innerHTML = `<div class="no-results"><i class="fas fa-newspaper"></i><h3>No Blogs Yet</h3></div>`;
+            
+            if (!blogsToShow || blogsToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-newspaper"></i>
+                        <h3 style="color: var(--gold);">No Blogs Yet</h3>
+                        <p style="color: var(--gold-light);">Blogs will appear here automatically when published.</p>
+                    </div>
+                `;
                 return;
             }
             
             let html = '<div class="blogs-grid">';
+            
             blogsToShow.forEach(blog => {
                 const fullUrl = blog.url.startsWith('http') ? blog.url : 
-                    `https://${CONFIG.github.username}.github.io/${CONFIG.github.repo}${blog.url}`;
+                    `https://${CONFIG.github.username}.github.io/${CONFIG.github.repo}${blog.url.startsWith('/') ? blog.url : '/' + blog.url}`;
                 
                 html += `
                     <a href="${fullUrl}" class="blog-card" target="_blank">
                         <span class="blog-category">${blog.category || 'Blog'}</span>
                         <h3 class="blog-title">${blog.title}</h3>
-                        <p class="blog-excerpt">Read more about ${blog.title.toLowerCase()}...</p>
+                        <p class="blog-excerpt">Learn about ${blog.title.toLowerCase()} and its applications...</p>
                         <div class="blog-meta">
                             <span><i class="far fa-calendar"></i> ${blog.lastModified || 'Recent'}</span>
                             <span>Read more →</span>
@@ -1670,6 +1837,7 @@
                     </a>
                 `;
             });
+            
             html += '</div>';
             container.innerHTML = html;
         }
@@ -1677,47 +1845,77 @@
         // Load Live Updates
         async function loadLiveUpdates(force = false) {
             const container = document.getElementById('updatesContainer');
-            if (force) await Promise.all([loadProducts(), loadBlogs()]);
             
-            updates = [
-                ...products.slice(0, 3).map(p => ({
+            if (force) {
+                await Promise.all([loadProducts(), loadBlogs()]);
+            }
+            
+            updates = [];
+            
+            // Add product updates
+            products.slice(0, 3).forEach(product => {
+                updates.push({
                     icon: 'fa-bolt',
-                    title: p.name,
-                    meta: p.voltage || 'New product'
-                })),
-                ...blogs.slice(0, 2).map(b => ({
+                    title: product.name,
+                    meta: product.voltage || 'New product'
+                });
+            });
+            
+            // Add blog updates
+            blogs.slice(0, 2).forEach(blog => {
+                updates.push({
                     icon: 'fa-file-alt',
-                    title: b.title,
+                    title: blog.title,
                     meta: 'New blog post'
-                }))
-            ];
+                });
+            });
+            
+            if (updates.length === 0) {
+                container.innerHTML = `
+                    <div class="update-item">
+                        <div class="update-icon"><i class="fas fa-info-circle"></i></div>
+                        <div class="update-content">
+                            <div class="update-title">No recent updates</div>
+                            <div class="update-meta">Check back later</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
             
             let html = '';
-            updates.forEach(u => {
+            updates.forEach(update => {
                 html += `
                     <div class="update-item">
-                        <div class="update-icon"><i class="fas ${u.icon}"></i></div>
+                        <div class="update-icon"><i class="fas ${update.icon}"></i></div>
                         <div class="update-content">
-                            <div class="update-title">${u.title}</div>
-                            <div class="update-meta">${u.meta}</div>
+                            <div class="update-title">${update.title}</div>
+                            <div class="update-meta">${update.meta}</div>
                         </div>
                     </div>
                 `;
             });
             
-            container.innerHTML = html || '<div class="update-item"><div class="update-icon"><i class="fas fa-info-circle"></i></div><div class="update-content">No updates</div></div>';
+            container.innerHTML = html;
             updateSyncTime();
         }
 
         // Handle Search
         function handleSearch() {
             const query = document.getElementById('searchInput').value.toLowerCase();
+            
             if (currentTab === 'products') {
                 const filtered = products.filter(p => 
                     p.name.toLowerCase().includes(query) ||
-                    (p.voltage && p.voltage.toLowerCase().includes(query))
+                    (p.voltage && p.voltage.toLowerCase().includes(query)) ||
+                    (p.category && p.category.toLowerCase().includes(query))
                 );
                 displayProducts(filtered);
+            } else if (currentTab === 'blogs') {
+                const filtered = blogs.filter(b => 
+                    b.title.toLowerCase().includes(query)
+                );
+                displayBlogs(filtered);
             }
         }
 
@@ -1727,8 +1925,12 @@
             const sortBy = document.getElementById('sortBy').value;
             
             let filtered = [...products];
-            if (category) filtered = filtered.filter(p => p.category === category);
             
+            if (category) {
+                filtered = filtered.filter(p => p.category === category);
+            }
+            
+            // Sort
             switch (sortBy) {
                 case 'newest':
                     filtered.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
@@ -1752,36 +1954,43 @@
         // Handle Inquiry Form
         function handleInquiry(e) {
             e.preventDefault();
-            const data = {
+            
+            const formData = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
-                product: document.getElementById('productInterest').value,
+                email: document.getElementById('email').value,
+                productInterest: document.getElementById('productInterest').value,
                 message: document.getElementById('message').value
             };
             
-            const whatsappMessage = `New Inquiry:\nName: ${data.name}\nPhone: ${data.phone}\nProduct: ${data.product}\nMessage: ${data.message}`;
-            const url = `https://wa.me/${companyData.whatsapp || CONFIG.defaults.whatsapp}?text=${encodeURIComponent(whatsappMessage)}`;
-            window.open(url, '_blank');
+            const whatsappNumber = companyData.whatsapp || CONFIG.defaults.whatsapp;
+            const whatsappMessage = `New Inquiry from Website:\n\nName: ${formData.name}\nPhone: ${formData.phone}\nProduct Interest: ${formData.productInterest}\nMessage: ${formData.message}`;
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+            
+            window.open(whatsappUrl, '_blank');
             e.target.reset();
+            
+            alert('Thank you! Your inquiry has been sent.');
         }
 
         // Update Sync Time
         function updateSyncTime() {
             const now = new Date();
-            document.getElementById('lastSyncTime').textContent = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('lastSyncTime').textContent = timeStr;
         }
 
         // Show Sync Status
-        function showSyncStatus(message, type) {
-            const badge = document.getElementById('syncStatus');
-            badge.textContent = message;
-            badge.style.color = type === 'success' ? 'var(--success)' : 'var(--gold-light)';
+        function showSyncStatus(message, type = 'syncing') {
+            const statusEl = document.getElementById('syncStatus');
+            statusEl.textContent = message;
+            statusEl.style.color = type === 'success' ? 'var(--success)' : 'var(--gold-light)';
         }
 
-        // Auto Refresh
+        // Start Auto Refresh
         function startAutoRefresh() {
-            setInterval(() => {
-                loadAllData();
+            setInterval(async () => {
+                await loadAllData();
                 showSyncStatus('Auto-refreshed', 'success');
             }, 5 * 60 * 1000);
         }
@@ -1802,13 +2011,14 @@
             };
         }
 
-        // Expose functions
+        // Expose functions globally
         window.switchTab = switchTab;
-        window.showProductDetails = showProductDetails;
+        window.openProductModal = openProductModal;
         window.closeProductModal = closeProductModal;
         window.closeMobileMenu = closeMobileMenu;
         window.forceRefresh = forceRefresh;
         window.loadLiveUpdates = loadLiveUpdates;
+        window.loadProducts = loadProducts;
     </script>
 </body>
 </html>

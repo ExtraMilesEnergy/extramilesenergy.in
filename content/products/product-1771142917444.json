@@ -1,0 +1,26 @@
+{
+  "id": "product-1771142917444",
+  "name": "TEST PRODUCT",
+  "slug": "test-product",
+  "voltage": "SADFASF",
+  "category": "EV Battery",
+  "price": "SDFSD",
+  "model": "GDSFGSDFG",
+  "configuration": "DSFGSDFG",
+  "chemistry": "LiFePO₄SDFGSDFG",
+  "warranty": "3 Year WarrSDFGSDFanty",
+  "features": [
+    "GSDFGSDFGDF"
+  ],
+  "description": "GSDFGSDF",
+  "specs": "GSDFGSDFG",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142917448-whatsapp-image-2026-01-25-at-5.55.58-pm.jpeg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142920581-whatsapp-image-2026-01-25-at-6.49.52-pm.jpeg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142922482-whatsapp-image-2026-01-25-at-6.57.47-pm.jpeg"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T08:08:37.445Z",
+  "updatedAt": "2026-02-15T08:08:37.445Z"
+}

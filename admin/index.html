@@ -717,6 +717,44 @@
             border-radius: 3px;
         }
         
+        /* GitHub Actions Control */
+        .actions-control {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: var(--radius);
+            border: 1px solid var(--danger);
+        }
+        
+        .actions-header {
+            color: var(--danger);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .actions-option {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .actions-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .workflow-stats {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--radius-sm);
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -1475,11 +1513,14 @@
                     </div>
                     
                     <!-- GitHub Actions Control Section -->
-                    <div style="margin-top: 30px; padding: 20px; background: rgba(255, 0, 0, 0.1); border-radius: var(--radius); border: 1px solid var(--danger);">
-                        <h4 style="color: var(--danger); margin-bottom: 15px;">⚠️ GitHub Actions Control</h4>
+                    <div class="actions-control">
+                        <h4 class="actions-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            GitHub Actions Control
+                        </h4>
                         
-                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
-                            <div>
+                        <div class="actions-option">
+                            <div style="flex: 1;">
                                 <label style="color: var(--gold-light); display: block; margin-bottom: 10px;">
                                     <input type="checkbox" id="disableGithubActions" onchange="toggleGithubActions()">
                                     Disable automatic GitHub Pages builds
@@ -1490,12 +1531,12 @@
                                 </p>
                             </div>
                             
-                            <button class="btn btn-danger" onclick="deleteAllWorkflowRuns()" style="margin-left: auto;">
+                            <button class="btn btn-danger" onclick="deleteAllWorkflowRuns()">
                                 <i class="fas fa-trash"></i> Delete All Workflow Runs
                             </button>
                         </div>
                         
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div class="actions-buttons">
                             <button class="btn btn-danger" onclick="addNoBuildFile()">
                                 <i class="fas fa-ban"></i> Disable GitHub Actions (Add .nojekyll)
                             </button>
@@ -1504,7 +1545,7 @@
                             </button>
                         </div>
                         
-                        <div style="margin-top: 20px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: var(--radius-sm);">
+                        <div class="workflow-stats">
                             <p style="color: var(--gold-light);">
                                 <i class="fas fa-info-circle"></i> 
                                 Current workflow runs: <span id="workflowCount">Loading...</span>
@@ -1697,7 +1738,7 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            if (event) event.target.classList.add('active');
             
             if (tabId === 'dashboard') {
                 updateDashboardStats();
@@ -1889,6 +1930,7 @@
             document.getElementById('activeProducts').textContent = products.filter(p => p.status === 'active').length;
             document.getElementById('draftProducts').textContent = products.filter(p => p.status === 'draft').length;
             document.getElementById('productsCount').textContent = products.length;
+            document.getElementById('pagesGenerated').textContent = products.filter(p => localStorage.getItem(`product_page_${p.id}`)).length;
             
             // Update last sync time
             const lastSync = localStorage.getItem('last_sync_time');
@@ -1994,7 +2036,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('workflowCount').innerHTML = 
-                        `<a href="https://github.com/${githubConfig.username}/${githubConfig.repo}/actions" target="_blank">${data.total_count} runs</a>`;
+                        `<a href="https://github.com/${githubConfig.username}/${githubConfig.repo}/actions" target="_blank" style="color: var(--gold);">${data.total_count} runs</a>`;
                 }
             } catch (error) {
                 console.error('Error loading workflow count:', error);
@@ -2248,7 +2290,9 @@
             const actionsDisabled = localStorage.getItem('github_actions_disabled') === 'true';
             
             try {
-                const btn = event?.target;
+                // Find the button that was clicked
+                const btn = document.querySelector('.btn-success:has(.fa-cloud-upload-alt)') || null;
+                
                 if (btn) {
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
                     btn.disabled = true;
@@ -2313,6 +2357,7 @@
                 console.error('Error syncing product:', error);
                 alert('❌ Error syncing product: ' + error.message);
             } finally {
+                const btn = document.querySelector('.btn-success:has(.fa-cloud-upload-alt)') || null;
                 if (btn) {
                     btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Push to GitHub';
                     btn.disabled = false;

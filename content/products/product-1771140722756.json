@@ -1,0 +1,26 @@
+{
+  "id": "product-1771140722756",
+  "name": "GOOTU HYBRID SOLAR INVERTER",
+  "slug": "gootu-hybrid-solar-inverter",
+  "voltage": "5KW",
+  "category": "EV Battery",
+  "price": "70200",
+  "model": "GOOTU 5KVA",
+  "configuration": "ADSA",
+  "chemistry": "LiFePO₄",
+  "warranty": "3 Year Warranty",
+  "features": [
+    "ADFASF"
+  ],
+  "description": "ASDFASDFASDFASDFSA",
+  "specs": "ASDFASDFA",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771140722759-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771140724341-gootu-6kw-hybrid.png",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771140726442-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T07:32:02.756Z",
+  "updatedAt": "2026-02-15T07:32:02.756Z"
+}

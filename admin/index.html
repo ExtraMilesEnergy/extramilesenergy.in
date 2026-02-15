@@ -1265,7 +1265,7 @@
                 </div>
             </div>
             
-                       <!-- Product Pages Tab -->
+            <!-- Product Pages Tab -->
             <div id="pages" class="tab-content">
                 <div class="form-container">
                     <h3 style="margin-bottom: 20px; color: var(--gold);">Product Pages Management</h3>
@@ -1294,15 +1294,17 @@
                         <div style="margin-top: 30px; padding: 15px; background: rgba(53, 208, 255, 0.1); border-radius: var(--radius); border: 1px solid var(--accent);">
                             <h4 style="color: var(--accent); margin-bottom: 10px;">How to use Product Pages</h4>
                             <div style="color: var(--text-muted); font-size: 0.9rem;">
-                                <p>1. <strong>Generate All Pages</strong> - Creates HTML pages for all active products and saves them in your browser</p>
-                                <p>2. <strong>Update Pages Index</strong> - Creates a master index of all product pages</p>
-                                <p>3. <strong>Sync Pages to GitHub</strong> - Uploads all generated pages to your GitHub repository</p>
-                                <p><i class="fas fa-info-circle"></i> After generating pages, you can view them by clicking on product names below.</p>
+                                <p>1. <strong>Generate All Pages</strong> - Creates HTML pages for all active products</p>
+                                <p>2. <strong>Update Pages Index</strong> - Creates a master index page</p>
+                                <p>3. <strong>Sync Pages to GitHub</strong> - Uploads pages to GitHub repository</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
     <!-- Camera Modal -->
     <div id="cameraModal" class="camera-modal">
         <div class="camera-container">
@@ -1357,21 +1359,39 @@
             websiteUrl: 'https://extramilesenergy.in'
         };
         
-        // Auto login on page load
+        // Auto login on page load - FIXED
         document.addEventListener('DOMContentLoaded', function() {
-            directLogin();
+            console.log('DOM loaded');
+            // Load settings but don't auto login
             loadSettings();
             loadCompanyDetails();
         });
         
-        // Direct login function - no password required
+        // Direct login function - FIXED
         function directLogin() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminDashboard').style.display = 'block';
-            loadProducts();
-            updateSystemInfo();
-            loadRecentActivity();
-            addActivity('Admin logged in');
+            console.log('Direct login called');
+            try {
+                const loginPage = document.getElementById('loginPage');
+                const dashboard = document.getElementById('adminDashboard');
+                
+                if (loginPage && dashboard) {
+                    loginPage.style.display = 'none';
+                    dashboard.style.display = 'block';
+                    
+                    // Load all data
+                    loadProducts();
+                    updateSystemInfo();
+                    loadRecentActivity();
+                    addActivity('Admin logged in');
+                    
+                    console.log('✅ Login successful');
+                } else {
+                    console.error('Elements not found');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login error: ' + error.message);
+            }
         }
         
         function logout() {
@@ -1385,7 +1405,12 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            // Find and activate the clicked button
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(tabId)) {
+                    btn.classList.add('active');
+                }
+            });
             
             if (tabId === 'dashboard') updateDashboardStats();
             if (tabId === 'pages') loadPagesList();
@@ -1588,6 +1613,15 @@
                 const date = new Date(lastBackup);
                 document.getElementById('lastBackup').textContent = date.toLocaleString('en-IN');
             }
+            
+            // Browser info
+            const ua = navigator.userAgent;
+            let browser = 'Unknown';
+            if (ua.includes('Chrome')) browser = 'Chrome';
+            else if (ua.includes('Firefox')) browser = 'Firefox';
+            else if (ua.includes('Safari')) browser = 'Safari';
+            else if (ua.includes('Edge')) browser = 'Edge';
+            document.getElementById('browserInfo').textContent = browser;
         }
         
         async function saveProduct() {
@@ -2024,7 +2058,7 @@
             document.getElementById('websiteDescription').value = companyDetails.websiteDescription;
         }
         
-        // Save company details to GitHub
+        // Save company details to GitHub - FIXED
         async function saveCompanyDetails() {
             companyDetails = {
                 name: document.getElementById('companyName').value,
@@ -2323,7 +2357,7 @@
             reader.readAsText(file);
         }
         
-        // ============ PRODUCT PAGES MANAGEMENT - UPDATED VERSION ============
+        // ============ PRODUCT PAGES MANAGEMENT ============
         
         function loadPagesList() {
             const container = document.getElementById('pagesList');
@@ -2830,7 +2864,7 @@
             
             alert(`✅ ${count} product pages generated successfully!`);
             addActivity(`Generated ${count} product pages`);
-            loadPagesList(); // Refresh the list
+            loadPagesList();
         }
         
         function updatePagesIndex() {

@@ -20,5 +20,28 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127190951-cell.jpg"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771127521452",
+    "name": "GOOTU 6 KW SOLAR HYBRID INVERTER",
+    "slug": "gootu-6-kw-solar-hybrid-inverter",
+    "voltage": "6KW",
+    "category": "Solar Inverter",
+    "price": "48500",
+    "model": "GT648",
+    "configuration": "",
+    "chemistry": "LiFePO₄",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "FETURE"
+    ],
+    "description": "DIS",
+    "specs": "BEST",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127521455-gootu-6kw-hybrid.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127523530-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
+    ],
+    "displayOrder": 0
   }
 ]

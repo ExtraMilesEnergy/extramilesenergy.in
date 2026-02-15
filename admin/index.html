@@ -1567,12 +1567,27 @@
             document.getElementById('activeProducts').textContent = products.filter(p => p.status === 'active').length;
             document.getElementById('draftProducts').textContent = products.filter(p => p.status === 'draft').length;
             document.getElementById('productsCount').textContent = products.length;
+            
+            // Update last sync time
+            const lastSync = localStorage.getItem('last_sync_time');
+            if (lastSync) {
+                const date = new Date(lastSync);
+                document.getElementById('lastSync').textContent = date.toLocaleString('en-IN');
+            } else {
+                document.getElementById('lastSync').textContent = 'Never';
+            }
         }
         
         function updateSystemInfo() {
             const used = JSON.stringify(localStorage).length;
             const limit = 5 * 1024 * 1024;
             document.getElementById('storageInfo').textContent = `${Math.round((used / limit) * 100)}% used`;
+            
+            const lastBackup = localStorage.getItem('last_backup_time');
+            if (lastBackup) {
+                const date = new Date(lastBackup);
+                document.getElementById('lastBackup').textContent = date.toLocaleString('en-IN');
+            }
         }
         
         async function saveProduct() {
@@ -1714,7 +1729,6 @@
                         // Create filename with timestamp to avoid duplicates
                         const timestamp = Date.now();
                         const originalName = imageFile.name;
-                        const extension = originalName.split('.').pop();
                         const safeName = originalName.toLowerCase()
                             .replace(/\s+/g, '-')
                             .replace(/[^a-z0-9.-]/g, '');
@@ -2010,7 +2024,8 @@
             document.getElementById('websiteDescription').value = companyDetails.websiteDescription;
         }
         
-        function saveCompanyDetails() {
+        // Save company details to GitHub
+        async function saveCompanyDetails() {
             companyDetails = {
                 name: document.getElementById('companyName').value,
                 brand: document.getElementById('brandName').value,
@@ -2024,9 +2039,69 @@
                 websiteTitle: document.getElementById('websiteTitle').value,
                 websiteDescription: document.getElementById('websiteDescription').value
             };
+            
             localStorage.setItem('company_details', JSON.stringify(companyDetails));
-            showMessage('companyMessage', 'Company details saved!', 'success');
+            
+            // Save to GitHub if token exists
+            if (githubConfig && githubConfig.token) {
+                try {
+                    await saveCompanyDetailsToGitHub();
+                    showMessage('companyMessage', 'Company details saved and synced to GitHub!', 'success');
+                    addActivity('Company details synced to GitHub');
+                } catch (error) {
+                    console.error('Error syncing company details:', error);
+                    showMessage('companyMessage', 'Company details saved locally but GitHub sync failed', 'warning');
+                }
+            } else {
+                showMessage('companyMessage', 'Company details saved locally!', 'success');
+            }
+            
             addActivity('Updated company details');
+        }
+        
+        // Save company details to GitHub
+        async function saveCompanyDetailsToGitHub() {
+            const content = JSON.stringify(companyDetails, null, 2);
+            const base64Content = btoa(unescape(encodeURIComponent(content)));
+            const filePath = githubConfig.companyPath;
+            
+            // Get SHA if exists
+            let sha = null;
+            try {
+                const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
+                    headers: {
+                        'Authorization': `token ${githubConfig.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (getResponse.ok) {
+                    const fileData = await getResponse.json();
+                    sha = fileData.sha;
+                }
+            } catch (e) {}
+            
+            // Upload to GitHub
+            const response = await fetch(`https://api.github.com/repos/${githubConfig.username}/${githubConfig.repo}/contents/${filePath}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${githubConfig.token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({
+                    message: 'Update company details',
+                    content: base64Content,
+                    branch: githubConfig.branch,
+                    ...(sha && { sha })
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to save company details to GitHub');
+            }
+            
+            return true;
         }
         
         function loadSettings() {
@@ -2128,6 +2203,9 @@
                 
                 alert(`✅ Connected to ${user.login}\nRepository found! Syncing all products...`);
                 
+                // Sync company details first
+                await saveCompanyDetailsToGitHub();
+                
                 // Sync all products
                 let successCount = 0;
                 for (const product of products) {
@@ -2142,7 +2220,7 @@
                 localStorage.setItem('last_sync_time', new Date().toISOString());
                 updateDashboardStats();
                 
-                alert(`✅ Sync completed!\n${successCount} of ${products.length} products synced to GitHub.`);
+                alert(`✅ Sync completed!\n${successCount} of ${products.length} products synced to GitHub.\nCompany details also synced.`);
                 addActivity(`Synced ${successCount} products to GitHub`);
                 
             } catch (error) {
@@ -2177,7 +2255,8 @@
                 products,
                 companyDetails,
                 githubConfig,
-                activities: JSON.parse(localStorage.getItem('admin_activities') || '[]')
+                activities: JSON.parse(localStorage.getItem('admin_activities') || '[]'),
+                backupDate: new Date().toISOString()
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -2186,6 +2265,7 @@
             a.download = `backup-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             localStorage.setItem('last_backup_time', new Date().toISOString());
+            updateSystemInfo();
             addActivity('Created full backup');
         }
         
@@ -2318,10 +2398,23 @@
         }
         
         function generateProductPageEnhanced(product) {
-            // Get primary image
-            const primaryImage = product.images && product.images.length > 0 
-                ? product.images[0] 
-                : 'https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name);
+            // Get all images for gallery
+            const allImages = product.images && product.images.length > 0 ? product.images : [];
+            const primaryImage = allImages.length > 0 ? allImages[0] : 'https://via.placeholder.com/500x400/142044/FFD700?text=' + encodeURIComponent(product.name);
+            
+            // Create thumbnail gallery HTML if multiple images exist
+            let galleryHtml = '';
+            if (allImages.length > 1) {
+                galleryHtml = `
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        ${allImages.map((img, idx) => `
+                            <div onclick="document.getElementById('mainProductImage').src='${img}'" style="width: 60px; height: 60px; border: 2px solid var(--gold); border-radius: 8px; cursor: pointer; overflow: hidden;">
+                                <img src="${img}" style="width: 100%; height: 100%; object-fit: cover;" alt="Thumbnail ${idx+1}">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
             
             // Format features as list items
             const featuresList = product.features && product.features.length > 0
@@ -2419,10 +2512,14 @@
             font-size: 1.5rem;
         }
         
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
         .nav-links a {
             color: var(--gold-light);
             text-decoration: none;
-            margin-left: 20px;
         }
         
         .nav-links a:hover {
@@ -2440,18 +2537,47 @@
             margin-bottom: 40px;
         }
         
-        .product-image {
+        .product-images {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid rgba(255, 215, 0, 0.3);
             border-radius: 12px;
             padding: 20px;
         }
         
-        .product-image img {
+        .main-image {
             width: 100%;
             height: auto;
             max-height: 400px;
             object-fit: contain;
+            margin-bottom: 20px;
+        }
+        
+        .thumbnail-gallery {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .thumbnail {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: var(--gold-light);
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .product-info h1 {
@@ -2616,8 +2742,9 @@
     <main class="product-page">
         <div class="container">
             <div class="product-grid">
-                <div class="product-image">
-                    <img src="${primaryImage}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                <div class="product-images">
+                    <img src="${primaryImage}" alt="${product.name}" class="main-image" id="mainProductImage" onerror="this.src='https://via.placeholder.com/500x400/142044/FFD700?text=Product'">
+                    ${galleryHtml}
                 </div>
                 
                 <div class="product-info">
@@ -2674,6 +2801,12 @@
             </div>
         </div>
     </footer>
+    
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainProductImage').src = src;
+        }
+    </script>
 </body>
 </html>`;
             

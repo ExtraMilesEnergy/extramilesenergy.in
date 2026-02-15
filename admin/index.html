@@ -822,27 +822,32 @@
             
             <div id="loginMessage" class="message"></div>
             
-            <!-- Master Password Login (Sirf Aapke Liye) -->
-            <div id="directLoginSection">
-                <div class="form-group">
-                    <label class="form-label">Master Password</label>
-                    <input type="password" id="masterPassword" class="form-input" placeholder="Enter master password">
-                </div>
-                
-                <button class="btn btn-block" onclick="directLoginWithPassword()">
-                    <i class="fas fa-key"></i> Master Login
-                </button>
-                
-                <div style="margin: 20px 0; position: relative;">
-                    <hr style="border-color: rgba(255,215,0,0.3);">
-                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--card-bg); padding: 0 10px; color: var(--text-muted);">OR</span>
-                </div>
-                
-                <button class="btn btn-info btn-block" onclick="showOTPLogin()">
-                    <i class="fab fa-telegram"></i> Login with Telegram OTP
-                </button>
-            </div>
-            
+        <!-- Telegram OTP Login - Only Option -->
+<div id="telegramLoginSection">
+    <div style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <p style="color: var(--gold-light); margin-bottom: 10px;">📱 Login with Telegram</p>
+        <p style="color: var(--success); font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+            <i class="fas fa-check-circle"></i> @ExtraMilesEnergyBot Connected
+        </p>
+    </div>
+    
+    <div class="form-group">
+        <label class="form-label">Enter OTP</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="otpInput" class="form-input" placeholder="6-digit OTP" maxlength="6" style="flex: 1; text-align: center; font-size: 1.5rem; letter-spacing: 8px; font-weight: bold;">
+            <button class="btn btn-info" onclick="sendOTP()" id="sendOtpBtn" style="min-width: 80px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <small style="color: var(--text-muted);">OTP will be sent to your Telegram</small>
+    </div>
+    
+    <div id="otpTimer" style="margin: 15px 0; color: var(--gold-light); font-size: 1rem; text-align: center;"></div>
+    
+    <button class="btn btn-success btn-block" onclick="verifyOTP()" id="verifyOtpBtn" style="padding: 15px;">
+        <i class="fas fa-check-circle"></i> Verify & Login
+    </button>
+</div>           
             <!-- OTP Login Section -->
             <div id="otpSection" style="display: none;">
                 <h3 style="color: var(--gold); margin-bottom: 20px;">🔐 Telegram OTP</h3>
@@ -1719,7 +1724,7 @@
         const ADMIN_CHAT_ID = '6870582329';
         let currentOTP = null;
         let otpTimer = null;
-        const MASTER_PASSWORD = 'ExtraMiles@2026'; // Change this!
+       
 
         // Send OTP via Telegram
         async function sendOTP() {
@@ -1836,43 +1841,21 @@
         }
 
         // Show OTP Login Section
-        function showOTPLogin() {
-            document.getElementById('directLoginSection').style.display = 'none';
-            document.getElementById('otpSection').style.display = 'block';
-            document.getElementById('otpInput').value = '';
-            document.getElementById('verifyOtpBtn').disabled = false;
-        }
+       // Show OTP Login (directly show OTP section)
+function showOTPLogin() {
+    // Ab direct OTP section dikhega, kuch nahi chhupana
+}
 
-        // Cancel OTP and go back
-        function cancelOTP() {
-            document.getElementById('directLoginSection').style.display = 'block';
-            document.getElementById('otpSection').style.display = 'none';
-            document.getElementById('otpInput').value = '';
-            if (otpTimer) clearInterval(otpTimer);
-            document.getElementById('otpTimer').innerHTML = '';
-            currentOTP = null;
-        }
+// Cancel OTP and reset
+function cancelOTP() {
+    document.getElementById('otpInput').value = '';
+    if (otpTimer) clearInterval(otpTimer);
+    document.getElementById('otpTimer').innerHTML = '';
+    currentOTP = null;
+}
 
         // Master Password Login
-        function directLoginWithPassword() {
-            const password = document.getElementById('masterPassword').value;
-            
-            if (password === MASTER_PASSWORD) {
-                showMessage('loginMessage', '✅ Master login successful!', 'success');
-                
-                setTimeout(() => {
-                    document.getElementById('loginPage').style.display = 'none';
-                    document.getElementById('adminDashboard').style.display = 'block';
-                    
-                    loadProducts();
-                    updateSystemInfo();
-                    loadRecentActivity();
-                    addActivity('Admin logged in via master password');
-                }, 500);
-            } else {
-                showMessage('loginMessage', '❌ Invalid master password!', 'error');
-            }
-        }
+       
 
         // ============ MAIN CONFIGURATION ============
         let products = [];
@@ -1907,19 +1890,27 @@
             websiteUrl: 'https://extramilesenergy.in'
         };
         
-        // Auto login on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Don't auto login anymore
-            loadSettings();
-            loadCompanyDetails();
-            updateGitHubStatus();
-            loadWorkflowCount();
-            
-            // Load GitHub Actions setting
-            const disabled = localStorage.getItem('github_actions_disabled') === 'true';
-            document.getElementById('disableGithubActions').checked = disabled;
-            updateActionsStatus();
-        });
+        // Auto login on page load - ONLY SHOW LOGIN PAGE
+document.addEventListener('DOMContentLoaded', function() {
+    // Show login page by default
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('adminDashboard').style.display = 'none';
+    
+    // Load all settings
+    loadSettings();
+    loadCompanyDetails();
+    updateGitHubStatus();
+    loadWorkflowCount();
+    
+    // Load GitHub Actions setting
+    const disabled = localStorage.getItem('github_actions_disabled') === 'true';
+    const checkbox = document.getElementById('disableGithubActions');
+    if (checkbox) checkbox.checked = disabled;
+    updateActionsStatus();
+    
+    // Reset OTP
+    cancelOTP();
+});
         
         // Show message function
         function showMessage(elementId, text, type) {
@@ -1932,13 +1923,12 @@
         }
         
         // Logout function
-        function logout() {
-            addActivity('Admin logged out');
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('masterPassword').value = '';
-            cancelOTP();
-        }
+function logout() {
+    addActivity('Admin logged out');
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('adminDashboard').style.display = 'none';
+    cancelOTP(); // Reset OTP
+}
         
         // Show tab function
         function showTab(tabId) {

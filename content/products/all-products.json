@@ -166,5 +166,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771148142440-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771152380926",
+    "name": "TEST 12",
+    "slug": "test-12",
+    "voltage": "TEST 12",
+    "category": "EV Battery",
+    "price": "TEST 12",
+    "model": "TEST 12",
+    "configuration": "TEST 12",
+    "chemistry": "LiFePO₄",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "TEST 12"
+    ],
+    "description": "EAT 12",
+    "specs": "TEST 12",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771152380928-cell.jpg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771152382235-download.jpeg",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771152383885-gootu-6kw-hybrid.png"
+    ],
+    "displayOrder": 0
   }
 ]

@@ -1,0 +1,24 @@
+{
+  "id": "product-1771127190948",
+  "name": "ELECTRIC SCOOTER LITHIUM BATTERY 60V30AH",
+  "slug": "electric-scooter-lithium-battery-60v30ah",
+  "voltage": "60V 30AH",
+  "category": "EV Battery",
+  "price": "23500",
+  "model": "EM-LFP6030",
+  "configuration": "19S2P",
+  "chemistry": "LiFePO₄",
+  "warranty": "3 Year Warranty",
+  "features": [
+    "3 YEAR WARRENTY"
+  ],
+  "description": "DISCRIP",
+  "specs": "4500 LIFE CYCELE",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127190951-cell.jpg"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T03:46:30.948Z",
+  "updatedAt": "2026-02-15T03:46:30.948Z"
+}

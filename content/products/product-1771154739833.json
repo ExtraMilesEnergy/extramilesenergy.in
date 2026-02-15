@@ -1,0 +1,27 @@
+{
+  "id": "product-1771154739833",
+  "name": "TEST 14",
+  "slug": "test-14",
+  "voltage": "TEST 14",
+  "category": "E-Rickshaw Battery",
+  "price": "TEST 14",
+  "model": "TEST 14",
+  "configuration": "TEST 14",
+  "chemistry": "LiFePO₄",
+  "warranty": "3 Year Warranty",
+  "features": [
+    "TEST 14"
+  ],
+  "description": "TEST 14",
+  "specs": "TEST 14",
+  "status": "active",
+  "images": [
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154739835-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154741904-cell.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154743065-download.jpeg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771154745070-gootu-6kw-hybrid.png"
+  ],
+  "displayOrder": 0,
+  "createdAt": "2026-02-15T11:25:39.833Z",
+  "updatedAt": "2026-02-15T11:25:39.833Z"
+}

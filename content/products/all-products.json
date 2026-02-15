@@ -142,5 +142,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771147564698-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771148138553",
+    "name": "GOOTU TEST 11",
+    "slug": "gootu-test-11",
+    "voltage": "TEST 11",
+    "category": "Solar Inverter",
+    "price": "TEST 11",
+    "model": "TEST 11",
+    "configuration": "TEST 11",
+    "chemistry": "LiFePO₄TEST 11",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "TEST 11"
+    ],
+    "description": "TEST 11",
+    "specs": "TEST 11",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771148138556-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771148140435-gootu-6kw-hybrid.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771148142440-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
+    ],
+    "displayOrder": 0
   }
 ]

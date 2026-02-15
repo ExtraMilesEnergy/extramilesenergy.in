@@ -16,14 +16,17 @@
   "specs": "BEST",
   "status": "active",
   "images": [
-    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127521455-gootu-6kw-hybrid.png",
-    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771127523530-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771134474037-c1aa02c5a3f08c62aa9c5d2d75.jpg95q.webp",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771134475506-cell.jpg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771134476593-download.jpeg",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771134477869-gootu-6kw-hybrid.png",
+    "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771134479663-gootu-new-product-6kw-solar-inverter-mppt-max-27a-9000w-input-pv-hybrid-inverter-1000x1000.webp"
   ],
   "displayOrder": 0,
   "createdAt": "2026-02-15T03:52:01.452Z",
-  "updatedAt": "2026-02-15T03:52:01.452Z",
-  "inverterPower": "6000VA/6000W",
-  "inverterInput": "48VOLT BATTERY",
-  "inverterOutput": "230V AC",
+  "updatedAt": "2026-02-15T05:47:54.035Z",
+  "inverterPower": "",
+  "inverterInput": "",
+  "inverterOutput": "",
   "inverterWaveform": "Pure Sine Wave"
 }

@@ -94,5 +94,29 @@
       "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771142922482-whatsapp-image-2026-01-25-at-6.57.47-pm.jpeg"
     ],
     "displayOrder": 0
+  },
+  {
+    "id": "product-1771146702889",
+    "name": "TEST 7 PRODUCT",
+    "slug": "test-7-product",
+    "voltage": "SADFADF",
+    "category": "EV Battery",
+    "price": "2131",
+    "model": "ADFA",
+    "configuration": "ASDFFASD",
+    "chemistry": "LiFePO₄",
+    "warranty": "3 Year Warranty",
+    "features": [
+      "AD"
+    ],
+    "description": "AD",
+    "specs": "AD",
+    "status": "active",
+    "images": [
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771146702895-2026-02-15-7.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771146705521-2026-02-15-8.png",
+      "https://raw.githubusercontent.com/ExtraMilesEnergy/extramilesenergy.in/main/uploads/1771146708060-2026-02-15-9.png"
+    ],
+    "displayOrder": 0
   }
 ]

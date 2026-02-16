@@ -748,6 +748,238 @@ window.capturePhoto = function() {
         closeCamera();
     }, 'image/jpeg');
 };
+// ============ GITHUB SETTINGS FUNCTIONS ============
+
+// Test GitHub Connection
+window.testGitHubConnection = async function() {
+    console.log("🔌 Testing GitHub connection");
+    
+    const username = document.getElementById('settings_github_username')?.value || 'ExtraMilesEnergy';
+    const repo = document.getElementById('settings_github_repo')?.value || 'extramilesenergy.in';
+    const token = document.getElementById('settings_github_token')?.value;
+    const branch = document.getElementById('settings_github_branch')?.value || 'main';
+    const productsPath = document.getElementById('settings_products_path')?.value || 'all-products.json';
+    
+    if (!token) {
+        window.showMessage('Please enter your GitHub token', 'error');
+        return;
+    }
+    
+    const statusDiv = document.getElementById('githubConnectionStatus');
+    statusDiv.style.display = 'block';
+    statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Testing connection...</div>';
+    
+    try {
+        // Test 1: Check if repository exists
+        const repoUrl = `https://api.github.com/repos/${username}/${repo}`;
+        const repoResponse = await fetch(repoUrl, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        if (!repoResponse.ok) {
+            statusDiv.innerHTML = `
+                <div class="message error" style="display: block;">
+                    <i class="fas fa-times-circle"></i> Repository not found or token invalid.<br>
+                    Make sure repository "${username}/${repo}" exists and token has correct permissions.
+                </div>
+            `;
+            return;
+        }
+        
+        const repoData = await repoResponse.json();
+        
+        // Test 2: Check if products file exists
+        const fileUrl = `https://api.github.com/repos/${username}/${repo}/contents/${productsPath}`;
+        const fileResponse = await fetch(fileUrl, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        let fileStatus = '';
+        if (fileResponse.ok) {
+            fileStatus = '<span style="color: var(--success);">✅ File exists</span>';
+        } else {
+            fileStatus = '<span style="color: var(--warning);">⚠️ File not found (will be created)</span>';
+        }
+        
+        statusDiv.innerHTML = `
+            <div class="message success" style="display: block;">
+                <i class="fas fa-check-circle"></i> GitHub connection successful!<br><br>
+                <strong>Repository:</strong> ${repoData.full_name}<br>
+                <strong>Default Branch:</strong> ${repoData.default_branch}<br>
+                <strong>Private:</strong> ${repoData.private ? 'Yes' : 'No'}<br>
+                <strong>Products File:</strong> ${productsPath} - ${fileStatus}<br>
+                <strong>Token Permissions:</strong> Valid
+            </div>
+        `;
+        
+        // Save token to session (not localStorage)
+        sessionStorage.setItem('github_token', token);
+        
+    } catch (error) {
+        console.error('Connection test error:', error);
+        statusDiv.innerHTML = `
+            <div class="message error" style="display: block;">
+                <i class="fas fa-times-circle"></i> Connection failed: ${error.message}
+            </div>
+        `;
+    }
+};
+
+// Save GitHub Settings
+window.saveGitHubSettings = function() {
+    console.log("💾 Saving GitHub settings");
+    
+    const settings = {
+        username: document.getElementById('settings_github_username')?.value || 'ExtraMilesEnergy',
+        repo: document.getElementById('settings_github_repo')?.value || 'extramilesenergy.in',
+        branch: document.getElementById('settings_github_branch')?.value || 'main',
+        productsPath: document.getElementById('settings_products_path')?.value || 'all-products.json'
+    };
+    
+    // Save to localStorage (except token)
+    localStorage.setItem('github_settings', JSON.stringify(settings));
+    
+    const token = document.getElementById('settings_github_token')?.value;
+    if (token) {
+        sessionStorage.setItem('github_token', token);
+    }
+    
+    window.showMessage('GitHub settings saved successfully', 'success');
+    
+    // Update connection status
+    const statusDiv = document.getElementById('githubConnectionStatus');
+    statusDiv.style.display = 'block';
+    statusDiv.innerHTML = `
+        <div class="message success" style="display: block;">
+            <i class="fas fa-check-circle"></i> Settings saved. Click "Test Connection" to verify.
+        </div>
+    `;
+};
+
+// Load GitHub Settings
+window.loadGitHubSettings = function() {
+    console.log("📂 Loading GitHub settings");
+    
+    const saved = localStorage.getItem('github_settings');
+    if (saved) {
+        try {
+            const settings = JSON.parse(saved);
+            document.getElementById('settings_github_username').value = settings.username || 'ExtraMilesEnergy';
+            document.getElementById('settings_github_repo').value = settings.repo || 'extramilesenergy.in';
+            document.getElementById('settings_github_branch').value = settings.branch || 'main';
+            document.getElementById('settings_products_path').value = settings.productsPath || 'all-products.json';
+        } catch (e) {
+            console.error('Error loading settings:', e);
+        }
+    }
+    
+    // Check for saved token in session
+    const token = sessionStorage.getItem('github_token');
+    if (token) {
+        document.getElementById('settings_github_token').value = token;
+    }
+};
+
+// Reset GitHub Settings
+window.resetGitHubSettings = function() {
+    if (!confirm('Are you sure you want to reset all GitHub settings?')) return;
+    
+    localStorage.removeItem('github_settings');
+    sessionStorage.removeItem('github_token');
+    
+    // Reset form to defaults
+    document.getElementById('settings_github_username').value = 'ExtraMilesEnergy';
+    document.getElementById('settings_github_repo').value = 'extramilesenergy.in';
+    document.getElementById('settings_github_branch').value = 'main';
+    document.getElementById('settings_products_path').value = 'all-products.json';
+    document.getElementById('settings_github_token').value = '';
+    
+    const statusDiv = document.getElementById('githubConnectionStatus');
+    statusDiv.style.display = 'block';
+    statusDiv.innerHTML = `
+        <div class="message warning" style="display: block;">
+            <i class="fas fa-undo"></i> Settings reset to defaults
+        </div>
+    `;
+    
+    window.showMessage('Settings reset successfully', 'success');
+};
+
+// Clear GitHub Token
+window.clearGitHubToken = function() {
+    sessionStorage.removeItem('github_token');
+    document.getElementById('settings_github_token').value = '';
+    window.showMessage('GitHub token cleared', 'info');
+};
+
+// Sync Images to GitHub
+window.syncImagesToGitHub = async function() {
+    console.log("🖼️ Syncing images to GitHub");
+    window.showMessage('Image sync feature coming soon...', 'info');
+};
+
+// ============ UPDATE EXISTING FUNCTIONS TO USE SAVED SETTINGS ============
+
+// Override fetch functions to use saved token
+const originalFetch = window.fetch;
+window.fetch = function(url, options = {}) {
+    // Add GitHub token to API calls if available
+    if (url.includes('/api/') && !url.includes('/send-otp') && !url.includes('/verify-otp')) {
+        const token = sessionStorage.getItem('github_token');
+        if (token) {
+            options.headers = {
+                ...options.headers,
+                'X-GitHub-Token': token
+            };
+        }
+    }
+    return originalFetch(url, options);
+};
+
+// Update loadProducts to use token from session
+const originalLoadProducts = window.loadProducts;
+window.loadProducts = async function() {
+    console.log("📦 Loading products from GitHub with saved settings");
+    
+    const productsDiv = document.getElementById('productsList');
+    if (!productsDiv) return;
+    
+    productsDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Loading products...</div>';
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/products`, {
+            credentials: 'include',
+            headers: {
+                'X-GitHub-Token': sessionStorage.getItem('github_token') || ''
+            }
+        });
+        
+        if (response.ok) {
+            products = await response.json();
+            displayProducts();
+        } else {
+            productsDiv.innerHTML = '<div class="loading">Failed to load products. Check GitHub settings.</div>';
+        }
+    } catch (error) {
+        console.error('Error loading products:', error);
+        productsDiv.innerHTML = '<div class="loading">Network error. Make sure backend is running.</div>';
+    }
+};
+
+// Load settings when settings tab is shown
+const originalShowTab = window.showTab;
+window.showTab = function(tabId) {
+    originalShowTab(tabId);
+    if (tabId === 'settings') {
+        loadGitHubSettings();
+    }
+};
 
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', function() {

@@ -1,14 +1,10 @@
 {
-  "name": "Skyline Stores",
-  "brand": "Extra Miles Energy",
-  "gst": "TEST GST",
-  "tagline": "Premium LiFePO₄ Battery & Solar Solutions",
-  "address": "Shop No. 8, Opp. Aryan School, Kamri Road, Hisar - 125001",
-  "email": "extramilesenergy@gmail.com",
-  "phone1": "+91 9995647920000",
-  "phone2": "",
-  "whatsapp": "+917876555055",
-  "websiteTitle": "Extra Miles Energy - Premium Lithium Batteries & Solar Inverters",
-  "websiteDescription": "High-performance lithium batteries, solar inverters, and battery chargers.",
-  "updatedAt": "2026-02-15T09:46:36.044Z"
+  "name": "Extra Miles Energy",
+  "phone": "",
+  "whatsapp": "",
+  "email": "",
+  "gst": "",
+  "address": "",
+  "website": "",
+  "timings": "9:00 AM - 7:00 PM"
 }

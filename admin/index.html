@@ -851,6 +851,17 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="text" id="productWeight" class="form-input" placeholder="e.g., 25">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dimensions</label>
+                            <input type="text" id="productDimensions" class="form-input" placeholder="e.g., 300x200x150 mm">
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Description</label>
                         <textarea id="productDescription" class="form-input" rows="3" placeholder="Product description..."></textarea>
@@ -863,12 +874,12 @@
 
                     <div class="form-group">
                         <label class="form-label">Features (one per line)</label>
-                        <textarea id="productFeatures" class="form-input" rows="4" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+                        <textarea id="productFeatures" class="form-input" rows="4" placeholder="Long cycle life&#10;High energy density&#10;Built-in BMS&#10;Fast charging"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Applications (comma separated)</label>
-                        <input type="text" id="productApplications" class="form-input" placeholder="e.g., EV Scooter, E-Rickshaw, Home Backup">
+                        <input type="text" id="productApplications" class="form-input" placeholder="e.g., EV Scooter, E-Rickshaw, Home Backup, Solar Storage">
                     </div>
 
                     <div class="form-group">
@@ -877,7 +888,7 @@
                         <div class="file-upload-area" onclick="triggerFileUpload()">
                             <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; margin-bottom: 10px; color: var(--gold);"></i>
                             <p style="color: var(--gold-light);">Click to upload images or drag and drop</p>
-                            <small style="color: var(--text-muted);">PNG, JPG, GIF up to 10MB</small>
+                            <small style="color: var(--text-muted);">PNG, JPG, GIF up to 10MB (Multiple images allowed)</small>
                             <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
                         </div>
 
@@ -901,7 +912,7 @@
                 </div>
             </div>
 
-            <!-- ============ COMPANY TAB - FIXED ============ -->
+            <!-- ============ COMPANY TAB ============ -->
             <div id="company" class="tab-content">
                 <div class="form-container">
                     <h3 style="color:var(--gold); margin-bottom: 25px;">🏢 Company Details</h3>
@@ -914,11 +925,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Phone Number</label>
-                            <input type="text" id="company_phone" class="form-input" placeholder="e.g., +91 9876543210">
+                            <input type="text" id="company_phone" class="form-input" placeholder="e.g., 9876543210">
                         </div>
                         <div class="form-group">
                             <label class="form-label">WhatsApp Number</label>
-                            <input type="text" id="company_whatsapp" class="form-input" placeholder="e.g., +91 9876543210">
+                            <input type="text" id="company_whatsapp" class="form-input" placeholder="e.g., 9876543210">
                         </div>
                     </div>
                     
@@ -962,7 +973,7 @@
                 </div>
             </div>
 
-            <!-- ============ GITHUB SYNC TAB - FIXED ============ -->
+            <!-- ============ GITHUB SYNC TAB ============ -->
             <div id="githubSync" class="tab-content">
                 <div class="sync-panel">
                     <div class="sync-header">
@@ -1008,7 +1019,7 @@
                 </div>
             </div>
 
-            <!-- ============ SETTINGS TAB - FIXED with Token Option ============ -->
+            <!-- ============ SETTINGS TAB ============ -->
             <div id="settings" class="tab-content">
                 <div class="form-container">
                     <h3 style="color:var(--gold); margin-bottom: 25px;">⚙️ GitHub Settings</h3>
@@ -1087,9 +1098,15 @@
         console.log("✅ API_BASE defined:", API_BASE);
     </script>
 
-    <!-- Utils Script -->
+    <!-- Complete Admin Script -->
     <script>
-        // ============ UTILS FUNCTIONS ============
+        // ============ GLOBAL VARIABLES ============
+        let products = [];
+        let currentProductId = null;
+        let productImages = [];
+        let companyDetails = {};
+
+        // ============ MESSAGE FUNCTION ============
         function showMessage(message, type = 'info', elementId = 'loginMessage') {
             const msgDiv = document.getElementById(elementId);
             if (!msgDiv) return;
@@ -1103,15 +1120,57 @@
             }, 3000);
         }
 
-        window.showMessage = showMessage;
-    </script>
+        // ============ TAB NAVIGATION ============
+        window.showTab = function(tabId) {
+            console.log("🔄 Switching to tab:", tabId);
+            
+            try {
+                // Hide all tabs
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    if (tab) tab.classList.remove('active');
+                });
+                
+                // Remove active class from nav buttons
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn) btn.classList.remove('active');
+                });
+                
+                // Show selected tab
+                const selectedTab = document.getElementById(tabId);
+                if (selectedTab) {
+                    selectedTab.classList.add('active');
+                }
+                
+                // Activate selected button
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if (btn && btn.textContent.toLowerCase().includes(tabId.toLowerCase())) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Load tab-specific data
+                if (tabId === 'dashboard') {
+                    loadDashboardData();
+                } else if (tabId === 'products') {
+                    loadProducts();
+                } else if (tabId === 'addProduct') {
+                    document.querySelector('#addProduct h3').textContent = 'Add New Product';
+                    resetProductForm();
+                } else if (tabId === 'company') {
+                    loadCompanyDetails();
+                } else if (tabId === 'settings') {
+                    loadGitHubSettings();
+                }
+                
+            } catch (error) {
+                console.error("Error in showTab:", error);
+            }
+        };
 
-    <!-- Auth Script -->
-    <script>
         // ============ AUTH FUNCTIONS ============
         let otpTimer = null;
 
-        async function sendOTP() {
+        window.sendOTP = async function() {
             const btn = document.getElementById('sendOtpBtn');
             if (!btn) return;
             
@@ -1139,7 +1198,7 @@
                 btn.innerHTML = orig;
                 btn.disabled = false;
             }
-        }
+        };
 
         function startOTPTimer() {
             let timeLeft = 300;
@@ -1162,7 +1221,7 @@
             }, 1000);
         }
 
-        async function verifyOTP() {
+        window.verifyOTP = async function() {
             const otp = document.getElementById('otpInput')?.value.trim();
             
             if (!otp) { 
@@ -1204,9 +1263,9 @@
                 btn.innerHTML = orig;
                 btn.disabled = false;
             }
-        }
+        };
 
-        async function logout() {
+        window.logout = async function() {
             try {
                 await fetch(`${API_BASE}/api/logout`, { 
                     method: 'POST', 
@@ -1218,63 +1277,6 @@
             
             document.getElementById('loginPage').style.display = 'flex';
             document.getElementById('adminDashboard').style.display = 'none';
-        }
-
-        window.sendOTP = sendOTP;
-        window.verifyOTP = verifyOTP;
-        window.logout = logout;
-    </script>
-
-    <!-- Main Admin Script - सभी फंक्शन्स के साथ -->
-    <script>
-        // ============ GLOBAL VARIABLES ============
-        let products = [];
-        let currentProductId = null;
-        let productImages = [];
-        let companyDetails = {};
-
-        // ============ TAB NAVIGATION ============
-        window.showTab = function(tabId) {
-            console.log("🔄 Switching to tab:", tabId);
-            
-            try {
-                // Hide all tabs
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    if (tab) tab.classList.remove('active');
-                });
-                
-                // Remove active class from nav buttons
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    if (btn) btn.classList.remove('active');
-                });
-                
-                // Show selected tab
-                const selectedTab = document.getElementById(tabId);
-                if (selectedTab) {
-                    selectedTab.classList.add('active');
-                }
-                
-                // Activate selected button
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    if (btn && btn.textContent.toLowerCase().includes(tabId.toLowerCase())) {
-                        btn.classList.add('active');
-                    }
-                });
-                
-                // Load tab-specific data
-                if (tabId === 'dashboard') {
-                    loadDashboardData();
-                } else if (tabId === 'products') {
-                    loadProducts();
-                } else if (tabId === 'company') {
-                    loadCompanyDetails();
-                } else if (tabId === 'settings') {
-                    loadGitHubSettings();
-                }
-                
-            } catch (error) {
-                console.error("Error in showTab:", error);
-            }
         };
 
         // ============ DASHBOARD FUNCTIONS ============
@@ -1301,7 +1303,7 @@
                 if (activityDiv) {
                     activityDiv.innerHTML = `
                         <ul style="list-style: none; padding: 0;">
-                            <li style="padding: 10px; border-bottom: 1px solid var(--border);">✅ Admin logged in</li>
+                            <li style="padding: 10px; border-bottom: 1px solid var(--border);">✅ Admin logged in successfully</li>
                             <li style="padding: 10px; border-bottom: 1px solid var(--border);">📊 Dashboard loaded</li>
                             <li style="padding: 10px; border-bottom: 1px solid var(--border);">🔄 Ready to sync with GitHub</li>
                         </ul>
@@ -1337,7 +1339,7 @@
                     products = await response.json();
                     displayProducts();
                 } else {
-                    // Show demo products
+                    // Show demo products if API fails
                     products = [
                         { id: "demo-1", name: "EV Battery 60V30AH", price: "23500", category: "EV Battery", images: [] },
                         { id: "demo-2", name: "GOOTU 6KW Inverter", price: "48500", category: "Solar Inverter", images: [] }
@@ -1380,6 +1382,9 @@
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
+                        <button class="btn btn-success" onclick="viewProductPage('${product.slug || product.id}')" style="width:100%; margin-top:10px;">
+                            <i class="fas fa-eye"></i> View Product Page
+                        </button>
                     </div>
                 `;
             });
@@ -1390,13 +1395,61 @@
 
         window.editProduct = function(productId) {
             console.log("✏️ Editing product:", productId);
-            alert("Edit product feature coming soon");
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                // Fill form fields
+                document.getElementById('productName').value = product.name || '';
+                document.getElementById('productPrice').value = product.price || '';
+                document.getElementById('productCategory').value = product.category || '';
+                document.getElementById('productModel').value = product.model || '';
+                document.getElementById('productVoltage').value = product.voltage || '';
+                document.getElementById('productCapacity').value = product.capacity || '';
+                document.getElementById('productConfig').value = product.configuration || '';
+                document.getElementById('productChemistry').value = product.chemistry || 'LiFePO₄';
+                document.getElementById('productWarranty').value = product.warranty || '3 Year Warranty';
+                document.getElementById('productCycleLife').value = product.cycleLife || '';
+                document.getElementById('productWeight').value = product.weight || '';
+                document.getElementById('productDimensions').value = product.dimensions || '';
+                document.getElementById('productDescription').value = product.description || '';
+                document.getElementById('productSpecs').value = product.specs || '';
+                document.getElementById('productFeatures').value = product.features ? product.features.join('\n') : '';
+                document.getElementById('productApplications').value = product.applications ? product.applications.join(', ') : '';
+                
+                // Load images
+                productImages = product.images || [];
+                displayProductImages();
+                
+                currentProductId = productId;
+                document.querySelector('#addProduct h3').textContent = 'Edit Product';
+                showTab('addProduct');
+            }
         };
 
-        window.deleteProduct = function(productId) {
+        window.deleteProduct = async function(productId) {
             if (!confirm('Delete this product?')) return;
-            console.log("🗑️ Deleting product:", productId);
-            alert("Product deleted");
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/products/${productId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    showMessage('Product deleted successfully', 'success', 'loginMessage');
+                    loadProducts();
+                } else {
+                    showMessage('Failed to delete product', 'error', 'loginMessage');
+                }
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showMessage('Network error', 'error', 'loginMessage');
+            }
+        };
+
+        window.viewProductPage = function(slug) {
+            const url = `https://extramilesenergy.github.io/extramilesenergy.in/products/${slug}.html`;
+            window.open(url, '_blank');
         };
 
         // ============ ADD PRODUCT FUNCTIONS ============
@@ -1414,10 +1467,39 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     addImagePreview(e.target.result);
+                    uploadImageToServer(file);
                 };
                 reader.readAsDataURL(file);
             }
         };
+
+        async function uploadImageToServer(file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Image = e.target.result.split(',')[1];
+                
+                try {
+                    const response = await fetch(`${API_BASE}/api/upload-image`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            base64Image: base64Image,
+                            filename: file.name
+                        }),
+                        credentials: 'include'
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        productImages.push(data.url);
+                        showMessage(`Uploaded: ${file.name}`, 'success', 'loginMessage');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
 
         function addImagePreview(src) {
             const grid = document.getElementById('productImagesPreview');
@@ -1434,22 +1516,107 @@
             grid.appendChild(div);
         }
 
-        window.saveProduct = function() {
+        function displayProductImages() {
+            const grid = document.getElementById('productImagesPreview');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            productImages.forEach(url => {
+                const div = document.createElement('div');
+                div.className = 'image-preview-item';
+                div.innerHTML = `
+                    <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                    <button class="btn btn-danger" style="position:absolute; top:5px; right:5px; padding:2px 6px;" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                grid.appendChild(div);
+            });
+        }
+
+        window.saveProduct = async function() {
             const name = document.getElementById('productName')?.value;
             if (!name) {
-                alert('Product name is required');
+                showMessage('Product name is required', 'error', 'loginMessage');
                 return;
             }
-            alert('Product saved successfully!');
-            showTab('products');
+            
+            // Get features array
+            const featuresText = document.getElementById('productFeatures')?.value || '';
+            const features = featuresText.split('\n').filter(f => f.trim());
+            
+            // Get applications array
+            const applicationsText = document.getElementById('productApplications')?.value || '';
+            const applications = applicationsText.split(',').map(a => a.trim()).filter(a => a);
+            
+            const productData = {
+                name: name,
+                price: document.getElementById('productPrice')?.value || '',
+                category: document.getElementById('productCategory')?.value || '',
+                model: document.getElementById('productModel')?.value || '',
+                voltage: document.getElementById('productVoltage')?.value || '',
+                capacity: document.getElementById('productCapacity')?.value || '',
+                configuration: document.getElementById('productConfig')?.value || '',
+                chemistry: document.getElementById('productChemistry')?.value || 'LiFePO₄',
+                warranty: document.getElementById('productWarranty')?.value || '3 Year Warranty',
+                cycleLife: document.getElementById('productCycleLife')?.value || '',
+                weight: document.getElementById('productWeight')?.value || '',
+                dimensions: document.getElementById('productDimensions')?.value || '',
+                description: document.getElementById('productDescription')?.value || '',
+                specs: document.getElementById('productSpecs')?.value || '',
+                features: features,
+                applications: applications,
+                images: productImages,
+                status: 'active'
+            };
+            
+            try {
+                let url = `${API_BASE}/api/products`;
+                let method = 'POST';
+                
+                if (currentProductId) {
+                    url = `${API_BASE}/api/products/${currentProductId}`;
+                    method = 'PUT';
+                }
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData),
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    showMessage(currentProductId ? 'Product updated successfully!' : 'Product added successfully!', 'success', 'loginMessage');
+                    resetProductForm();
+                    loadProducts();
+                    showTab('products');
+                } else {
+                    const error = await response.json();
+                    showMessage('Error: ' + (error.error || 'Failed to save'), 'error', 'loginMessage');
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                showMessage('Network error', 'error', 'loginMessage');
+            }
         };
 
         window.resetProductForm = function() {
-            const fields = ['productName', 'productPrice', 'productCategory', 'productDescription', 'productSpecs'];
+            const fields = [
+                'productName', 'productPrice', 'productCategory', 'productModel',
+                'productVoltage', 'productCapacity', 'productConfig', 'productChemistry',
+                'productWarranty', 'productCycleLife', 'productWeight', 'productDimensions',
+                'productDescription', 'productSpecs', 'productFeatures', 'productApplications'
+            ];
+            
             fields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
+            
+            // Set defaults
+            document.getElementById('productChemistry').value = 'LiFePO₄';
+            document.getElementById('productWarranty').value = '3 Year Warranty';
             
             productImages = [];
             currentProductId = null;
@@ -1458,7 +1625,7 @@
             if (grid) grid.innerHTML = '';
         };
 
-        // ============ COMPANY FUNCTIONS - FIXED ============
+        // ============ COMPANY FUNCTIONS ============
         window.loadCompanyDetails = async function() {
             console.log("🏢 Loading company details");
             
@@ -1530,67 +1697,191 @@
         };
 
         // ============ GITHUB SYNC FUNCTIONS ============
-        window.syncProductsToGitHub = function() {
+        window.syncProductsToGitHub = async function() {
             const progressBar = document.getElementById('productSyncProgress');
             const progressFill = document.getElementById('productSyncFill');
             
             progressBar.classList.add('active');
             progressFill.style.width = '0%';
             
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 10;
-                progressFill.style.width = width + '%';
+            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            if (!token) {
+                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                progressBar.classList.remove('active');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/github/products/push`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-GitHub-Token': token
+                    },
+                    body: JSON.stringify({ products: products })
+                });
                 
-                if (width >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        progressBar.classList.remove('active');
-                        showMessage('Products synced to GitHub successfully', 'success', 'syncMessage');
-                    }, 500);
+                if (response.ok) {
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        width += 10;
+                        progressFill.style.width = width + '%';
+                        
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                progressBar.classList.remove('active');
+                                showMessage('Products synced to GitHub successfully', 'success', 'syncMessage');
+                            }, 500);
+                        }
+                    }, 100);
+                } else {
+                    showMessage('Failed to sync products', 'error', 'syncMessage');
+                    progressBar.classList.remove('active');
                 }
-            }, 200);
+            } catch (error) {
+                console.error('Error syncing products:', error);
+                showMessage('Network error', 'error', 'syncMessage');
+                progressBar.classList.remove('active');
+            }
         };
 
-        window.fetchProductsFromGitHub = function() {
+        window.fetchProductsFromGitHub = async function() {
             showMessage('Fetching products from GitHub...', 'info', 'syncMessage');
-            setTimeout(() => {
-                loadProducts();
-                showMessage('Products fetched from GitHub', 'success', 'syncMessage');
-            }, 1500);
+            
+            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            if (!token) {
+                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/github/products`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-GitHub-Token': token
+                    }
+                });
+                
+                if (response.ok) {
+                    products = await response.json();
+                    displayProducts();
+                    showMessage('Products fetched from GitHub successfully', 'success', 'syncMessage');
+                } else {
+                    showMessage('Failed to fetch products', 'error', 'syncMessage');
+                }
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                showMessage('Network error', 'error', 'syncMessage');
+            }
         };
 
-        window.syncCompanyToGitHub = function() {
+        window.syncCompanyToGitHub = async function() {
             const progressBar = document.getElementById('companySyncProgress');
             const progressFill = document.getElementById('companySyncFill');
             
             progressBar.classList.add('active');
             progressFill.style.width = '0%';
             
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 10;
-                progressFill.style.width = width + '%';
+            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            if (!token) {
+                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                progressBar.classList.remove('active');
+                return;
+            }
+            
+            const companyData = {
+                name: document.getElementById('company_name').value,
+                phone: document.getElementById('company_phone').value,
+                whatsapp: document.getElementById('company_whatsapp').value,
+                email: document.getElementById('company_email').value,
+                gst: document.getElementById('company_gst').value,
+                address: document.getElementById('company_address').value,
+                website: document.getElementById('company_website').value,
+                timings: document.getElementById('company_timings').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/github/company/push`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-GitHub-Token': token
+                    },
+                    body: JSON.stringify({ company: companyData })
+                });
                 
-                if (width >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        progressBar.classList.remove('active');
-                        showMessage('Company details synced to GitHub', 'success', 'syncMessage');
-                    }, 500);
+                if (response.ok) {
+                    let width = 0;
+                    const interval = setInterval(() => {
+                        width += 10;
+                        progressFill.style.width = width + '%';
+                        
+                        if (width >= 100) {
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                progressBar.classList.remove('active');
+                                showMessage('Company details synced to GitHub', 'success', 'syncMessage');
+                            }, 500);
+                        }
+                    }, 100);
+                } else {
+                    showMessage('Failed to sync company', 'error', 'syncMessage');
+                    progressBar.classList.remove('active');
                 }
-            }, 200);
+            } catch (error) {
+                console.error('Error syncing company:', error);
+                showMessage('Network error', 'error', 'syncMessage');
+                progressBar.classList.remove('active');
+            }
         };
 
-        window.fetchCompanyFromGitHub = function() {
+        window.fetchCompanyFromGitHub = async function() {
             showMessage('Fetching company from GitHub...', 'info', 'syncMessage');
-            setTimeout(() => {
-                loadCompanyDetails();
-                showMessage('Company details fetched from GitHub', 'success', 'syncMessage');
-            }, 1500);
+            
+            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            if (!token) {
+                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/github/company`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-GitHub-Token': token
+                    }
+                });
+                
+                if (response.ok) {
+                    const company = await response.json();
+                    
+                    document.getElementById('company_name').value = company.name || 'Extra Miles Energy';
+                    document.getElementById('company_phone').value = company.phone || '';
+                    document.getElementById('company_whatsapp').value = company.whatsapp || '';
+                    document.getElementById('company_email').value = company.email || '';
+                    document.getElementById('company_gst').value = company.gst || '';
+                    document.getElementById('company_address').value = company.address || '';
+                    document.getElementById('company_website').value = company.website || '';
+                    document.getElementById('company_timings').value = company.timings || '9:00 AM - 7:00 PM';
+                    
+                    showMessage('Company details fetched from GitHub', 'success', 'syncMessage');
+                } else {
+                    showMessage('Failed to fetch company', 'error', 'syncMessage');
+                }
+            } catch (error) {
+                console.error('Error fetching company:', error);
+                showMessage('Network error', 'error', 'syncMessage');
+            }
         };
 
-        // ============ GITHUB SETTINGS FUNCTIONS - FIXED ============
+        // ============ GITHUB SETTINGS FUNCTIONS ============
         window.loadGitHubSettings = function() {
             console.log("⚙️ Loading GitHub settings");
             
@@ -1608,7 +1899,7 @@
                 }
             }
             
-            // Load token from session (not localStorage for security)
+            // Load token from session
             const token = sessionStorage.getItem('github_token');
             if (token) {
                 document.getElementById('github_token').value = token;
@@ -1629,10 +1920,7 @@
                 productsPath: document.getElementById('products_path').value
             };
             
-            // Save settings (without token) to localStorage
             localStorage.setItem('github_settings', JSON.stringify(settings));
-            
-            // Save token to sessionStorage (cleared when browser closes)
             sessionStorage.setItem('github_token', token);
             
             showMessage('GitHub settings saved successfully', 'success', 'settingsMessage');
@@ -1708,8 +1996,35 @@
             canvas.getContext('2d').drawImage(video, 0, 0);
             
             canvas.toBlob((blob) => {
+                const file = new File([blob], `camera-${Date.now()}.jpg`, { type: 'image/jpeg' });
                 const url = URL.createObjectURL(blob);
                 addImagePreview(url);
+                
+                // Upload to server
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const base64Image = e.target.result.split(',')[1];
+                    try {
+                        const response = await fetch(`${API_BASE}/api/upload-image`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                base64Image: base64Image,
+                                filename: file.name
+                            }),
+                            credentials: 'include'
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            productImages.push(data.url);
+                        }
+                    } catch (error) {
+                        console.error('Upload error:', error);
+                    }
+                };
+                reader.readAsDataURL(file);
+                
                 closeCamera();
             }, 'image/jpeg');
         };

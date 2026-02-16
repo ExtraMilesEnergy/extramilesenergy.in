@@ -1,71 +1,74 @@
-// ================= AUTH MODULE =================
-const API_BASE = 'http://localhost:3001';
+// ============ AUTHENTICATION MODULE ============
+// यह फाइल सिर्फ लॉगिन और OTP से जुड़े functions handle करती है
+
 let otpTimer = null;
 
-// ---------- SEND OTP ----------
+// Send OTP
 async function sendOTP() {
     const btn = document.getElementById('sendOtpBtn');
     if (!btn) return;
-
+    
     const orig = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     btn.disabled = true;
-
+    
     try {
-        const res = await fetch(`${API_BASE}/api/send-otp`, {
-            method: 'POST',
-            credentials: 'include'
+        const res = await fetch(`${API_BASE}/api/send-otp`, { 
+            method: 'POST', 
+            credentials: 'include' 
         });
-
+        
         const data = await res.json();
-
+        
         if (res.ok && data.success) {
-            showMessage('loginMessage', '✅ OTP sent!', 'success');
+            window.showMessage('✅ OTP sent!', 'success');
             startOTPTimer();
         } else {
-            showMessage('loginMessage', '❌ ' + (data.error || 'Failed'), 'error');
+            window.showMessage('❌ Failed: ' + (data.error || 'Unknown'), 'error');
         }
-    } catch {
-        showMessage('loginMessage', '❌ Backend not running', 'error');
+    } catch (err) {
+        window.showMessage('❌ Network error. Is backend running?', 'error');
     } finally {
         btn.innerHTML = orig;
         btn.disabled = false;
     }
 }
 
-// ---------- TIMER ----------
+// Start OTP Timer
 function startOTPTimer() {
     let timeLeft = 300;
     const timerDiv = document.getElementById('otpTimer');
-
+    
     if (otpTimer) clearInterval(otpTimer);
-
+    
     otpTimer = setInterval(() => {
         const m = Math.floor(timeLeft / 60);
         const s = timeLeft % 60;
-
-        if (timerDiv) {
-            timerDiv.innerHTML =
-                `⏱️ OTP valid for: ${m}:${s.toString().padStart(2,'0')}`;
-        }
-
+        timerDiv.innerHTML = `⏱️ OTP valid for: ${m}:${s.toString().padStart(2,'0')}`;
         timeLeft--;
-
+        
         if (timeLeft < 0) {
             clearInterval(otpTimer);
+            timerDiv.innerHTML = '<span style="color:var(--danger);">OTP expired!</span>';
+            document.getElementById('verifyOtpBtn').disabled = true;
         }
     }, 1000);
 }
 
-// ---------- VERIFY OTP ----------
+// Verify OTP
 async function verifyOTP() {
     const otp = document.getElementById('otpInput').value.trim();
-
-    if (!otp) {
-        showMessage('loginMessage', 'Enter OTP', 'error');
-        return;
+    
+    if (!otp) { 
+        window.showMessage('Enter OTP', 'error'); 
+        return; 
     }
-
+    
+    const btn = document.getElementById('verifyOtpBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    btn.disabled = true;
+    
     try {
         const res = await fetch(`${API_BASE}/api/verify-otp`, {
             method: 'POST',
@@ -73,52 +76,73 @@ async function verifyOTP() {
             body: JSON.stringify({ otp }),
             credentials: 'include'
         });
-
+        
         const data = await res.json();
-
+        
         if (res.ok && data.success) {
+            window.showMessage('✅ Login successful!', 'success');
+            if (otpTimer) clearInterval(otpTimer);
+            
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-
-            // 🔥 IMPORTANT — init main app
-            window.initAdminApp?.();
+            
+            // Load dashboard data
+            if (typeof window.loadDashboardData === 'function') {
+                window.loadDashboardData();
+            }
         } else {
-            showMessage('loginMessage', '❌ Invalid OTP', 'error');
+            window.showMessage('❌ ' + (data.error || 'Invalid OTP'), 'error');
         }
-    } catch {
-        showMessage('loginMessage', '❌ Network error', 'error');
+    } catch (err) {
+        window.showMessage('❌ Network error', 'error');
+    } finally {
+        btn.innerHTML = orig;
+        btn.disabled = false;
     }
 }
 
-// ---------- SESSION CHECK ----------
+// Logout
+async function logout() {
+    try {
+        await fetch(`${API_BASE}/api/logout`, { 
+            method: 'POST', 
+            credentials: 'include' 
+        });
+    } catch (err) {
+        console.error('Logout error:', err);
+    }
+    
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('adminDashboard').style.display = 'none';
+}
+
+// Check Authentication
 async function checkAuth() {
     try {
-        const res = await fetch(`${API_BASE}/api/check-auth`, {
-            credentials: 'include'
+        const res = await fetch(`${API_BASE}/api/check-auth`, { 
+            credentials: 'include' 
         });
-
         const data = await res.json();
-
+        
         if (data.isAdmin) {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('adminDashboard').style.display = 'block';
-
-            window.initAdminApp?.();
+            
+            if (typeof window.loadDashboardData === 'function') {
+                window.loadDashboardData();
+            }
+        } else {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
         }
-    } catch {}
+    } catch {
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('adminDashboard').style.display = 'none';
+    }
 }
 
-// ---------- LOGOUT ----------
-async function logout() {
-    await fetch(`${API_BASE}/api/logout`, {
-        method: 'POST',
-        credentials: 'include'
-    });
-    location.reload();
-}
-
-// expose globally
+// Make functions globally available
 window.sendOTP = sendOTP;
 window.verifyOTP = verifyOTP;
-window.checkAuth = checkAuth;
 window.logout = logout;
+window.checkAuth = checkAuth;

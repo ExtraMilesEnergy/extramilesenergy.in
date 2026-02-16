@@ -1,142 +1,87 @@
-// ============ ADMIN MAIN MODULE ============
-// यह फाइल सारे admin functions handle करती है - Products, Company, Sync etc.
-
+// ============ ADMIN MAIN MODULE - Complete Functional ============
 let products = [];
 let currentProductId = null;
 let productImages = [];
+let companyDetails = {};
+
+// ============ API BASE ============
+const API_BASE = window.API_BASE || 'https://milly-sheiklike-radically.ngrok-free.dev';
 
 // ============ TAB NAVIGATION ============
 window.showTab = function(tabId) {
     console.log("🔄 Switching to tab:", tabId);
     
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     
-    // Remove active class from all nav buttons
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    
-    // Show selected tab
     const selectedTab = document.getElementById(tabId);
-    if (selectedTab) {
-        selectedTab.classList.add('active');
-    }
+    if (selectedTab) selectedTab.classList.add('active');
     
-    // Activate selected button
     const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(
         btn => btn.textContent.toLowerCase().includes(tabId.toLowerCase())
     );
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+    if (activeBtn) activeBtn.classList.add('active');
     
     // Load data based on tab
-    if (tabId === 'dashboard') {
-        loadDashboardData();
-    } else if (tabId === 'products') {
-        loadProducts();
-    } else if (tabId === 'company') {
-        loadCompanyDetails();
+    if (tabId === 'dashboard') loadDashboardData();
+    else if (tabId === 'products') loadProducts();
+    else if (tabId === 'addProduct') {
+        document.querySelector('#addProduct h3').textContent = 'Add New Product';
+        resetProductForm();
     }
+    else if (tabId === 'categories') loadCategories();
+    else if (tabId === 'company') loadCompanyDetails();
+    else if (tabId === 'settings') loadGitHubSettings();
 };
 
-// ============ DASHBOARD FUNCTIONS ============
+// ============ DASHBOARD ============
 window.loadDashboardData = async function() {
-    console.log("📊 Loading dashboard data");
+    console.log("📊 Loading dashboard");
     
     try {
-        const response = await fetch(`${API_BASE}/api/stats`, {
-            credentials: 'include'
-        });
-        
+        const response = await fetch(`${API_BASE}/api/products`, { credentials: 'include' });
         if (response.ok) {
-            const stats = await response.json();
-            document.getElementById('totalProducts').textContent = stats.totalProducts || '0';
-            document.getElementById('activeProducts').textContent = stats.activeProducts || '0';
-            document.getElementById('draftProducts').textContent = stats.draftProducts || '0';
-            document.getElementById('pagesGenerated').textContent = stats.pagesGenerated || '0';
-            document.getElementById('lastSync').textContent = stats.lastSync || '--';
+            products = await response.json();
+            
+            // Calculate stats
+            const totalProducts = products.length;
+            const evBatteries = products.filter(p => p.category === 'EV Battery').length;
+            const eRickshawBatteries = products.filter(p => p.category === 'E-Rickshaw Battery').length;
+            const homeBatteries = products.filter(p => p.category === 'Home Battery').length;
+            const inverters = products.filter(p => p.category === 'Solar Inverter').length;
+            
+            document.getElementById('totalProducts').textContent = totalProducts;
+            document.getElementById('evBatteries').textContent = evBatteries;
+            document.getElementById('eRickshawBatteries').textContent = eRickshawBatteries;
+            document.getElementById('homeBatteries').textContent = homeBatteries;
+            document.getElementById('inverters').textContent = inverters;
+            
+            // Load company details for contact info
+            await loadCompanyDetailsForDashboard();
         }
-        
-        loadRecentActivity();
     } catch (error) {
         console.error('Error loading dashboard:', error);
-        // Fallback to demo data
-        document.getElementById('totalProducts').textContent = '0';
-        document.getElementById('activeProducts').textContent = '0';
-        document.getElementById('draftProducts').textContent = '0';
-        document.getElementById('pagesGenerated').textContent = '0';
-        document.getElementById('lastSync').textContent = '--';
     }
 };
 
-async function loadRecentActivity() {
-    const activityDiv = document.getElementById('recentActivity');
-    if (!activityDiv) return;
-    
+async function loadCompanyDetailsForDashboard() {
     try {
-        const response = await fetch(`${API_BASE}/api/activity`, {
-            credentials: 'include'
-        });
-        
+        const response = await fetch(`${API_BASE}/api/company`, { credentials: 'include' });
         if (response.ok) {
-            const activities = await response.json();
-            
-            if (activities.length === 0) {
-                activityDiv.innerHTML = '<div class="loading">No recent activity</div>';
-                return;
-            }
-            
-            let html = '<ul style="list-style: none; padding: 0;">';
-            activities.forEach(act => {
-                html += `
-                    <li style="padding: 10px; border-bottom: 1px solid var(--border); display: flex; gap: 15px;">
-                        <span style="color: var(--gold-light); min-width: 100px;">${act.time || 'Just now'}</span>
-                        <span style="color: var(--text);">${act.action || 'Activity'}</span>
-                    </li>
-                `;
-            });
-            html += '</ul>';
-            activityDiv.innerHTML = html;
-        } else {
-            // Demo activity if API fails
-            showDemoActivity();
+            companyDetails = await response.json();
+            document.getElementById('contactPhone').textContent = companyDetails.phone || 'Not set';
+            document.getElementById('contactWhatsapp').textContent = companyDetails.whatsapp || 'Not set';
+            document.getElementById('contactEmail').textContent = companyDetails.email || 'Not set';
+            document.getElementById('contactAddress').textContent = companyDetails.address || 'Not set';
         }
     } catch (error) {
-        console.error('Error loading activity:', error);
-        showDemoActivity();
+        console.error('Error loading company:', error);
     }
 }
 
-function showDemoActivity() {
-    const activityDiv = document.getElementById('recentActivity');
-    if (!activityDiv) return;
-    
-    const activities = [
-        { time: '2 min ago', action: 'Dashboard viewed' },
-        { time: '15 min ago', action: 'Products synced with GitHub' },
-        { time: '1 hour ago', action: 'New product added' }
-    ];
-    
-    let html = '<ul style="list-style: none; padding: 0;">';
-    activities.forEach(act => {
-        html += `
-            <li style="padding: 10px; border-bottom: 1px solid var(--border); display: flex; gap: 15px;">
-                <span style="color: var(--gold-light); min-width: 100px;">${act.time}</span>
-                <span style="color: var(--text);">${act.action}</span>
-            </li>
-        `;
-    });
-    html += '</ul>';
-    activityDiv.innerHTML = html;
-}
-
-// ============ PRODUCTS FUNCTIONS ============
+// ============ PRODUCTS MANAGEMENT ============
 window.loadProducts = async function() {
-    console.log("📦 Loading products from GitHub");
+    console.log("📦 Loading products");
     
     const productsDiv = document.getElementById('productsList');
     if (!productsDiv) return;
@@ -144,65 +89,200 @@ window.loadProducts = async function() {
     productsDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Loading products...</div>';
     
     try {
-        const response = await fetch(`${API_BASE}/api/products`, {
-            credentials: 'include'
-        });
-        
+        const response = await fetch(`${API_BASE}/api/products`, { credentials: 'include' });
         if (response.ok) {
             products = await response.json();
-            displayProducts();
+            displayProductsByCategory();
         } else {
             productsDiv.innerHTML = '<div class="loading">Failed to load products</div>';
         }
     } catch (error) {
         console.error('Error loading products:', error);
-        productsDiv.innerHTML = '<div class="loading">Network error. Make sure backend is running.</div>';
+        productsDiv.innerHTML = '<div class="loading">Network error</div>';
     }
 };
 
-function displayProducts() {
+function displayProductsByCategory() {
     const productsDiv = document.getElementById('productsList');
-    if (!productsDiv) return;
-    
-    if (!products || products.length === 0) {
+    if (!productsDiv || !products.length) {
         productsDiv.innerHTML = '<div class="loading">No products found. Click "Add Product" to create one.</div>';
         return;
     }
     
-    let html = '<div class="products-grid">';
+    // Group by category
+    const categories = {
+        'EV Battery': [],
+        'E-Rickshaw Battery': [],
+        'Home Battery': [],
+        'Solar Inverter': [],
+        'Accessories': []
+    };
+    
     products.forEach(product => {
-        // Get first image or placeholder
-        const productImage = product.images && product.images.length > 0 
-            ? product.images[0] 
-            : 'https://via.placeholder.com/300?text=No+Image';
+        const cat = product.category || 'Accessories';
+        if (categories[cat]) categories[cat].push(product);
+        else categories['Accessories'].push(product);
+    });
+    
+    let html = '';
+    
+    for (let [category, items] of Object.entries(categories)) {
+        if (items.length === 0) continue;
         
-        html += `
-            <div class="product-card">
-                <img src="${productImage}" 
-                     class="product-image" alt="${product.name}"
-                     onerror="this.src='https://via.placeholder.com/300?text=Error'">
-                <h3 style="color: var(--gold); margin: 10px 0;">${product.name || 'Unnamed Product'}</h3>
-                <p style="color: var(--text-muted);">${product.description ? product.description.substring(0, 50) + '...' : 'No description'}</p>
-                <p style="color: var(--success); font-size: 1.2rem; margin: 10px 0;">
-                    <strong>₹${product.price || 'N/A'}</strong>
-                </p>
-                <p style="color: var(--text-muted);"><small>Category: ${product.category || 'N/A'} | Model: ${product.model || 'N/A'}</small></p>
-                <div class="product-actions" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn btn-info" onclick="editProduct('${product.id}')" style="flex: 1;">
-                        <i class="fas fa-edit"></i> Edit
+        html += `<h3 style="color: var(--gold); margin: 30px 0 15px 0; border-bottom: 2px solid var(--gold); padding-bottom: 5px;">
+                    ${category} (${items.length})
+                    <button class="btn btn-info" style="float: right;" onclick="addProductInCategory('${category}')">
+                        <i class="fas fa-plus"></i> Add New
                     </button>
-                    <button class="btn btn-danger" onclick="deleteProduct('${product.id}')" style="flex: 1;">
-                        <i class="fas fa-trash"></i> Delete
+                </h3>`;
+        html += '<div class="products-grid">';
+        
+        items.forEach(product => {
+            const productImage = product.images?.length > 0 ? product.images[0] : 'https://via.placeholder.com/300?text=No+Image';
+            
+            html += `
+                <div class="product-card">
+                    <img src="${productImage}" class="product-image" alt="${product.name}" 
+                         onerror="this.src='https://via.placeholder.com/300?text=Error'">
+                    <h4 style="color: var(--gold); margin: 10px 0;">${product.name || 'Unnamed'}</h4>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">${product.description?.substring(0, 60) || ''}...</p>
+                    <p style="color: var(--success); font-size: 1.2rem; margin: 10px 0;">₹${product.price || 'N/A'}</p>
+                    <p style="color: var(--text-muted);"><small>Model: ${product.model || 'N/A'}</small></p>
+                    <div style="display: flex; gap: 5px; margin-top: 10px;">
+                        <button class="btn btn-info" onclick="editProduct('${product.id}')" style="flex:1;">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteProduct('${product.id}')" style="flex:1;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                    <button class="btn btn-success" onclick="generateProductPage('${product.id}')" style="width:100%; margin-top:5px;">
+                        <i class="fas fa-file"></i> Generate Page
                     </button>
                 </div>
-            </div>
-        `;
-    });
-    html += '</div>';
+            `;
+        });
+        
+        html += '</div>';
+    }
     
     productsDiv.innerHTML = html;
 }
 
+window.addProductInCategory = function(category) {
+    document.getElementById('productCategory').value = category;
+    showTab('addProduct');
+};
+
+// ============ ADD/EDIT PRODUCT ============
+window.saveProduct = async function() {
+    console.log("💾 Saving product");
+    
+    // Get all form values
+    const productData = {
+        name: document.getElementById('productName')?.value || '',
+        price: document.getElementById('productPrice')?.value || '',
+        category: document.getElementById('productCategory')?.value || '',
+        description: document.getElementById('productDescription')?.value || '',
+        specs: document.getElementById('productSpecs')?.value || '',
+        voltage: document.getElementById('productVoltage')?.value || '',
+        capacity: document.getElementById('productCapacity')?.value || '',
+        model: document.getElementById('productModel')?.value || '',
+        configuration: document.getElementById('productConfig')?.value || '',
+        chemistry: document.getElementById('productChemistry')?.value || 'LiFePO₄',
+        warranty: document.getElementById('productWarranty')?.value || '3 Year Warranty',
+        features: document.getElementById('productFeatures')?.value?.split('\n').filter(f => f.trim()) || [],
+        applications: document.getElementById('productApplications')?.value?.split(',').map(a => a.trim()) || [],
+        weight: document.getElementById('productWeight')?.value || '',
+        dimensions: document.getElementById('productDimensions')?.value || '',
+        cycleLife: document.getElementById('productCycleLife')?.value || '',
+        images: productImages,
+        status: 'active',
+        slug: generateSlug(document.getElementById('productName')?.value || '')
+    };
+    
+    if (!productData.name) {
+        window.showMessage('Product name is required', 'error');
+        return;
+    }
+    
+    try {
+        let url = `${API_BASE}/api/products`;
+        let method = 'POST';
+        
+        if (currentProductId) {
+            url = `${API_BASE}/api/products/${currentProductId}`;
+            method = 'PUT';
+            productData.id = currentProductId;
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productData),
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const savedProduct = await response.json();
+            window.showMessage(currentProductId ? 'Product updated' : 'Product added', 'success');
+            
+            // Auto-generate product page
+            await generateProductPage(savedProduct.id || currentProductId);
+            
+            resetProductForm();
+            loadProducts();
+            showTab('products');
+        } else {
+            const error = await response.json();
+            window.showMessage(error.error || 'Failed to save product', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving product:', error);
+        window.showMessage('Network error', 'error');
+    }
+};
+
+function generateSlug(name) {
+    return name.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+}
+
+// ============ GENERATE PRODUCT PAGE ============
+window.generateProductPage = async function(productId) {
+    console.log("📄 Generating product page for:", productId);
+    
+    const product = products.find(p => p.id === productId);
+    if (!product) {
+        window.showMessage('Product not found', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/generate-product-page`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product }),
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            window.showMessage(`Product page generated: ${data.url}`, 'success');
+            
+            // Open the product page in new tab
+            window.open(data.url, '_blank');
+        } else {
+            window.showMessage('Failed to generate product page', 'error');
+        }
+    } catch (error) {
+        console.error('Error generating page:', error);
+        window.showMessage('Network error', 'error');
+    }
+};
+
+// ============ EDIT PRODUCT ============
 window.editProduct = function(productId) {
     console.log("✏️ Editing product:", productId);
     
@@ -210,32 +290,23 @@ window.editProduct = function(productId) {
     const product = products.find(p => p.id === productId);
     
     if (product) {
-        // Fill form with product data
+        // Fill all form fields
         document.getElementById('productName').value = product.name || '';
         document.getElementById('productPrice').value = product.price || '';
         document.getElementById('productCategory').value = product.category || '';
         document.getElementById('productDescription').value = product.description || '';
         document.getElementById('productSpecs').value = product.specs || '';
-        
-        // Additional fields if they exist in your form
-        if (document.getElementById('productVoltage')) {
-            document.getElementById('productVoltage').value = product.voltage || '';
-        }
-        if (document.getElementById('productModel')) {
-            document.getElementById('productModel').value = product.model || '';
-        }
-        if (document.getElementById('productConfig')) {
-            document.getElementById('productConfig').value = product.configuration || '';
-        }
-        if (document.getElementById('productChemistry')) {
-            document.getElementById('productChemistry').value = product.chemistry || 'LiFePO₄';
-        }
-        if (document.getElementById('productWarranty')) {
-            document.getElementById('productWarranty').value = product.warranty || '3 Year Warranty';
-        }
-        if (document.getElementById('productFeatures')) {
-            document.getElementById('productFeatures').value = product.features ? product.features.join('\n') : '';
-        }
+        document.getElementById('productVoltage').value = product.voltage || '';
+        document.getElementById('productCapacity').value = product.capacity || '';
+        document.getElementById('productModel').value = product.model || '';
+        document.getElementById('productConfig').value = product.configuration || '';
+        document.getElementById('productChemistry').value = product.chemistry || 'LiFePO₄';
+        document.getElementById('productWarranty').value = product.warranty || '3 Year Warranty';
+        document.getElementById('productFeatures').value = product.features?.join('\n') || '';
+        document.getElementById('productApplications').value = product.applications?.join(', ') || '';
+        document.getElementById('productWeight').value = product.weight || '';
+        document.getElementById('productDimensions').value = product.dimensions || '';
+        document.getElementById('productCycleLife').value = product.cycleLife || '';
         
         // Load images
         if (product.images && product.images.length > 0) {
@@ -247,19 +318,13 @@ window.editProduct = function(productId) {
             if (grid) grid.innerHTML = '';
         }
         
-        // Go to add product tab
         showTab('addProduct');
-        
-        // Change form title
-        const titleElement = document.querySelector('#addProduct h3');
-        if (titleElement) {
-            titleElement.textContent = 'Edit Product';
-        }
-        
+        document.querySelector('#addProduct h3').textContent = 'Edit Product';
         window.showMessage('Product loaded for editing', 'success');
     }
 };
 
+// ============ DELETE PRODUCT ============
 window.deleteProduct = async function(productId) {
     if (!confirm('Are you sure you want to delete this product?')) return;
     
@@ -284,125 +349,40 @@ window.deleteProduct = async function(productId) {
     }
 };
 
-// ============ ADD/EDIT PRODUCT FUNCTIONS ============
-window.saveProduct = async function() {
-    console.log("💾 Saving product to GitHub");
-    
-    // Collect all form data
-    const productData = {
-        name: document.getElementById('productName')?.value || '',
-        price: document.getElementById('productPrice')?.value || '',
-        category: document.getElementById('productCategory')?.value || '',
-        description: document.getElementById('productDescription')?.value || '',
-        specs: document.getElementById('productSpecs')?.value || '',
-        images: productImages,
-        status: 'active'
-    };
-    
-    // Add optional fields if they exist
-    if (document.getElementById('productVoltage')) {
-        productData.voltage = document.getElementById('productVoltage').value;
-    }
-    if (document.getElementById('productModel')) {
-        productData.model = document.getElementById('productModel').value;
-    }
-    if (document.getElementById('productConfig')) {
-        productData.configuration = document.getElementById('productConfig').value;
-    }
-    if (document.getElementById('productChemistry')) {
-        productData.chemistry = document.getElementById('productChemistry').value;
-    }
-    if (document.getElementById('productWarranty')) {
-        productData.warranty = document.getElementById('productWarranty').value;
-    }
-    if (document.getElementById('productFeatures')) {
-        const featuresText = document.getElementById('productFeatures').value;
-        productData.features = featuresText ? featuresText.split('\n').filter(f => f.trim()) : [];
-    }
-    
-    if (!productData.name) {
-        window.showMessage('Product name is required', 'error');
-        return;
-    }
-    
-    try {
-        let url = `${API_BASE}/api/products`;
-        let method = 'POST';
-        
-        if (currentProductId) {
-            url = `${API_BASE}/api/products/${currentProductId}`;
-            method = 'PUT';
-        }
-        
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData),
-            credentials: 'include'
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            window.showMessage(currentProductId ? 'Product updated successfully' : 'Product added successfully', 'success');
-            resetProductForm();
-            loadProducts();
-            showTab('products');
-        } else {
-            const error = await response.json();
-            window.showMessage(error.error || 'Failed to save product', 'error');
-        }
-    } catch (error) {
-        console.error('Error saving product:', error);
-        window.showMessage('Network error. Make sure backend is running.', 'error');
-    }
-};
-
+// ============ RESET FORM ============
 window.resetProductForm = function() {
     console.log("🔄 Resetting form");
     
-    // Reset all form fields
-    document.getElementById('productName').value = '';
-    document.getElementById('productPrice').value = '';
-    document.getElementById('productCategory').value = '';
-    document.getElementById('productDescription').value = '';
-    document.getElementById('productSpecs').value = '';
+    const fields = [
+        'productName', 'productPrice', 'productCategory', 'productDescription',
+        'productSpecs', 'productVoltage', 'productCapacity', 'productModel',
+        'productConfig', 'productChemistry', 'productWarranty', 'productFeatures',
+        'productApplications', 'productWeight', 'productDimensions', 'productCycleLife'
+    ];
     
-    // Reset optional fields if they exist
-    if (document.getElementById('productVoltage')) {
-        document.getElementById('productVoltage').value = '';
-    }
-    if (document.getElementById('productModel')) {
-        document.getElementById('productModel').value = '';
-    }
-    if (document.getElementById('productConfig')) {
-        document.getElementById('productConfig').value = '';
-    }
-    if (document.getElementById('productChemistry')) {
-        document.getElementById('productChemistry').value = 'LiFePO₄';
-    }
-    if (document.getElementById('productWarranty')) {
-        document.getElementById('productWarranty').value = '3 Year Warranty';
-    }
-    if (document.getElementById('productFeatures')) {
-        document.getElementById('productFeatures').value = '';
-    }
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    
+    // Set defaults
+    const chemEl = document.getElementById('productChemistry');
+    if (chemEl) chemEl.value = 'LiFePO₄';
+    
+    const warrantyEl = document.getElementById('productWarranty');
+    if (warrantyEl) warrantyEl.value = '3 Year Warranty';
     
     productImages = [];
     currentProductId = null;
     
     const titleElement = document.querySelector('#addProduct h3');
-    if (titleElement) {
-        titleElement.textContent = 'Add New Product';
-    }
+    if (titleElement) titleElement.textContent = 'Add New Product';
     
-    // Clear image preview
-    const imagesGrid = document.getElementById('productImagesPreview');
-    if (imagesGrid) {
-        imagesGrid.innerHTML = '';
-    }
+    const grid = document.getElementById('productImagesPreview');
+    if (grid) grid.innerHTML = '';
 };
 
-// ============ IMAGE UPLOAD FUNCTIONS ============
+// ============ IMAGE UPLOAD ============
 window.triggerFileUpload = function() {
     document.getElementById('imageUpload').click();
 };
@@ -443,20 +423,12 @@ async function uploadImage(file) {
                     window.showMessage(`Uploaded: ${file.name}`, 'success');
                     resolve(data.url);
                 } else {
-                    const error = await response.json();
-                    window.showMessage(`Failed to upload ${file.name}: ${error.error}`, 'error');
-                    reject(error);
+                    reject('Upload failed');
                 }
             } catch (error) {
                 console.error('Error uploading image:', error);
-                window.showMessage(`Network error uploading ${file.name}`, 'error');
                 reject(error);
             }
-        };
-        
-        reader.onerror = function(error) {
-            window.showMessage(`Error reading file: ${file.name}`, 'error');
-            reject(error);
         };
         
         reader.readAsDataURL(file);
@@ -470,9 +442,9 @@ function addImagePreview(url, isPrimary = false) {
     const div = document.createElement('div');
     div.className = 'image-preview-item';
     div.innerHTML = `
-        <img src="${url}" alt="Product image" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/150?text=Error'">
+        <img src="${url}" alt="Product image" style="width: 100%; height: 100%; object-fit: cover;">
         ${isPrimary ? '<span class="primary-badge">Primary</span>' : ''}
-        <button class="btn btn-danger" style="position:absolute; top:5px; right:5px; padding:2px 6px; font-size:0.8rem;" onclick="removeImage('${url}')">
+        <button class="btn btn-danger" style="position:absolute; top:5px; right:5px; padding:2px 6px;" onclick="removeImage('${url}')">
             <i class="fas fa-times"></i>
         </button>
     `;
@@ -494,96 +466,112 @@ function displayProductImages() {
     });
 }
 
-// ============ COMPANY DETAILS FUNCTIONS ============
+// ============ COMPANY DETAILS MANAGEMENT ============
 window.loadCompanyDetails = async function() {
     console.log("🏢 Loading company details");
     
-    const detailsDiv = document.getElementById('companyDetails');
-    if (!detailsDiv) return;
-    
     try {
-        const response = await fetch(`${API_BASE}/api/company`, {
-            credentials: 'include'
-        });
-        
+        const response = await fetch(`${API_BASE}/api/company`, { credentials: 'include' });
         if (response.ok) {
-            const company = await response.json();
-            displayCompanyDetails(company);
+            companyDetails = await response.json();
+            displayCompanyForm();
         } else {
-            // Demo company data if API fails
-            const demoCompany = {
+            // Default values
+            companyDetails = {
                 name: 'Extra Miles Energy',
-                address: '123 Solar Park, New Delhi, India',
-                phone: '+91 98765 43210',
-                email: 'info@extramilesenergy.com',
-                gst: '07ABCDE1234F1Z5',
-                website: 'www.extramilesenergy.com'
+                address: '',
+                phone: '',
+                whatsapp: '',
+                email: '',
+                gst: '',
+                website: '',
+                timings: '9:00 AM - 7:00 PM'
             };
-            displayCompanyDetails(demoCompany);
+            displayCompanyForm();
         }
     } catch (error) {
         console.error('Error loading company:', error);
-        // Demo company data on error
-        const demoCompany = {
-            name: 'Extra Miles Energy',
-            address: '123 Solar Park, New Delhi, India',
-            phone: '+91 98765 43210',
-            email: 'info@extramilesenergy.com',
-            gst: '07ABCDE1234F1Z5',
-            website: 'www.extramilesenergy.com'
-        };
-        displayCompanyDetails(demoCompany);
     }
 };
 
-function displayCompanyDetails(company) {
-    const detailsDiv = document.getElementById('companyDetails');
-    if (!detailsDiv) return;
+function displayCompanyForm() {
+    const formDiv = document.getElementById('companyDetailsForm');
+    if (!formDiv) return;
     
-    let html = '<div class="company-details-form">';
-    
-    const fields = [
-        { key: 'name', label: 'Company Name' },
-        { key: 'address', label: 'Address' },
-        { key: 'phone', label: 'Phone' },
-        { key: 'email', label: 'Email' },
-        { key: 'gst', label: 'GST Number' },
-        { key: 'website', label: 'Website' }
-    ];
-    
-    fields.forEach(field => {
-        html += `
-            <div class="detail-item" style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: var(--radius-sm);">
-                <label style="min-width: 120px; color: var(--gold-light); font-weight: 500;">${field.label}:</label>
-                <input type="text" value="${company[field.key] || ''}" 
-                       id="company_${field.key}" class="form-input" style="flex: 1;">
+    formDiv.innerHTML = `
+        <div class="form-container">
+            <h3 style="color: var(--gold);">Company Information</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Company Name</label>
+                <input type="text" id="company_name" class="form-input" value="${companyDetails.name || ''}">
             </div>
-        `;
-    });
-    
-    html += `
-        <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <button class="btn btn-success" onclick="saveCompanyDetails()">
-                <i class="fas fa-save"></i> Save Changes
-            </button>
+            
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <textarea id="company_address" class="form-input" rows="3">${companyDetails.address || ''}</textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" id="company_phone" class="form-input" value="${companyDetails.phone || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">WhatsApp Number</label>
+                    <input type="text" id="company_whatsapp" class="form-input" value="${companyDetails.whatsapp || ''}">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="company_email" class="form-input" value="${companyDetails.email || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">GST Number</label>
+                    <input type="text" id="company_gst" class="form-input" value="${companyDetails.gst || ''}">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Website</label>
+                    <input type="text" id="company_website" class="form-input" value="${companyDetails.website || ''}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Business Hours</label>
+                    <input type="text" id="company_timings" class="form-input" value="${companyDetails.timings || '9:00 AM - 7:00 PM'}">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-success" onclick="saveCompanyDetails()">
+                    <i class="fas fa-save"></i> Save Company Details
+                </button>
+                <button class="btn btn-info" onclick="syncCompanyToGitHub()">
+                    <i class="fab fa-github"></i> Sync to GitHub
+                </button>
+            </div>
+            
+            <div id="companySyncStatus" style="margin-top: 20px;"></div>
         </div>
-    </div>`;
-    
-    detailsDiv.innerHTML = html;
+    `;
 }
 
 window.saveCompanyDetails = async function() {
     console.log("💾 Saving company details");
     
-    const companyData = {};
-    const fields = ['name', 'address', 'phone', 'email', 'gst', 'website'];
-    
-    fields.forEach(field => {
-        const input = document.getElementById(`company_${field}`);
-        if (input) {
-            companyData[field] = input.value;
-        }
-    });
+    const companyData = {
+        name: document.getElementById('company_name')?.value || '',
+        address: document.getElementById('company_address')?.value || '',
+        phone: document.getElementById('company_phone')?.value || '',
+        whatsapp: document.getElementById('company_whatsapp')?.value || '',
+        email: document.getElementById('company_email')?.value || '',
+        gst: document.getElementById('company_gst')?.value || '',
+        website: document.getElementById('company_website')?.value || '',
+        timings: document.getElementById('company_timings')?.value || '9:00 AM - 7:00 PM'
+    };
     
     try {
         const response = await fetch(`${API_BASE}/api/company`, {
@@ -594,7 +582,14 @@ window.saveCompanyDetails = async function() {
         });
         
         if (response.ok) {
+            companyDetails = companyData;
             window.showMessage('Company details saved successfully', 'success');
+            
+            // Update dashboard contact info
+            document.getElementById('contactPhone').textContent = companyData.phone || 'Not set';
+            document.getElementById('contactWhatsapp').textContent = companyData.whatsapp || 'Not set';
+            document.getElementById('contactEmail').textContent = companyData.email || 'Not set';
+            document.getElementById('contactAddress').textContent = companyData.address || 'Not set';
         } else {
             window.showMessage('Failed to save company details', 'error');
         }
@@ -604,267 +599,87 @@ window.saveCompanyDetails = async function() {
     }
 };
 
-// ============ GITHUB SYNC FUNCTIONS ============
-window.syncProductsToGitHub = async function() {
-    console.log("🔄 Syncing products to GitHub");
+// ============ CATEGORIES MANAGEMENT ============
+async function loadCategories() {
+    console.log("📂 Loading categories");
     
-    const progressBar = document.getElementById('productSyncProgress');
-    const progressFill = document.getElementById('productSyncFill');
-    
-    if (progressBar) progressBar.classList.add('active');
-    if (progressFill) progressFill.style.width = '0%';
+    const categoriesDiv = document.getElementById('categoriesList');
+    if (!categoriesDiv) return;
     
     try {
-        const response = await fetch(`${API_BASE}/api/sync/products`, {
-            method: 'POST',
-            credentials: 'include'
-        });
-        
+        const response = await fetch(`${API_BASE}/api/products`, { credentials: 'include' });
         if (response.ok) {
-            // Animate progress
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 10;
-                if (progressFill) progressFill.style.width = width + '%';
-                
-                if (width >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        if (progressBar) progressBar.classList.remove('active');
-                        window.showMessage('Products synced successfully', 'success');
-                        loadProducts(); // Reload products after sync
-                    }, 500);
-                }
-            }, 100);
-        } else {
-            window.showMessage('Failed to sync products', 'error');
-            if (progressBar) progressBar.classList.remove('active');
+            products = await response.json();
+            
+            // Count products per category
+            const categoryCount = {};
+            products.forEach(p => {
+                const cat = p.category || 'Uncategorized';
+                categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+            });
+            
+            let html = '<div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">';
+            
+            const categories = [
+                { name: 'EV Battery', icon: '🔋', desc: 'Electric Scooter & Motorcycle Batteries' },
+                { name: 'E-Rickshaw Battery', icon: '🛺', desc: 'Batteries for E-Rickshaws' },
+                { name: 'Home Battery', icon: '🏠', desc: 'Home Backup & Solar Storage' },
+                { name: 'Solar Inverter', icon: '☀️', desc: 'Hybrid Solar Inverters' },
+                { name: 'Accessories', icon: '🔧', desc: 'BMS, Chargers & Accessories' }
+            ];
+            
+            categories.forEach(cat => {
+                const count = categoryCount[cat.name] || 0;
+                html += `
+                    <div class="category-card" style="background: rgba(255,215,0,0.1); border: 2px solid var(--gold); border-radius: var(--radius); padding: 20px; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">${cat.icon}</div>
+                        <h4 style="color: var(--gold);">${cat.name}</h4>
+                        <p style="color: var(--text-muted);">${cat.desc}</p>
+                        <p style="color: var(--success); font-size: 1.2rem;">${count} Products</p>
+                        <button class="btn btn-info" onclick="addProductInCategory('${cat.name}')" style="margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            categoriesDiv.innerHTML = html;
         }
     } catch (error) {
-        console.error('Error syncing products:', error);
-        window.showMessage('Network error', 'error');
-        if (progressBar) progressBar.classList.remove('active');
+        console.error('Error loading categories:', error);
     }
-};
+}
 
+// ============ GITHUB SYNC ============
 window.syncCompanyToGitHub = async function() {
     console.log("🔄 Syncing company to GitHub");
     
-    const progressBar = document.getElementById('companySyncProgress');
-    const progressFill = document.getElementById('companySyncFill');
-    
-    if (progressBar) progressBar.classList.add('active');
-    if (progressFill) progressFill.style.width = '0%';
+    const statusDiv = document.getElementById('companySyncStatus');
+    statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Syncing...</div>';
     
     try {
         const response = await fetch(`${API_BASE}/api/sync/company`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(companyDetails),
             credentials: 'include'
         });
         
         if (response.ok) {
-            // Animate progress
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 10;
-                if (progressFill) progressFill.style.width = width + '%';
-                
-                if (width >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        if (progressBar) progressBar.classList.remove('active');
-                        window.showMessage('Company details synced successfully', 'success');
-                    }, 500);
-                }
-            }, 100);
+            statusDiv.innerHTML = '<div class="message success" style="display: block;">✅ Company details synced to GitHub successfully!</div>';
+            setTimeout(() => statusDiv.innerHTML = '', 3000);
         } else {
-            window.showMessage('Failed to sync company', 'error');
-            if (progressBar) progressBar.classList.remove('active');
+            statusDiv.innerHTML = '<div class="message error" style="display: block;">❌ Failed to sync</div>';
         }
     } catch (error) {
-        console.error('Error syncing company:', error);
-        window.showMessage('Network error', 'error');
-        if (progressBar) progressBar.classList.remove('active');
+        statusDiv.innerHTML = '<div class="message error" style="display: block;">❌ Network error</div>';
     }
 };
 
-window.fetchProductsFromGitHub = function() {
-    window.showMessage('Fetching products from GitHub...', 'info');
-    loadProducts();
-};
-
-window.fetchCompanyFromGitHub = function() {
-    window.showMessage('Fetching company from GitHub...', 'info');
-    loadCompanyDetails();
-};
-
-// ============ CAMERA FUNCTIONS ============
-let cameraStream = null;
-let currentCamera = 'environment';
-
-window.openCamera = function() {
-    document.getElementById('cameraModal').classList.add('active');
-    startCamera();
-};
-
-window.closeCamera = function() {
-    if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-    }
-    document.getElementById('cameraModal').classList.remove('active');
-};
-
-async function startCamera() {
-    try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: currentCamera }
-        });
-        const video = document.getElementById('cameraPreview');
-        video.srcObject = cameraStream;
-    } catch (error) {
-        console.error('Camera error:', error);
-        window.showMessage('Could not access camera', 'error');
-    }
-}
-
-window.switchCamera = function() {
-    currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
-    if (cameraStream) {
-        cameraStream.getTracks().forEach(track => track.stop());
-        startCamera();
-    }
-};
-
-window.capturePhoto = function() {
-    const video = document.getElementById('cameraPreview');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
-    
-    canvas.toBlob(async (blob) => {
-        const file = new File([blob], `camera-capture-${Date.now()}.jpg`, { type: 'image/jpeg' });
-        await uploadImage(file);
-        closeCamera();
-    }, 'image/jpeg');
-};
-// ============ GITHUB SETTINGS FUNCTIONS ============
-
-// Test GitHub Connection
-window.testGitHubConnection = async function() {
-    console.log("🔌 Testing GitHub connection");
-    
-    const username = document.getElementById('settings_github_username')?.value || 'ExtraMilesEnergy';
-    const repo = document.getElementById('settings_github_repo')?.value || 'extramilesenergy.in';
-    const token = document.getElementById('settings_github_token')?.value;
-    const branch = document.getElementById('settings_github_branch')?.value || 'main';
-    const productsPath = document.getElementById('settings_products_path')?.value || 'all-products.json';
-    
-    if (!token) {
-        window.showMessage('Please enter your GitHub token', 'error');
-        return;
-    }
-    
-    const statusDiv = document.getElementById('githubConnectionStatus');
-    statusDiv.style.display = 'block';
-    statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Testing connection...</div>';
-    
-    try {
-        // Test 1: Check if repository exists
-        const repoUrl = `https://api.github.com/repos/${username}/${repo}`;
-        const repoResponse = await fetch(repoUrl, {
-            headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-        
-        if (!repoResponse.ok) {
-            statusDiv.innerHTML = `
-                <div class="message error" style="display: block;">
-                    <i class="fas fa-times-circle"></i> Repository not found or token invalid.<br>
-                    Make sure repository "${username}/${repo}" exists and token has correct permissions.
-                </div>
-            `;
-            return;
-        }
-        
-        const repoData = await repoResponse.json();
-        
-        // Test 2: Check if products file exists
-        const fileUrl = `https://api.github.com/repos/${username}/${repo}/contents/${productsPath}`;
-        const fileResponse = await fetch(fileUrl, {
-            headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-        
-        let fileStatus = '';
-        if (fileResponse.ok) {
-            fileStatus = '<span style="color: var(--success);">✅ File exists</span>';
-        } else {
-            fileStatus = '<span style="color: var(--warning);">⚠️ File not found (will be created)</span>';
-        }
-        
-        statusDiv.innerHTML = `
-            <div class="message success" style="display: block;">
-                <i class="fas fa-check-circle"></i> GitHub connection successful!<br><br>
-                <strong>Repository:</strong> ${repoData.full_name}<br>
-                <strong>Default Branch:</strong> ${repoData.default_branch}<br>
-                <strong>Private:</strong> ${repoData.private ? 'Yes' : 'No'}<br>
-                <strong>Products File:</strong> ${productsPath} - ${fileStatus}<br>
-                <strong>Token Permissions:</strong> Valid
-            </div>
-        `;
-        
-        // Save token to session (not localStorage)
-        sessionStorage.setItem('github_token', token);
-        
-    } catch (error) {
-        console.error('Connection test error:', error);
-        statusDiv.innerHTML = `
-            <div class="message error" style="display: block;">
-                <i class="fas fa-times-circle"></i> Connection failed: ${error.message}
-            </div>
-        `;
-    }
-};
-
-// Save GitHub Settings
-window.saveGitHubSettings = function() {
-    console.log("💾 Saving GitHub settings");
-    
-    const settings = {
-        username: document.getElementById('settings_github_username')?.value || 'ExtraMilesEnergy',
-        repo: document.getElementById('settings_github_repo')?.value || 'extramilesenergy.in',
-        branch: document.getElementById('settings_github_branch')?.value || 'main',
-        productsPath: document.getElementById('settings_products_path')?.value || 'all-products.json'
-    };
-    
-    // Save to localStorage (except token)
-    localStorage.setItem('github_settings', JSON.stringify(settings));
-    
-    const token = document.getElementById('settings_github_token')?.value;
-    if (token) {
-        sessionStorage.setItem('github_token', token);
-    }
-    
-    window.showMessage('GitHub settings saved successfully', 'success');
-    
-    // Update connection status
-    const statusDiv = document.getElementById('githubConnectionStatus');
-    statusDiv.style.display = 'block';
-    statusDiv.innerHTML = `
-        <div class="message success" style="display: block;">
-            <i class="fas fa-check-circle"></i> Settings saved. Click "Test Connection" to verify.
-        </div>
-    `;
-};
-
-// Load GitHub Settings
+// ============ GITHUB SETTINGS ============
 window.loadGitHubSettings = function() {
-    console.log("📂 Loading GitHub settings");
+    console.log("⚙️ Loading GitHub settings");
     
     const saved = localStorage.getItem('github_settings');
     if (saved) {
@@ -873,111 +688,57 @@ window.loadGitHubSettings = function() {
             document.getElementById('settings_github_username').value = settings.username || 'ExtraMilesEnergy';
             document.getElementById('settings_github_repo').value = settings.repo || 'extramilesenergy.in';
             document.getElementById('settings_github_branch').value = settings.branch || 'main';
-            document.getElementById('settings_products_path').value = settings.productsPath || 'all-products.json';
+            document.getElementById('settings_products_path').value = settings.productsPath || 'content/products/all-products.json';
         } catch (e) {
             console.error('Error loading settings:', e);
         }
     }
     
-    // Check for saved token in session
     const token = sessionStorage.getItem('github_token');
     if (token) {
         document.getElementById('settings_github_token').value = token;
     }
 };
 
-// Reset GitHub Settings
-window.resetGitHubSettings = function() {
-    if (!confirm('Are you sure you want to reset all GitHub settings?')) return;
+window.saveGitHubSettings = function() {
+    const settings = {
+        username: document.getElementById('settings_github_username')?.value || 'ExtraMilesEnergy',
+        repo: document.getElementById('settings_github_repo')?.value || 'extramilesenergy.in',
+        branch: document.getElementById('settings_github_branch')?.value || 'main',
+        productsPath: document.getElementById('settings_products_path')?.value || 'content/products/all-products.json'
+    };
     
-    localStorage.removeItem('github_settings');
-    sessionStorage.removeItem('github_token');
+    localStorage.setItem('github_settings', JSON.stringify(settings));
     
-    // Reset form to defaults
-    document.getElementById('settings_github_username').value = 'ExtraMilesEnergy';
-    document.getElementById('settings_github_repo').value = 'extramilesenergy.in';
-    document.getElementById('settings_github_branch').value = 'main';
-    document.getElementById('settings_products_path').value = 'all-products.json';
-    document.getElementById('settings_github_token').value = '';
-    
-    const statusDiv = document.getElementById('githubConnectionStatus');
-    statusDiv.style.display = 'block';
-    statusDiv.innerHTML = `
-        <div class="message warning" style="display: block;">
-            <i class="fas fa-undo"></i> Settings reset to defaults
-        </div>
-    `;
-    
-    window.showMessage('Settings reset successfully', 'success');
-};
-
-// Clear GitHub Token
-window.clearGitHubToken = function() {
-    sessionStorage.removeItem('github_token');
-    document.getElementById('settings_github_token').value = '';
-    window.showMessage('GitHub token cleared', 'info');
-};
-
-// Sync Images to GitHub
-window.syncImagesToGitHub = async function() {
-    console.log("🖼️ Syncing images to GitHub");
-    window.showMessage('Image sync feature coming soon...', 'info');
-};
-
-// ============ UPDATE EXISTING FUNCTIONS TO USE SAVED SETTINGS ============
-
-// Override fetch functions to use saved token
-const originalFetch = window.fetch;
-window.fetch = function(url, options = {}) {
-    // Add GitHub token to API calls if available
-    if (url.includes('/api/') && !url.includes('/send-otp') && !url.includes('/verify-otp')) {
-        const token = sessionStorage.getItem('github_token');
-        if (token) {
-            options.headers = {
-                ...options.headers,
-                'X-GitHub-Token': token
-            };
-        }
+    const token = document.getElementById('settings_github_token')?.value;
+    if (token) {
+        sessionStorage.setItem('github_token', token);
     }
-    return originalFetch(url, options);
+    
+    window.showMessage('GitHub settings saved', 'success');
 };
 
-// Update loadProducts to use token from session
-const originalLoadProducts = window.loadProducts;
-window.loadProducts = async function() {
-    console.log("📦 Loading products from GitHub with saved settings");
+window.testGitHubConnection = async function() {
+    const token = document.getElementById('settings_github_token')?.value;
+    if (!token) {
+        window.showMessage('Please enter GitHub token', 'error');
+        return;
+    }
     
-    const productsDiv = document.getElementById('productsList');
-    if (!productsDiv) return;
-    
-    productsDiv.innerHTML = '<div class="loading"><div class="spinner"></div> Loading products...</div>';
+    window.showMessage('Testing connection...', 'info');
     
     try {
-        const response = await fetch(`${API_BASE}/api/products`, {
-            credentials: 'include',
-            headers: {
-                'X-GitHub-Token': sessionStorage.getItem('github_token') || ''
-            }
+        const response = await fetch('https://api.github.com/user', {
+            headers: { 'Authorization': `token ${token}` }
         });
         
         if (response.ok) {
-            products = await response.json();
-            displayProducts();
+            window.showMessage('✅ GitHub connection successful!', 'success');
         } else {
-            productsDiv.innerHTML = '<div class="loading">Failed to load products. Check GitHub settings.</div>';
+            window.showMessage('❌ Invalid token or connection failed', 'error');
         }
     } catch (error) {
-        console.error('Error loading products:', error);
-        productsDiv.innerHTML = '<div class="loading">Network error. Make sure backend is running.</div>';
-    }
-};
-
-// Load settings when settings tab is shown
-const originalShowTab = window.showTab;
-window.showTab = function(tabId) {
-    originalShowTab(tabId);
-    if (tabId === 'settings') {
-        loadGitHubSettings();
+        window.showMessage('❌ Network error', 'error');
     }
 };
 
@@ -985,18 +746,8 @@ window.showTab = function(tabId) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log("🚀 Admin panel loaded");
     
-    // Check if user is logged in by seeing if dashboard is visible
+    // Check if user is logged in
     if (document.getElementById('adminDashboard').style.display === 'block') {
         loadDashboardData();
-    }
-    
-    // Add event listener for Enter key in OTP input
-    const otpInput = document.getElementById('otpInput');
-    if (otpInput) {
-        otpInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyOTP();
-            }
-        });
     }
 });

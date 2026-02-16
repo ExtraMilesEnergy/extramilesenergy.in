@@ -3,20 +3,651 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Extra Miles Energy</title>
+    <title>Extra Miles Energy - Admin Panel</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Admin CSS -->
-    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0b1220;
+            --secondary: #142044;
+            --gold: #FFD700;
+            --gold-light: #FFF9C4;
+            --gold-dark: #FFC107;
+            --accent: #35d0ff;
+            --accent2: #7c5cff;
+            --success: #45ff90;
+            --danger: #ff3570;
+            --warning: #ffb145;
+            --text: #ffffff;
+            --text-muted: #a0b3d9;
+            --border: rgba(255, 255, 255, 0.15);
+            --card-bg: rgba(20, 32, 68, 0.95);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--radius);
+            border: 2px solid var(--gold);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--gold), #FFE55C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .telegram-badge {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .telegram-badge p {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+        }
+
+        .success-text {
+            color: var(--success) !important;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gold-light);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(255,215,0,0.15);
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--gold), #FFC107);
+            color: var(--primary);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 15px rgba(255,215,0,0.3);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff2b5e);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #2bc47d);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ff9f45);
+        }
+
+        .btn-purple {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.error {
+            background: rgba(255,53,112,0.1);
+            border: 1px solid rgba(255,53,112,0.3);
+            color: var(--danger);
+        }
+
+        .message.success {
+            background: rgba(69,255,144,0.1);
+            border: 1px solid rgba(69,255,144,0.3);
+            color: var(--success);
+        }
+
+        .message.warning {
+            background: rgba(255,177,69,0.1);
+            border: 1px solid rgba(255,177,69,0.3);
+            color: var(--warning);
+        }
+
+        .message.info {
+            background: rgba(53,208,255,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .otp-timer {
+            margin: 15px 0;
+            color: var(--gold-light);
+            font-size: 0.9rem;
+        }
+
+        .security-badge {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,215,0,0.2);
+            color: var(--gold-light);
+            font-size: 0.8rem;
+        }
+
+        /* Admin Dashboard */
+        .admin-header {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--gold);
+            padding: 15px 0;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--gold), #FFE55C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+        }
+
+        .company-subtitle {
+            color: var(--gold-light);
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .company-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255,215,0,0.1);
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        /* Navigation */
+        .admin-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255,215,0,0.2);
+            padding-bottom: 15px;
+            overflow-x: auto;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            white-space: nowrap;
+            font-weight: 500;
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,215,0,0.1);
+            color: var(--gold);
+        }
+
+        .nav-btn.active {
+            background: rgba(255,215,0,0.1);
+            color: var(--gold);
+        }
+
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-container {
+            background: var(--card-bg);
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(255,215,0,0.1);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .stat-card .label {
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(255,215,0,0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255,215,0,0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .product-actions .btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Image Upload */
+        .file-upload-area {
+            border: 2px dashed rgba(255,215,0,0.3);
+            border-radius: var(--radius);
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 20px;
+            background: rgba(255,215,0,0.05);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--gold);
+            background: rgba(255,215,0,0.1);
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-preview-item {
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            aspect-ratio: 1;
+            border: 2px solid rgba(255,215,0,0.3);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .primary-badge {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            background: var(--gold);
+            color: var(--primary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Camera Options */
+        .camera-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .camera-btn {
+            padding: 10px 20px;
+            background: rgba(53,208,255,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .camera-btn:hover {
+            background: rgba(53,208,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Sync Panel */
+        .sync-panel {
+            background: linear-gradient(135deg, rgba(53,208,255,0.1), rgba(124,92,255,0.1));
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .sync-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .sync-header i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .sync-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .sync-card {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--gold);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .sync-card h4 {
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .sync-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: var(--gold);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .sync-card .btn {
+            margin: 5px;
+            width: calc(100% - 10px);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 15px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar.active {
+            display: block;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--accent));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,215,0,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--gold);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Company Details */
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-sm);
+            flex-wrap: wrap;
+        }
+
+        .detail-item label {
+            min-width: 120px;
+            color: var(--gold-light);
+            font-weight: 500;
+        }
+
+        .detail-item input, .detail-item textarea {
+            flex: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: 1fr; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .admin-nav { flex-wrap: wrap; }
+            .nav-btn.active::after { bottom: -5px; }
+            .detail-item { flex-direction: column; align-items: flex-start; }
+            .detail-item label { min-width: auto; }
+            .header-content { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Login Page -->
+    <!-- ============ LOGIN PAGE ============ -->
     <div id="loginPage" class="login-container">
         <div class="login-box">
             <h1 class="login-title">Extra Miles Energy</h1>
-            <p style="color: var(--gold-light);">Admin Panel</p>
+            <p style="color: var(--gold-light); margin-bottom: 20px;">Admin Panel</p>
+            
             <div id="loginMessage" class="message"></div>
             
             <div id="telegramLoginSection">
@@ -28,12 +659,12 @@
                 <div class="form-group">
                     <label class="form-label">Enter OTP</label>
                     <div class="otp-input-group">
-                        <input type="text" id="otpInput" class="form-input" placeholder="6-digit OTP" maxlength="6">
+                        <input type="text" id="otpInput" class="form-input" placeholder="6-digit OTP" maxlength="6" style="text-align:center; font-size:1.5rem; letter-spacing:8px;">
                         <button class="btn btn-info" onclick="sendOTP()" id="sendOtpBtn">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
-                    <small>OTP will be sent to your Telegram</small>
+                    <small style="color: var(--text-muted);">OTP will be sent to your Telegram</small>
                 </div>
                 
                 <div id="otpTimer" class="otp-timer"></div>
@@ -49,7 +680,7 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
+    <!-- ============ ADMIN DASHBOARD ============ -->
     <div id="adminDashboard" style="display:none;">
         <div class="admin-header">
             <div class="container">
@@ -57,7 +688,7 @@
                     <div>
                         <h2 class="gradient-text">Extra Miles Energy</h2>
                         <div class="company-subtitle">LiFePO₄ Battery & Solar Inverter Solutions</div>
-                        <div class="company-badge">Admin Panel (Secure)</div>
+                        <span class="company-badge">Admin Panel (Secure)</span>
                     </div>
                     <button class="btn btn-danger" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -89,10 +720,11 @@
                 </button>
             </div>
 
-            <!-- Dashboard Tab -->
+            <!-- ============ DASHBOARD TAB ============ -->
             <div id="dashboard" class="tab-content active">
                 <div class="form-container">
-                    <h3>Dashboard Overview</h3>
+                    <h3 style="color:var(--gold); margin-bottom: 20px;">📊 Dashboard Overview</h3>
+                    
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="number" id="totalProducts">0</div>
@@ -116,78 +748,145 @@
                         </div>
                     </div>
 
+                    <!-- Contact Info Quick View -->
+                    <div style="background: var(--secondary); padding: 20px; border-radius: var(--radius); margin: 20px 0;">
+                        <h4 style="color: var(--gold); margin-bottom: 15px;">📞 Quick Contact Info</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div><i class="fas fa-phone" style="color: var(--gold); width: 25px;"></i> <span id="contactPhone">+91 98765 43210</span></div>
+                            <div><i class="fab fa-whatsapp" style="color: #25D366; width: 25px;"></i> <span id="contactWhatsapp">+91 98765 43210</span></div>
+                            <div><i class="fas fa-envelope" style="color: var(--gold); width: 25px;"></i> <span id="contactEmail">info@extramilesenergy.com</span></div>
+                            <div><i class="fas fa-map-marker-alt" style="color: var(--gold); width: 25px;"></i> <span id="contactAddress">New Delhi</span></div>
+                        </div>
+                    </div>
+
                     <!-- Recent Activity -->
-                    <div class="recent-activity">
-                        <h4>Recent Activity</h4>
-                        <div id="recentActivity">Loading...</div>
+                    <div style="margin-top: 30px;">
+                        <h4 style="color: var(--gold); margin-bottom: 15px;">📋 Recent Activity</h4>
+                        <div id="recentActivity" style="background: var(--secondary); padding: 20px; border-radius: var(--radius);">
+                            <div class="loading">Loading...</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Products Tab -->
+            <!-- ============ PRODUCTS TAB ============ -->
             <div id="products" class="tab-content">
                 <div class="form-container">
-                    <h3>All Products</h3>
-                    <div id="productsList" class="products-grid"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color:var(--gold);">📦 All Products</h3>
+                        <button class="btn btn-success" onclick="showTab('addProduct')">
+                            <i class="fas fa-plus"></i> Add New Product
+                        </button>
+                    </div>
+                    <div id="productsList" class="products-grid">
+                        <div class="loading"><div class="spinner"></div> Loading products...</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Add Product Tab -->
+            <!-- ============ ADD PRODUCT TAB ============ -->
             <div id="addProduct" class="tab-content">
                 <div class="form-container">
-                    <h3>Add New Product</h3>
+                    <h3 style="color:var(--gold); margin-bottom: 25px;">➕ Add New Product</h3>
                     
-                    <div class="form-group">
-                        <label class="form-label">Product Name</label>
-                        <input type="text" id="productName" class="form-input" placeholder="Enter product name">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Product Name *</label>
+                            <input type="text" id="productName" class="form-input" placeholder="e.g., EV Battery 60V30AH">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Price (₹)</label>
+                            <input type="text" id="productPrice" class="form-input" placeholder="e.g., 23500">
+                        </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label">Price (₹)</label>
-                            <input type="number" id="productPrice" class="form-input" placeholder="0">
-                        </div>
-                        <div class="form-group">
                             <label class="form-label">Category</label>
                             <select id="productCategory" class="form-input">
-                                <option value="">Select category</option>
-                                <option value="battery">Battery</option>
-                                <option value="inverter">Inverter</option>
-                                <option value="solar">Solar Panel</option>
-                                <option value="accessory">Accessory</option>
+                                <option value="">Select Category</option>
+                                <option value="EV Battery">EV Battery</option>
+                                <option value="E-Rickshaw Battery">E-Rickshaw Battery</option>
+                                <option value="Home Battery">Home Battery</option>
+                                <option value="Solar Inverter">Solar Inverter</option>
+                                <option value="Accessories">Accessories</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Model</label>
+                            <input type="text" id="productModel" class="form-input" placeholder="e.g., EM-LFP6030">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Voltage</label>
+                            <input type="text" id="productVoltage" class="form-input" placeholder="e.g., 60V">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Capacity</label>
+                            <input type="text" id="productCapacity" class="form-input" placeholder="e.g., 30AH">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Configuration</label>
+                            <input type="text" id="productConfig" class="form-input" placeholder="e.g., 19S2P">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Chemistry</label>
+                            <input type="text" id="productChemistry" class="form-input" value="LiFePO₄">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Warranty</label>
+                            <input type="text" id="productWarranty" class="form-input" value="3 Year Warranty">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cycle Life</label>
+                            <input type="text" id="productCycleLife" class="form-input" placeholder="e.g., 4000+ cycles">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Description</label>
-                        <textarea id="productDescription" class="form-input" rows="3" placeholder="Product description"></textarea>
+                        <textarea id="productDescription" class="form-input" rows="3" placeholder="Product description..."></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Specifications</label>
-                        <textarea id="productSpecs" class="form-input" rows="4" placeholder="Technical specifications"></textarea>
+                        <textarea id="productSpecs" class="form-input" rows="3" placeholder="Technical specifications..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Features (one per line)</label>
+                        <textarea id="productFeatures" class="form-input" rows="4" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Applications (comma separated)</label>
+                        <input type="text" id="productApplications" class="form-input" placeholder="e.g., EV Scooter, E-Rickshaw, Home Backup">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Product Images</label>
                         
-                        <!-- Image Upload Area -->
                         <div class="file-upload-area" onclick="triggerFileUpload()">
-                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                            <p>Click to upload images or drag and drop</p>
-                            <small>PNG, JPG, GIF up to 10MB</small>
+                            <i class="fas fa-cloud-upload-alt" style="font-size: 2.5rem; margin-bottom: 10px; color: var(--gold);"></i>
+                            <p style="color: var(--gold-light);">Click to upload images or drag and drop</p>
+                            <small style="color: var(--text-muted);">PNG, JPG, GIF up to 10MB</small>
                             <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
                         </div>
 
-                        <!-- Camera Options -->
                         <div class="camera-options">
                             <button class="camera-btn" onclick="openCamera()">
                                 <i class="fas fa-camera"></i> Take Photo
                             </button>
                         </div>
 
-                        <!-- Image Preview Grid -->
                         <div id="productImagesPreview" class="images-grid"></div>
                     </div>
 
@@ -202,24 +901,24 @@
                 </div>
             </div>
 
-            <!-- Company Tab -->
+            <!-- ============ COMPANY TAB ============ -->
             <div id="company" class="tab-content">
-                <div class="form-container">
-                    <h3>Company Details</h3>
+                <div id="companyDetailsForm" class="form-container">
+                    <h3 style="color:var(--gold); margin-bottom: 25px;">🏢 Company Details</h3>
                     <div id="companyDetails"></div>
                 </div>
             </div>
 
-            <!-- GitHub Sync Tab -->
+            <!-- ============ GITHUB SYNC TAB ============ -->
             <div id="githubSync" class="tab-content">
                 <div class="sync-panel">
                     <div class="sync-header">
                         <i class="fab fa-github"></i>
                         <div>
-                            <h3>GitHub Sync Status</h3>
-                            <div id="githubStatus">Not configured</div>
+                            <h3 style="color:var(--gold);">GitHub Sync Status</h3>
+                            <div id="githubStatus">Connected</div>
                         </div>
-                        <span class="sync-badge" id="syncStatusBadge">Offline</span>
+                        <span class="sync-badge" id="syncStatusBadge">Online</span>
                     </div>
 
                     <div class="sync-options">
@@ -254,120 +953,20 @@
                 </div>
             </div>
 
-            <!-- Settings Tab - GitHub Sync Configuration -->
-<div id="settings" class="tab-content">
-    <div class="form-container">
-        <h3 style="color: var(--gold); margin-bottom: 20px;">⚙️ GitHub Sync Settings</h3>
-        
-        <div style="background: rgba(53,208,255,0.1); border: 1px solid var(--accent); border-radius: var(--radius); padding: 20px; margin-bottom: 30px;">
-            <h4 style="color: var(--accent); margin-bottom: 15px;"><i class="fab fa-github"></i> GitHub Configuration</h4>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Configure your GitHub repository settings for automatic sync.</p>
-            
-            <div class="form-group">
-                <label class="form-label">GitHub Username</label>
-                <input type="text" id="settings_github_username" class="form-input" placeholder="e.g., ExtraMilesEnergy" value="ExtraMilesEnergy">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Repository Name</label>
-                <input type="text" id="settings_github_repo" class="form-input" placeholder="e.g., extramilesenergy.in" value="extramilesenergy.in">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Branch</label>
-                <input type="text" id="settings_github_branch" class="form-input" placeholder="e.g., main" value="main">
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">Products JSON Path</label>
-                <input type="text" id="settings_products_path" class="form-input" placeholder="e.g., all-products.json" value="all-products.json">
-                <small style="color: var(--text-muted);">Path to your products JSON file in the repository</small>
-            </div>
-            
-            <div class="form-group">
-                <label class="form-label">GitHub Token <span style="color: var(--danger);">(Secret - Not Saved)</span></label>
-                <input type="password" id="settings_github_token" class="form-input" placeholder="Enter your GitHub Personal Access Token">
-                <small style="color: var(--warning);"><i class="fas fa-exclamation-triangle"></i> Token is never saved in browser. You need to enter it each session.</small>
-            </div>
-            
-            <div style="display: flex; gap: 15px; margin-top: 20px;">
-                <button class="btn btn-success" onclick="testGitHubConnection()">
-                    <i class="fas fa-plug"></i> Test Connection
-                </button>
-                <button class="btn btn-info" onclick="saveGitHubSettings()">
-                    <i class="fas fa-save"></i> Save Settings
-                </button>
-            </div>
-        </div>
-        
-        <div style="background: rgba(69,255,144,0.1); border: 1px solid var(--success); border-radius: var(--radius); padding: 20px; margin-bottom: 30px;">
-            <h4 style="color: var(--success); margin-bottom: 15px;"><i class="fas fa-sync-alt"></i> Sync Options</h4>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);">
-                    <i class="fas fa-box" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
-                    <h5 style="color: var(--gold);">Products</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Sync all products with GitHub</p>
-                    <button class="btn btn-info" onclick="syncProductsToGitHub()" style="width: 100%; margin-top: 10px;">
-                        <i class="fas fa-sync-alt"></i> Sync Now
-                    </button>
-                </div>
-                
-                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);">
-                    <i class="fas fa-building" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
-                    <h5 style="color: var(--gold);">Company</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Sync company details with GitHub</p>
-                    <button class="btn btn-info" onclick="syncCompanyToGitHub()" style="width: 100%; margin-top: 10px;">
-                        <i class="fas fa-sync-alt"></i> Sync Now
-                    </button>
-                </div>
-                
-                <div style="text-align: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: var(--radius-sm);">
-                    <i class="fas fa-images" style="font-size: 2rem; color: var(--gold); margin-bottom: 10px;"></i>
-                    <h5 style="color: var(--gold);">Images</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Sync all product images</p>
-                    <button class="btn btn-info" onclick="syncImagesToGitHub()" style="width: 100%; margin-top: 10px;">
-                        <i class="fas fa-sync-alt"></i> Sync Now
-                    </button>
+            <!-- ============ SETTINGS TAB ============ -->
+            <div id="settings" class="tab-content">
+                <div class="form-container">
+                    <h3 style="color:var(--gold); margin-bottom: 25px;">⚙️ Settings</h3>
+                    <div id="githubSettings"></div>
                 </div>
             </div>
-        </div>
-        
-        <div style="background: rgba(255,53,112,0.1); border: 1px solid var(--danger); border-radius: var(--radius); padding: 20px;">
-            <h4 style="color: var(--danger); margin-bottom: 15px;"><i class="fas fa-exclamation-triangle"></i> Danger Zone</h4>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                <div>
-                    <h5 style="color: var(--text);">Reset All Settings</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Clear all saved settings and reset to defaults</p>
-                </div>
-                <button class="btn btn-danger" onclick="resetGitHubSettings()">
-                    <i class="fas fa-undo"></i> Reset Settings
-                </button>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
-                <div>
-                    <h5 style="color: var(--text);">Clear GitHub Token</h5>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Remove token from current session</p>
-                </div>
-                <button class="btn btn-warning" onclick="clearGitHubToken()">
-                    <i class="fas fa-times"></i> Clear Token
-                </button>
-            </div>
-        </div>
-        
-        <!-- Connection Status -->
-        <div id="githubConnectionStatus" style="margin-top: 20px; display: none;"></div>
-    </div>
-</div>
         </div>
     </div>
 
-    <!-- Camera Modal -->
+    <!-- ============ CAMERA MODAL ============ -->
     <div id="cameraModal" class="camera-modal">
         <div class="camera-container">
-            <h3>Take Product Photo</h3>
+            <h3 style="color:var(--gold); margin-bottom: 20px;">📸 Take Product Photo</h3>
             <video id="cameraPreview" class="camera-preview" autoplay playsinline></video>
             <div class="camera-controls">
                 <button class="btn btn-danger" onclick="closeCamera()">
@@ -383,13 +982,99 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- ============ SCRIPTS ============ -->
+    <!-- Global API Base -->
     <script>
-        // Global API_BASE
         const API_BASE = 'https://milly-sheiklike-radically.ngrok-free.dev';
+        console.log("✅ API_BASE defined:", API_BASE);
     </script>
+
+    <!-- Core Scripts -->
     <script src="js/utils.js"></script>
     <script src="js/auth.js"></script>
+    
+    <!-- Main Admin Script - यही सबसे important है -->
     <script src="js/admin-main.js"></script>
+
+    <!-- Emergency Backup - यह हमेशा काम करेगा -->
+    <script>
+        // Emergency fallback functions - ये तब काम करेंगे जब admin-main.js load नहीं होगा
+        (function() {
+            console.log("🚀 Emergency backup script loaded");
+            
+            // showTab function - यह सुनिश्चित करता है कि कम से कम tabs तो काम करें
+            if (typeof window.showTab !== 'function') {
+                window.showTab = function(tabId) {
+                    console.log("⚠️ Emergency showTab called:", tabId);
+                    
+                    try {
+                        // Hide all tabs
+                        document.querySelectorAll('.tab-content').forEach(tab => {
+                            if (tab) tab.classList.remove('active');
+                        });
+                        
+                        // Remove active class from nav buttons
+                        document.querySelectorAll('.nav-btn').forEach(btn => {
+                            if (btn) btn.classList.remove('active');
+                        });
+                        
+                        // Show selected tab
+                        const selectedTab = document.getElementById(tabId);
+                        if (selectedTab) {
+                            selectedTab.classList.add('active');
+                        }
+                        
+                        // Activate selected button
+                        document.querySelectorAll('.nav-btn').forEach(btn => {
+                            if (btn && btn.textContent.toLowerCase().includes(tabId.toLowerCase())) {
+                                btn.classList.add('active');
+                            }
+                        });
+                        
+                        // Show message
+                        const msgDiv = document.getElementById('loginMessage');
+                        if (msgDiv) {
+                            msgDiv.textContent = `Switched to ${tabId}`;
+                            msgDiv.className = 'message success';
+                            msgDiv.style.display = 'block';
+                            setTimeout(() => msgDiv.style.display = 'none', 2000);
+                        }
+                    } catch (e) {
+                        console.error("Emergency showTab error:", e);
+                    }
+                };
+                console.log("✅ Emergency showTab defined");
+            }
+            
+            // logout function
+            if (typeof window.logout !== 'function') {
+                window.logout = function() {
+                    document.getElementById('loginPage').style.display = 'flex';
+                    document.getElementById('adminDashboard').style.display = 'none';
+                };
+                console.log("✅ Emergency logout defined");
+            }
+            
+            // Check if any function is missing and log
+            console.log("🔍 Function check:", {
+                showTab: typeof window.showTab === 'function',
+                logout: typeof window.logout === 'function',
+                loadProducts: typeof window.loadProducts === 'function'
+            });
+        })();
+    </script>
+
+    <!-- Final check -->
+    <script>
+        console.log("✅ All scripts loaded");
+        console.log("🎯 showTab available:", typeof window.showTab === 'function');
+        
+        // Auto-load dashboard if logged in
+        if (document.getElementById('adminDashboard').style.display === 'block') {
+            if (typeof window.loadDashboardData === 'function') {
+                window.loadDashboardData();
+            }
+        }
+    </script>
 </body>
 </html>

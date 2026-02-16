@@ -477,13 +477,17 @@
             font-weight: bold;
         }
 
-        /* Camera Options */
+        /* Camera Options - Only visible in Add Product tab */
         .camera-options {
-            display: flex;
+            display: none;
             gap: 15px;
             justify-content: center;
             margin-top: 20px;
             flex-wrap: wrap;
+        }
+
+        .camera-options.visible {
+            display: flex;
         }
 
         .camera-btn {
@@ -892,7 +896,8 @@
                             <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
                         </div>
 
-                        <div class="camera-options">
+                        <!-- Camera Options - Only visible in Add Product tab via JavaScript -->
+                        <div class="camera-options" id="cameraOptions">
                             <button class="camera-btn" onclick="openCamera()">
                                 <i class="fas fa-camera"></i> Take Photo
                             </button>
@@ -1073,11 +1078,11 @@
     </div>
 
     <!-- ============ CAMERA MODAL ============ -->
-    <div id="cameraModal" class="camera-modal">
-        <div class="camera-container">
+    <div id="cameraModal" class="camera-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center;">
+        <div class="camera-container" style="width: 90%; max-width: 800px; background: var(--card-bg); border-radius: var(--radius); padding: 20px; border: 2px solid var(--gold);">
             <h3 style="color:var(--gold); margin-bottom: 20px;">📸 Take Product Photo</h3>
-            <video id="cameraPreview" class="camera-preview" autoplay playsinline></video>
-            <div class="camera-controls">
+            <video id="cameraPreview" class="camera-preview" style="width: 100%; height: 400px; background: #000; border-radius: var(--radius-sm); margin-bottom: 20px; object-fit: cover;" autoplay playsinline></video>
+            <div class="camera-controls" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <button class="btn btn-danger" onclick="closeCamera()">
                     <i class="fas fa-times"></i> Cancel
                 </button>
@@ -1092,13 +1097,13 @@
     </div>
 
     <!-- ============ SCRIPTS ============ -->
-    <!-- Global API Base -->
+    <!-- Global API Base - FIXED URL -->
     <script>
         const API_BASE = 'https://milly-sheiklike-radically.ngrok-free.dev';
         console.log("✅ API_BASE defined:", API_BASE);
     </script>
 
-    <!-- Complete Admin Script -->
+    <!-- Complete Admin Script with FIXED GitHub Sync and Camera -->
     <script>
         // ============ GLOBAL VARIABLES ============
         let products = [];
@@ -1109,7 +1114,24 @@
         // ============ MESSAGE FUNCTION ============
         function showMessage(message, type = 'info', elementId = 'loginMessage') {
             const msgDiv = document.getElementById(elementId);
-            if (!msgDiv) return;
+            if (!msgDiv) {
+                // Create temporary message div if not found
+                const tempDiv = document.createElement('div');
+                tempDiv.className = `message ${type}`;
+                tempDiv.style.display = 'block';
+                tempDiv.style.position = 'fixed';
+                tempDiv.style.top = '20px';
+                tempDiv.style.right = '20px';
+                tempDiv.style.zIndex = '9999';
+                tempDiv.style.minWidth = '300px';
+                tempDiv.textContent = message;
+                document.body.appendChild(tempDiv);
+                
+                setTimeout(() => {
+                    tempDiv.remove();
+                }, 3000);
+                return;
+            }
             
             msgDiv.textContent = message;
             msgDiv.className = `message ${type}`;
@@ -1120,7 +1142,7 @@
             }, 3000);
         }
 
-        // ============ TAB NAVIGATION ============
+        // ============ TAB NAVIGATION - WITH CAMERA CONTROL ============
         window.showTab = function(tabId) {
             console.log("🔄 Switching to tab:", tabId);
             
@@ -1148,13 +1170,24 @@
                     }
                 });
                 
+                // 🔥 CAMERA BUTTON - सिर्फ Add Product tab में दिखे
+                const cameraOptions = document.getElementById('cameraOptions');
+                if (cameraOptions) {
+                    if (tabId === 'addProduct') {
+                        cameraOptions.style.display = 'flex';
+                    } else {
+                        cameraOptions.style.display = 'none';
+                    }
+                }
+                
                 // Load tab-specific data
                 if (tabId === 'dashboard') {
                     loadDashboardData();
                 } else if (tabId === 'products') {
                     loadProducts();
                 } else if (tabId === 'addProduct') {
-                    document.querySelector('#addProduct h3').textContent = 'Add New Product';
+                    const titleEl = document.querySelector('#addProduct h3');
+                    if (titleEl) titleEl.textContent = 'Add New Product';
                     resetProductForm();
                 } else if (tabId === 'company') {
                     loadCompanyDetails();
@@ -1193,6 +1226,7 @@
                     showMessage('❌ Failed: ' + (data.error || 'Unknown'), 'error');
                 }
             } catch (err) {
+                console.error('Send OTP error:', err);
                 showMessage('❌ Network error. Is backend running?', 'error');
             } finally {
                 btn.innerHTML = orig;
@@ -1258,6 +1292,7 @@
                     showMessage('❌ ' + (data.error || 'Invalid OTP'), 'error');
                 }
             } catch (err) {
+                console.error('Verify OTP error:', err);
                 showMessage('❌ Network error', 'error');
             } finally {
                 btn.innerHTML = orig;
@@ -1339,12 +1374,7 @@
                     products = await response.json();
                     displayProducts();
                 } else {
-                    // Show demo products if API fails
-                    products = [
-                        { id: "demo-1", name: "EV Battery 60V30AH", price: "23500", category: "EV Battery", images: [] },
-                        { id: "demo-2", name: "GOOTU 6KW Inverter", price: "48500", category: "Solar Inverter", images: [] }
-                    ];
-                    displayProducts();
+                    productsDiv.innerHTML = '<div class="loading">No products found. Add your first product!</div>';
                 }
             } catch (error) {
                 console.error('Error loading products:', error);
@@ -1696,33 +1726,118 @@
             }
         };
 
-        // ============ GITHUB SYNC FUNCTIONS ============
+        // ============ FIXED GITHUB SYNC FUNCTIONS ============
+
+        // Pull Products from GitHub
+        window.fetchProductsFromGitHub = async function() {
+            console.log("📥 Fetching products from GitHub");
+            showMessage('Fetching products from GitHub...', 'info', 'syncMessage');
+            
+            // Get token from settings
+            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            const username = document.getElementById('github_username')?.value || 'ExtraMilesEnergy';
+            const repo = document.getElementById('github_repo')?.value || 'extramilesenergy.in';
+            const productsPath = document.getElementById('products_path')?.value || 'content/products/all-products.json';
+            
+            if (!token) {
+                showMessage('❌ Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                return;
+            }
+            
+            try {
+                // Direct GitHub API call
+                const url = `https://api.github.com/repos/${username}/${repo}/contents/${productsPath}`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Decode base64 content
+                const content = atob(data.content);
+                const decodedContent = decodeURIComponent(escape(content));
+                products = JSON.parse(decodedContent);
+                
+                displayProducts();
+                showMessage('✅ Products fetched from GitHub successfully', 'success', 'syncMessage');
+                
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                showMessage('❌ Failed to fetch: ' + error.message, 'error', 'syncMessage');
+            }
+        };
+
+        // Push Products to GitHub
         window.syncProductsToGitHub = async function() {
+            console.log("📤 Pushing products to GitHub");
+            
             const progressBar = document.getElementById('productSyncProgress');
             const progressFill = document.getElementById('productSyncFill');
+            
+            if (!progressBar || !progressFill) return;
             
             progressBar.classList.add('active');
             progressFill.style.width = '0%';
             
+            // Get settings
             const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            const username = document.getElementById('github_username')?.value || 'ExtraMilesEnergy';
+            const repo = document.getElementById('github_repo')?.value || 'extramilesenergy.in';
+            const branch = document.getElementById('github_branch')?.value || 'main';
+            const productsPath = document.getElementById('products_path')?.value || 'content/products/all-products.json';
+            
             if (!token) {
-                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                showMessage('❌ Please enter GitHub token in Settings first', 'error', 'syncMessage');
                 progressBar.classList.remove('active');
                 return;
             }
             
             try {
-                const response = await fetch(`${API_BASE}/api/github/products/push`, {
-                    method: 'POST',
-                    credentials: 'include',
+                // First, get current file to get SHA
+                const url = `https://api.github.com/repos/${username}/${repo}/contents/${productsPath}`;
+                
+                const getResponse = await fetch(url, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-GitHub-Token': token
-                    },
-                    body: JSON.stringify({ products: products })
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
                 
-                if (response.ok) {
+                let sha = null;
+                if (getResponse.ok) {
+                    const data = await getResponse.json();
+                    sha = data.sha;
+                }
+                
+                // Convert products to base64
+                const jsonString = JSON.stringify(products, null, 2);
+                const content = btoa(unescape(encodeURIComponent(jsonString)));
+                
+                // Push to GitHub
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Update products via admin panel',
+                        content: content,
+                        branch: branch,
+                        ...(sha && { sha })
+                    })
+                });
+                
+                if (putResponse.ok) {
+                    // Animate progress
                     let width = 0;
                     const interval = setInterval(() => {
                         width += 10;
@@ -1732,67 +1847,98 @@
                             clearInterval(interval);
                             setTimeout(() => {
                                 progressBar.classList.remove('active');
-                                showMessage('Products synced to GitHub successfully', 'success', 'syncMessage');
+                                showMessage('✅ Products pushed to GitHub successfully', 'success', 'syncMessage');
                             }, 500);
                         }
                     }, 100);
                 } else {
-                    showMessage('Failed to sync products', 'error', 'syncMessage');
-                    progressBar.classList.remove('active');
+                    const error = await putResponse.json();
+                    throw new Error(error.message);
                 }
             } catch (error) {
-                console.error('Error syncing products:', error);
-                showMessage('Network error', 'error', 'syncMessage');
+                console.error('Error pushing products:', error);
+                showMessage('❌ Failed to push: ' + error.message, 'error', 'syncMessage');
                 progressBar.classList.remove('active');
             }
         };
 
-        window.fetchProductsFromGitHub = async function() {
-            showMessage('Fetching products from GitHub...', 'info', 'syncMessage');
+        // Pull Company from GitHub
+        window.fetchCompanyFromGitHub = async function() {
+            console.log("📥 Fetching company from GitHub");
+            showMessage('Fetching company from GitHub...', 'info', 'syncMessage');
             
             const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            const username = document.getElementById('github_username')?.value || 'ExtraMilesEnergy';
+            const repo = document.getElementById('github_repo')?.value || 'extramilesenergy.in';
+            
             if (!token) {
-                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                showMessage('❌ Please enter GitHub token in Settings first', 'error', 'syncMessage');
                 return;
             }
             
             try {
-                const response = await fetch(`${API_BASE}/api/github/products`, {
-                    method: 'GET',
-                    credentials: 'include',
+                const url = `https://api.github.com/repos/${username}/${repo}/contents/content/company.json`;
+                
+                const response = await fetch(url, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-GitHub-Token': token
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
                     }
                 });
                 
-                if (response.ok) {
-                    products = await response.json();
-                    displayProducts();
-                    showMessage('Products fetched from GitHub successfully', 'success', 'syncMessage');
-                } else {
-                    showMessage('Failed to fetch products', 'error', 'syncMessage');
+                if (!response.ok) {
+                    throw new Error(`GitHub API error: ${response.status}`);
                 }
+                
+                const data = await response.json();
+                
+                // Decode base64 content
+                const content = atob(data.content);
+                const decodedContent = decodeURIComponent(escape(content));
+                const company = JSON.parse(decodedContent);
+                
+                // Update form fields
+                document.getElementById('company_name').value = company.name || 'Extra Miles Energy';
+                document.getElementById('company_phone').value = company.phone || '';
+                document.getElementById('company_whatsapp').value = company.whatsapp || '';
+                document.getElementById('company_email').value = company.email || '';
+                document.getElementById('company_gst').value = company.gst || '';
+                document.getElementById('company_address').value = company.address || '';
+                document.getElementById('company_website').value = company.website || '';
+                document.getElementById('company_timings').value = company.timings || '9:00 AM - 7:00 PM';
+                
+                showMessage('✅ Company details fetched from GitHub', 'success', 'syncMessage');
+                
             } catch (error) {
-                console.error('Error fetching products:', error);
-                showMessage('Network error', 'error', 'syncMessage');
+                console.error('Error fetching company:', error);
+                showMessage('❌ Failed to fetch: ' + error.message, 'error', 'syncMessage');
             }
         };
 
+        // Push Company to GitHub
         window.syncCompanyToGitHub = async function() {
+            console.log("📤 Pushing company to GitHub");
+            
             const progressBar = document.getElementById('companySyncProgress');
             const progressFill = document.getElementById('companySyncFill');
+            
+            if (!progressBar || !progressFill) return;
             
             progressBar.classList.add('active');
             progressFill.style.width = '0%';
             
             const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
+            const username = document.getElementById('github_username')?.value || 'ExtraMilesEnergy';
+            const repo = document.getElementById('github_repo')?.value || 'extramilesenergy.in';
+            const branch = document.getElementById('github_branch')?.value || 'main';
+            
             if (!token) {
-                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
+                showMessage('❌ Please enter GitHub token in Settings first', 'error', 'syncMessage');
                 progressBar.classList.remove('active');
                 return;
             }
             
+            // Get company data from form
             const companyData = {
                 name: document.getElementById('company_name').value,
                 phone: document.getElementById('company_phone').value,
@@ -1805,17 +1951,43 @@
             };
             
             try {
-                const response = await fetch(`${API_BASE}/api/github/company/push`, {
-                    method: 'POST',
-                    credentials: 'include',
+                const url = `https://api.github.com/repos/${username}/${repo}/contents/content/company.json`;
+                
+                // Get current file SHA
+                const getResponse = await fetch(url, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-GitHub-Token': token
-                    },
-                    body: JSON.stringify({ company: companyData })
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
                 
-                if (response.ok) {
+                let sha = null;
+                if (getResponse.ok) {
+                    const data = await getResponse.json();
+                    sha = data.sha;
+                }
+                
+                // Convert to base64
+                const jsonString = JSON.stringify(companyData, null, 2);
+                const content = btoa(unescape(encodeURIComponent(jsonString)));
+                
+                // Push to GitHub
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Update company details via admin panel',
+                        content: content,
+                        branch: branch,
+                        ...(sha && { sha })
+                    })
+                });
+                
+                if (putResponse.ok) {
+                    // Animate progress
                     let width = 0;
                     const interval = setInterval(() => {
                         width += 10;
@@ -1825,59 +1997,18 @@
                             clearInterval(interval);
                             setTimeout(() => {
                                 progressBar.classList.remove('active');
-                                showMessage('Company details synced to GitHub', 'success', 'syncMessage');
+                                showMessage('✅ Company details pushed to GitHub', 'success', 'syncMessage');
                             }, 500);
                         }
                     }, 100);
                 } else {
-                    showMessage('Failed to sync company', 'error', 'syncMessage');
-                    progressBar.classList.remove('active');
+                    const error = await putResponse.json();
+                    throw new Error(error.message);
                 }
             } catch (error) {
-                console.error('Error syncing company:', error);
-                showMessage('Network error', 'error', 'syncMessage');
+                console.error('Error pushing company:', error);
+                showMessage('❌ Failed to push: ' + error.message, 'error', 'syncMessage');
                 progressBar.classList.remove('active');
-            }
-        };
-
-        window.fetchCompanyFromGitHub = async function() {
-            showMessage('Fetching company from GitHub...', 'info', 'syncMessage');
-            
-            const token = document.getElementById('github_token')?.value || sessionStorage.getItem('github_token');
-            if (!token) {
-                showMessage('Please enter GitHub token in Settings first', 'error', 'syncMessage');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`${API_BASE}/api/github/company`, {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-GitHub-Token': token
-                    }
-                });
-                
-                if (response.ok) {
-                    const company = await response.json();
-                    
-                    document.getElementById('company_name').value = company.name || 'Extra Miles Energy';
-                    document.getElementById('company_phone').value = company.phone || '';
-                    document.getElementById('company_whatsapp').value = company.whatsapp || '';
-                    document.getElementById('company_email').value = company.email || '';
-                    document.getElementById('company_gst').value = company.gst || '';
-                    document.getElementById('company_address').value = company.address || '';
-                    document.getElementById('company_website').value = company.website || '';
-                    document.getElementById('company_timings').value = company.timings || '9:00 AM - 7:00 PM';
-                    
-                    showMessage('Company details fetched from GitHub', 'success', 'syncMessage');
-                } else {
-                    showMessage('Failed to fetch company', 'error', 'syncMessage');
-                }
-            } catch (error) {
-                console.error('Error fetching company:', error);
-                showMessage('Network error', 'error', 'syncMessage');
             }
         };
 
@@ -1926,14 +2057,15 @@
             showMessage('GitHub settings saved successfully', 'success', 'settingsMessage');
         };
 
+        // ============ TEST GITHUB CONNECTION ============
         window.testGitHubConnection = async function() {
             const token = document.getElementById('github_token').value;
             if (!token) {
-                showMessage('Please enter GitHub token first', 'error', 'settingsMessage');
+                showMessage('❌ Please enter GitHub token', 'error', 'settingsMessage');
                 return;
             }
             
-            showMessage('Testing connection...', 'info', 'settingsMessage');
+            showMessage('🔄 Testing connection...', 'info', 'settingsMessage');
             
             try {
                 const response = await fetch('https://api.github.com/user', {
@@ -1943,11 +2075,25 @@
                 if (response.ok) {
                     const user = await response.json();
                     showMessage(`✅ Connected to GitHub as ${user.login}`, 'success', 'settingsMessage');
+                    
+                    // Test repository access
+                    const username = document.getElementById('github_username').value;
+                    const repo = document.getElementById('github_repo').value;
+                    
+                    const repoResponse = await fetch(`https://api.github.com/repos/${username}/${repo}`, {
+                        headers: { 'Authorization': `token ${token}` }
+                    });
+                    
+                    if (repoResponse.ok) {
+                        showMessage(`✅ Repository ${username}/${repo} accessible`, 'success', 'settingsMessage');
+                    } else {
+                        showMessage(`⚠️ Repository not found or no access`, 'warning', 'settingsMessage');
+                    }
                 } else {
                     showMessage('❌ Invalid token or connection failed', 'error', 'settingsMessage');
                 }
             } catch (error) {
-                showMessage('❌ Network error', 'error', 'settingsMessage');
+                showMessage('❌ Network error: ' + error.message, 'error', 'settingsMessage');
             }
         };
 
@@ -1956,7 +2102,7 @@
         let currentCamera = 'environment';
 
         window.openCamera = function() {
-            document.getElementById('cameraModal').classList.add('active');
+            document.getElementById('cameraModal').style.display = 'flex';
             startCamera();
         };
 
@@ -1964,7 +2110,7 @@
             if (cameraStream) {
                 cameraStream.getTracks().forEach(track => track.stop());
             }
-            document.getElementById('cameraModal').classList.remove('active');
+            document.getElementById('cameraModal').style.display = 'none';
         };
 
         async function startCamera() {
@@ -1977,6 +2123,7 @@
             } catch (error) {
                 console.error('Camera error:', error);
                 alert('Could not access camera');
+                closeCamera();
             }
         }
 
@@ -2033,6 +2180,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log("🚀 Admin panel loaded");
             
+            // Hide camera modal initially
+            document.getElementById('cameraModal').style.display = 'none';
+            
             // Check if already logged in
             if (document.getElementById('adminDashboard').style.display === 'block') {
                 loadDashboardData();
@@ -2040,7 +2190,7 @@
             }
         });
 
-        console.log("✅ All admin functions loaded");
+        console.log("✅ All admin functions loaded with FIXED GitHub Sync and Camera");
     </script>
 </body>
 </html>
